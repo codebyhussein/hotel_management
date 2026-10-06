@@ -1,2 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hotel_management_hotel_management,hotel_management.hotel_management,model_hotel_management_hotel_management,base.group_user,1,1,1,1
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_folio_line_manager,hotel.folio.line manager,model_hotel_folio_line,group_hotel_manager,1,1,1,1
+access_hotel_folio_line_receptionist,hotel.folio.line receptionist,model_hotel_folio_line,group_hotel_receptionist,1,1,1,0
+access_hotel_payment_manager,hotel.payment manager,model_hotel_payment,group_hotel_manager,1,1,1,1
+access_hotel_payment_receptionist,hotel.payment receptionist,model_hotel_payment,group_hotel_receptionist,1,1,1,0
