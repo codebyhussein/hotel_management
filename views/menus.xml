@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_hotel_management_root"
+        name="Hotel Management"
+        sequence="10"
+    />
+
+    <!-- Rooms Parent -->
+    <menuitem
+        id="menu_hotel_rooms"
+        name="Rooms"
+        parent="menu_hotel_management_root"
+        sequence="10"
+    />
+
+    <!-- Rooms List -->
+    <menuitem
+        id="menu_hotel_rooms_list"
+        name="Rooms"
+        parent="menu_hotel_rooms"
+        action="action_hotel_room"
+        sequence="10"
+    />
+
+    <!-- Properties -->
+<menuitem
+    id="menu_hotel_properties"
+    name="Properties"
+    parent="menu_hotel_rooms"
+    action="action_hotel_property"
+    groups="hotel_management.group_hotel_property_manager"
+    sequence="20"
+/>
+
+</odoo>

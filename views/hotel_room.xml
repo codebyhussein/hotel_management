@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- =========================
+         Room Tree View
+    ========================== -->
+
+    <record id="view_hotel_room_tree" model="ir.ui.view">
+        <field name="name">hotel.room.tree</field>
+        <field name="model">hotel.room</field>
+
+        <field name="arch" type="xml">
+            <tree string="Rooms">
+
+                <field name="display_name" string="Room Number"/>
+                <field name="room_type"/>
+                <field name="price"/>
+                <field name="employee_name" string="Responsible Employee"/>
+                <field name="property_id"/>
+                <field name="status"/>
+
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- =========================
+         Room Form View
+    ========================== -->
+
+    <record id="view_hotel_room_form" model="ir.ui.view">
+        <field name="name">hotel.room.form</field>
+        <field name="model">hotel.room</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Room">
+
+                <!-- Status Bar + Buttons -->
+
+                <header>
+
+                    <button name="action_set_available"
+                            string="Mark as Available"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status != 'occupied'"/>
+
+                    <button name="action_set_occupied"
+                            string="Check-in"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status not in ('available', 'maintenance')"/>
+
+                    <button name="action_set_maintenance"
+                            string="Start Maintenance"
+                            type="object"
+                            invisible="status not in ('occupied', 'needs_cleaning')"/>
+
+                    <button name="action_set_needs_cleaning"
+                            string="Needs Cleaning"
+                            type="object"
+                            invisible="status != 'maintenance'"/>
+
+                    <field name="status"
+                           widget="statusbar"
+                           statusbar_visible="available,occupied,maintenance,needs_cleaning"/>
+
+                </header>
+
+
+                <sheet>
+
+                    <!-- Room Information -->
+
+                    <group>
+
+                        <group string="Room Information">
+
+                            <field name="room_number"/>
+                            <field name="room_type"/>
+                            <field name="price"/>
+
+                        </group>
+
+
+                        <group string="Room Details">
+
+                            <field name="capacity"/>
+                            <field name="employee_name"
+                                   string="Responsible Employee"
+                                   domain="[('property_id', '=', property_id)]"/>
+                            <field name="property_id"/>
+                            <field name="status" readonly="1"/>
+
+                        </group>
+
+                    </group>
+
+
+                    <!-- Description -->
+
+                    <group string="Description">
+
+                        <field name="description"
+                               placeholder="Enter room description..."/>
+
+                    </group>
+
+                </sheet>
+
+
+                <!-- =========================
+                     Chatter
+                ========================== -->
+
+                <div class="oe_chatter">
+
+                    <field name="message_follower_ids" widget="mail_followers"/>
+
+                    <div class="oe_chatter_activity">
+                        <field name="activity_ids" widget="mail_activity"/>
+                    </div>
+
+                    <field name="message_ids" widget="mail_thread"/>
+
+                </div>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- =========================
+         Room Action
+    ========================== -->
+
+    <record id="action_hotel_room" model="ir.actions.act_window">
+
+        <field name="name">Rooms</field>
+        <field name="res_model">hotel.room</field>
+
+        <field name="view_mode">tree,form</field>
+
+    </record>
+
+</odoo>
