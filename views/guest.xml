@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_guest_form" model="ir.ui.view">
+        <field name="name">hotel.guest.form</field>
+        <field name="model">hotel.guest</field>
+        <field name="arch" type="xml">
+            <form string="Guest Profile">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_reservations" type="object" class="oe_stat_button" icon="fa-bed">
+                            <field name="total_stays" widget="statinfo" string="Stays"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="nationality_id"/>
+                            <field name="gender"/>
+                            <field name="date_of_birth"/>
+                        </group>
+                        <group>
+                            <field name="id_type"/>
+                            <field name="id_number"/>
+                            <field name="vip"/>
+                            <field name="blacklisted"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_guest_tree" model="ir.ui.view">
+        <field name="name">hotel.guest.tree</field>
+        <field name="model">hotel.guest</field>
+        <field name="arch" type="xml">
+            <tree string="Guests">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="id_type"/>
+                <field name="id_number"/>
+
+
+                <field name="vip" string="VIP" widget="boolean_toggle"/>
+                <field name="blacklisted" string="Blacklisted" widget="boolean_toggle"/>
+                <field name="total_stays"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hotel_guest_search" model="ir.ui.view">
+        <field name="name">hotel.guest.search</field>
+        <field name="model">hotel.guest</field>
+        <field name="arch" type="xml">
+            <search string="Search Guests">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="id_number"/>
+                <filter string="VIP Guests" name="vip" domain="[('vip', '=', True)]"/>
+                <filter string="Blacklisted" name="blacklisted" domain="[('blacklisted', '=', True)]"/>
+                <filter string="Passports Only" name="passport" domain="[('id_type', '=', 'passport')]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_guest" model="ir.actions.act_window">
+        <field name="name">Guests Registry</field>
+        <field name="res_model">hotel.guest</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
