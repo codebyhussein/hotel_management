@@ -4,6 +4,7 @@ class HotelHousekeepingTask(models.Model):
     _name = 'hotel.housekeeping.task'
     _description = 'Housekeeping Task'
 
+    room_id = fields.Many2one('hotel.room', string='Room')
     name = fields.Char(string='Task Title', required=True)
     assigned_user_id = fields.Many2one('res.users', string='Assigned Staff')
 

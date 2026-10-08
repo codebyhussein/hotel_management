@@ -32,7 +32,7 @@ class HotelReservation(models.Model):
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
     property_id = fields.Many2one(
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
+         'hotel.property', string='Property', related='room_id.property_id', store=True)
     room_type_id = fields.Many2one(
         'hotel.room.type', string='Room Type', related='room_id.room_type_id', store=True)
     responsible_id = fields.Many2one(
