@@ -12,10 +12,10 @@
               action="action_hotel_guest"
               sequence="10"/>
 
-    <!-- Direct Menu for Housekeeping & Maintenance -->
-    <menuitem id="menu_hotel_housekeeping"
-              name="Housekeeping &amp; Maintenance"
+    <!-- Direct Menu for Services -->
+    <menuitem id="menu_hotel_services"
+              name="Services"
               parent="menu_hotel_root"
-              action="action_hotel_housekeeping_task"
+              action="action_hotel_services"
               sequence="20"/>
 </odoo>
