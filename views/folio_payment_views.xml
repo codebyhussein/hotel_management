@@ -1,0 +1,146 @@
+<odoo>
+    <!-- ================= Folio Lines ================= -->
+    <record id="view_hotel_folio_line_tree" model="ir.ui.view">
+        <field name="name">hotel.folio.line.tree</field>
+        <field name="model">hotel.folio.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reservation_id"/>
+                <field name="charge_date"/>
+                <field name="name"/>
+                <field name="charge_type"/>
+                <field name="quantity"/>
+                <field name="unit_price"/>
+                <field name="amount" sum="Total"/>
+                <field name="is_paid"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hotel_folio_line_form" model="ir.ui.view">
+        <field name="name">hotel.folio.line.form</field>
+        <field name="model">hotel.folio.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reservation_id"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="charge_type"/>
+                        </group>
+                        <group>
+                            <field name="charge_date"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="amount"/>
+                            <field name="is_paid"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_folio_line_search" model="ir.ui.view">
+        <field name="name">hotel.folio.line.search</field>
+        <field name="model">hotel.folio.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reservation_id"/>
+                <field name="name"/>
+                <filter name="unpaid" string="Unpaid" domain="[('is_paid', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_reservation" string="Reservation" context="{'group_by': 'reservation_id'}"/>
+                    <filter name="group_type" string="Charge Type" context="{'group_by': 'charge_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_folio_line" model="ir.actions.act_window">
+        <field name="name">Folio Lines</field>
+        <field name="res_model">hotel.folio.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ================= Payments ================= -->
+    <record id="view_hotel_payment_tree" model="ir.ui.view">
+        <field name="name">hotel.payment.tree</field>
+        <field name="model">hotel.payment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reservation_id"/>
+                <field name="payment_date"/>
+                <field name="method"/>
+                <field name="reference"/>
+                <field name="amount" sum="Total"/>
+                <field name="state"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hotel_payment_form" model="ir.ui.view">
+        <field name="name">hotel.payment.form</field>
+        <field name="model">hotel.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state == 'cancelled'"/>
+                    <button name="action_draft" string="Set to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reservation_id"/>
+                            <field name="folio_line_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="method"/>
+                            <field name="amount"/>
+                            <field name="reference"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_payment_search" model="ir.ui.view">
+        <field name="name">hotel.payment.search</field>
+        <field name="model">hotel.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reservation_id"/>
+                <field name="partner_id"/>
+                <field name="reference"/>
+                <filter name="posted" string="Posted" domain="[('state', '=', 'posted')]"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_method" string="Method" context="{'group_by': 'method'}"/>
+                    <filter name="group_partner" string="Guest" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_payment" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">hotel.payment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- ================= Menus ================= -->
+    <menuitem id="menu_hotel_billing" name="Billing" parent="menu_hotel_management_root" sequence="40"/>
+    <menuitem id="menu_hotel_folio_line" name="Folio Lines" parent="menu_hotel_billing" action="action_hotel_folio_line" sequence="10"/>
+    <menuitem id="menu_hotel_payment" name="Payments" parent="menu_hotel_billing" action="action_hotel_payment" sequence="20"/>
+</odoo>

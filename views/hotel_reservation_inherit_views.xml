@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_hotel_reservation_form_folio" model="ir.ui.view">
+        <field name="name">hotel.reservation.form.folio</field>
+        <field name="model">hotel.reservation</field>
+        <field name="inherit_id" ref="hotel_management.view_hotel_reservation_form"/>
+        <field name="arch" type="xml">
+
+            <!-- أزرار الـ header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_invoice" string="Create Invoice" type="object"
+        invisible="state not in ('checked_in', 'checked_out')"/>
+            </xpath>
+
+            <!-- Tabs -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Folio" name="folio">
+                    <field name="folio_line_ids">
+                        <tree editable="bottom">
+                            <field name="charge_date"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="charge_type"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="is_paid"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page string="Payments" name="payments">
+                    <field name="payment_ids">
+                        <tree editable="bottom">
+                            <field name="payment_date"/>
+                            <field name="method"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="reference"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <!-- الملخص -->
+            <xpath expr="//notebook" position="after">
+                <group class="oe_subtotal_footer">
+                    <field name="folio_total"/>
+                    <field name="paid_amount"/>
+                    <field name="balance" class="oe_subtotal_footer_separator"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
