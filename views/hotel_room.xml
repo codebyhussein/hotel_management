@@ -19,6 +19,7 @@
                 <field name="employee_name" string="Responsible Employee"/>
                 <field name="property_id"/>
                 <field name="status"/>
+                <field name="capacity"/>
 
             </tree>
         </field>
@@ -134,6 +135,72 @@
 
 
     <!-- =========================
+         Room Search View
+    ========================== -->
+
+    <record id="view_hotel_room_search" model="ir.ui.view">
+        <field name="name">hotel.room.search</field>
+        <field name="model">hotel.room</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search Rooms">
+
+                <!-- Search by typing -->
+                <field name="room_number" string="Room Number"/>
+                <field name="property_id"/>
+                <field name="employee_name" string="Responsible Employee"/>
+
+                <!-- Room Type filters -->
+                <filter string="Single"
+                        name="filter_single"
+                        domain="[('room_type', '=', 'single')]"/>
+                <filter string="Double"
+                        name="filter_double"
+                        domain="[('room_type', '=', 'double')]"/>
+                <filter string="Triple"
+                        name="filter_triple"
+                        domain="[('room_type', '=', 'triple')]"/>
+                <filter string="Suite"
+                        name="filter_suite"
+                        domain="[('room_type', '=', 'suite')]"/>
+
+                <separator/>
+
+                <!-- Status filters -->
+                <filter string="Available"
+                        name="filter_available"
+                        domain="[('status', '=', 'available')]"/>
+                <filter string="Occupied"
+                        name="filter_occupied"
+                        domain="[('status', '=', 'occupied')]"/>
+                <filter string="Under Maintenance"
+                        name="filter_maintenance"
+                        domain="[('status', '=', 'maintenance')]"/>
+                <filter string="Dirty / Needs Cleaning"
+                        name="filter_needs_cleaning"
+                        domain="[('status', '=', 'needs_cleaning')]"/>
+
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+                    <filter string="Room Type"
+                            name="group_room_type"
+                            context="{'group_by': 'room_type'}"/>
+                    <filter string="Status"
+                            name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Property"
+                            name="group_property"
+                            context="{'group_by': 'property_id'}"/>
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- =========================
          Room Action
     ========================== -->
 
@@ -143,6 +210,7 @@
         <field name="res_model">hotel.room</field>
 
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hotel_room_search"/>
 
     </record>
 
