@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hotel_management_hotel_management,hotel_management.hotel_management,model_hotel_management_hotel_management,base.group_user,1,1,1,1
+access_hotel_property_mock,hotel.property.mock,model_hotel_property,base.group_user,1,1,1,1
+access_hotel_room_type_mock,hotel.room.type.mock,model_hotel_room_type,base.group_user,1,1,1,1
+access_hotel_room_mock,hotel.room.mock,model_hotel_room,base.group_user,1,1,1,1
+access_hotel_guest_mock,hotel.guest.mock,model_hotel_guest,base.group_user,1,1,1,1
+access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1

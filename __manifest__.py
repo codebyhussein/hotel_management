@@ -31,15 +31,23 @@ and improve operational efficiency.
     # for the full list
     'category': 'Uncategorized',
     'version': '0.1',
+    'application': True,   # <-- ضيفيها
+    'installable': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
-
+    'depends': ['base', 'mail'],
+    'license': 'LGPL-3',
+    'application': True,
+    'installable': True,
+    
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
+        'data/hotel_reservation_data.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/hotel_reservation_views.xml',
+        
     ],
     # only loaded in demonstration mode
     'demo': [
