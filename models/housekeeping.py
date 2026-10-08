@@ -10,13 +10,24 @@ class HotelHousekeepingTask(models.Model):
     task_type = fields.Selection([
         ('housekeeping', 'Housekeeping'),
         ('maintenance', 'Maintenance')
-    ], default='housekeeping')
+    ], default='housekeeping', string='Task Type')
+
+    maintenance_type = fields.Selection([
+        ('plumbing', 'Plumbing'),
+        ('electrical', 'Electrical'),
+        ('ac', 'AC / HVAC'),
+        ('furniture', 'Furniture / Carpentry'),
+        ('other', 'Other')
+    ], string='Maintenance Type')
 
     priority = fields.Selection([
-        ('0', 'Low'),
-        ('1', 'Normal'),
-        ('2', 'High')
-    ], default='0')
+        ('0', '0 - Very Low'),
+        ('1', '1 - Low'),
+        ('2', '2 - Normal'),
+        ('3', '3 - Medium'),
+        ('4', '4 - High'),
+        ('5', '5 - Urgent')
+    ], default='0', string='Priority')
 
     state = fields.Selection([
         ('todo', 'To Do'),
@@ -24,7 +35,6 @@ class HotelHousekeepingTask(models.Model):
         ('done', 'Done')
     ], default='todo')
 
-    # تعديل الحقل ليصبح computed ومعموله store
     scheduled_date = fields.Date(
         string='Scheduled Date',
         compute='_compute_scheduled_date',
@@ -39,8 +49,7 @@ class HotelHousekeepingTask(models.Model):
     @api.depends('priority')
     def _compute_scheduled_date(self):
         for rec in self:
-            # المقارنة تضمن تحويل القيمة لـ string في حال أرسلها الـ widget كـ int
-            if rec.priority and str(rec.priority) == '2':
+            if rec.priority and str(rec.priority) == '5':
                 rec.scheduled_date = fields.Date.context_today(self)
             else:
                 rec.scheduled_date = False
