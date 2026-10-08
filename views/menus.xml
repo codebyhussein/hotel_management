@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <!-- Root Menu for Hotel Management -->
-    <menuitem id="menu_hotel_root"
-              name="Hotel Management"
-              sequence="10"/>
 
-    <!-- Direct Menu for Guests -->
-    <menuitem id="menu_hotel_guest"
-              name="Guests"
-              parent="menu_hotel_root"
-              action="action_hotel_guest"
-              sequence="10"/>
+<odoo>
+              name="Hotel Management"
+
 
     <!-- Direct Menu for Housekeeping & Maintenance -->
     <menuitem id="menu_hotel_housekeeping"

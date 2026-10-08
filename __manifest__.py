@@ -18,7 +18,7 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mail'],
+    'depends': ['base'],
 
     # always loaded
     'data': [
@@ -27,11 +27,11 @@ Long description of module's purpose
         'views/templates.xml',
         'views/housekeeping.xml',
         'views/guest.xml',
-        'views/hotel_reservation_views.xml',
+        'views/hotel_reservation.xml',
+        'views/hotel_room.xml',
+        'views/property.xml',
+        'views/res_user.xml',
         'views/menus.xml',
-
-
-
     ],
     # only loaded in demonstration mode
     'demo': [
