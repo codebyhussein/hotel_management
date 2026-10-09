@@ -13,14 +13,24 @@ class HotelReservation(models.Model):
     balance = fields.Monetary(compute='_compute_balance', store=True)
     invoice_id = fields.Many2one('account.move', readonly=True, copy=False)
 
-    @api.depends('room_total', 'folio_line_ids.amount',
-                 'payment_ids.amount', 'payment_ids.state')
+    @api.depends('room_total', 'folio_line_ids.amount','payment_ids.amount', 'payment_ids.state')
     def _compute_balance(self):
         for r in self:
             r.folio_total = sum(r.folio_line_ids.mapped('amount'))
             posted = r.payment_ids.filtered(lambda p: p.state == 'posted')
             r.paid_amount = sum(posted.mapped('amount'))
             r.balance = r.room_total + r.folio_total - r.paid_amount
+
+    def action_view_invoice(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            return False
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'res_id': self.invoice_id.id,
+            'view_mode': 'form',
+        }
 
     def action_create_invoice(self):
         self.ensure_one()
@@ -52,22 +62,15 @@ class HotelReservation(models.Model):
         return move
 
     def action_check_out(self):
-        for r in self:
-            if r.balance > 0:
-                raise UserError(
-                    "Outstanding balance: %s. Register the payment before check-out." % r.balance)
-            if not r.invoice_id:
-                r.action_create_invoice()
-            r.folio_line_ids.write({'is_paid': True})
-        return super().action_check_out()
-
-    def action_view_invoice(self):
-        self.ensure_one()
-        if not self.invoice_id:
-            return False
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'account.move',
-            'res_id': self.invoice_id.id,
-            'view_mode': 'form',
-        }
+       for r in self:
+           if r.state != 'checked_in':
+               raise UserError("Only checked-in reservations can be checked out.")
+       for r in self:
+           if r.currency_id.compare_amounts(r.balance, 0) > 0:
+               raise UserError(
+                   "Outstanding balance: %s. Register the payment before check-out."
+                   % r.balance)
+           if not r.invoice_id:
+               r.action_create_invoice()
+           r.folio_line_ids.write({'is_paid': True})
+       return super().action_check_out()

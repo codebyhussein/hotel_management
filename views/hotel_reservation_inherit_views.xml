@@ -5,13 +5,24 @@
         <field name="inherit_id" ref="hotel_management.view_hotel_reservation_form"/>
         <field name="arch" type="xml">
 
-            <!-- أزرار الـ header -->
             <xpath expr="//header" position="inside">
+                <field name="invoice_id" invisible="1"/>
                 <button name="action_create_invoice" string="Create Invoice" type="object"
-        invisible="state not in ('checked_in', 'checked_out')"/>
+                    invisible="invoice_id or state not in ('checked_in', 'checked_out')"/>
             </xpath>
 
-            <!-- Tabs -->
+            <!-- FIX M3 (Mahmoud - Feature 4): smart button that opens the generated invoice.
+                 //sheet/group matches the base form's first group, so position="before"
+                 places the button box at the top of the sheet. -->
+            <xpath expr="//sheet/group" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_invoice" type="object" class="oe_stat_button"
+                            icon="fa-file-text-o" invisible="not invoice_id">
+                        <span class="o_stat_text">Invoice</span>
+                    </button>
+                </div>
+            </xpath>
+            
             <xpath expr="//notebook" position="inside">
                 <page string="Folio" name="folio">
                     <field name="folio_line_ids">
@@ -24,6 +35,7 @@
                             <field name="unit_price"/>
                             <field name="amount" sum="Total"/>
                             <field name="is_paid"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </tree>
                     </field>
                 </page>
@@ -35,13 +47,16 @@
                             <field name="method"/>
                             <field name="amount" sum="Total"/>
                             <field name="reference"/>
-                            <field name="state"/>
+                            <!-- FIX M3: state is controlled by the payment workflow buttons,
+                                 so it is read-only here; currency_id is required so the
+                                 Monetary "amount" column is formatted correctly. -->
+                            <field name="state" readonly="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </tree>
                     </field>
                 </page>
             </xpath>
 
-            <!-- الملخص -->
             <xpath expr="//notebook" position="after">
                 <group class="oe_subtotal_footer">
                     <field name="folio_total"/>

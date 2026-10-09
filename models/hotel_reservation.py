@@ -78,18 +78,58 @@ class HotelReservation(models.Model):
         return super().create(vals_list)
 
     def action_confirm(self):
-        for r in self:
-            if r.guest_id.blacklisted:
-                raise UserError("This guest is blacklisted.")
-        self.write({'state': 'confirmed'})
+         for r in self:
+             if r.state != 'draft':
+                 raise UserError("Only draft reservations can be confirmed.")
+             if r.guest_id.blacklisted:
+                 raise UserError("This guest is blacklisted.")
+         self.write({'state': 'confirmed'})
 
     def action_check_in(self):
+        for r in self:
+            if r.state != 'confirmed':
+                raise UserError("Only confirmed reservations can be checked in.")
         self.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
         self.mapped('room_id').write({'state': 'occupied'})
 
     def action_check_out(self):
+        for r in self:
+            if r.state != 'checked_in':
+                raise UserError("Only checked-in reservations can be checked out.")
         self.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
         self.mapped('room_id').write({'state': 'dirty'})
 
     def action_cancel(self):
+        for r in self:
+            if r.state not in ('draft', 'confirmed'):
+                raise UserError("Only draft or confirmed reservations can be cancelled.")
         self.write({'state': 'cancelled'})
+
+    def action_no_show(self):
+        for r in self:
+            if r.state != 'confirmed':
+                raise UserError("Only confirmed reservations can be marked as no-show.")
+        self.write({'state': 'no_show'})
+
+    # FIX M1 (Haneen - Feature 3): scheduled job invoked by data/cron.xml.
+    # Any confirmed reservation whose check-in date has passed is flagged as no_show.
+    @api.model
+    def _cron_mark_no_show(self):
+        late = self.search([
+            ('state', '=', 'confirmed'),
+            ('check_in', '<', fields.Date.today())])
+        if late:
+            late.write({'state': 'no_show'})
+        return True
+
+    # FIX M2 (Haneen - Feature 3): entry point used by the public Website/API.
+    # It strips server-controlled/read-only keys and always creates in draft;
+    # the existing SQL/API constraints then validate dates, capacity and overlaps.
+    @api.model
+    def create_from_website(self, vals):
+        values = dict(vals or {})
+        for key in ('name', 'state', 'actual_check_in', 'actual_check_out',
+                    'folio_line_ids', 'payment_ids', 'invoice_id'):
+            values.pop(key, None)
+        values['state'] = 'draft'
+        return self.create(values)

@@ -25,10 +25,11 @@ Long description of module's purpose
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequence.xml',
+        'data/cron.xml',
         'views/hotel_reservation_views.xml',
         'views/folio_payment_views.xml',
         'views/hotel_reservation_inherit_views.xml',
-        'report/folio_report.xml'
+        'report/folio_report.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
