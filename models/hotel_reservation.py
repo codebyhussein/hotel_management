@@ -32,9 +32,16 @@ class HotelReservation(models.Model):
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
     property_id = fields.Many2one(
-         'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type_id = fields.Many2one(
-        'hotel.room.type', string='Room Type', related='room_id.room_type_id', store=True)
+        'hotel.property', string='Property', related='room_id.property_id', store=True
+    )
+
+    # حقل room_type في hotel.room نوعه Selection وليس Many2one
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double'),
+        ('triple', 'Triple'),
+        ('suite', 'Suite'),
+    ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -89,7 +96,7 @@ class HotelReservation(models.Model):
     def _compute_nightly_rate(self):
         for rec in self:
             if rec.room_id:
-                rec.nightly_rate = rec.room_id.nightly_rate
+                rec.nightly_rate = rec.room_id.price
 
     @api.depends('nights', 'nightly_rate')
     def _compute_room_total(self):
@@ -166,20 +173,20 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Reservation must be confirmed before check-in.'))
             if today < rec.check_in:
                 raise ValidationError(_('Too early: check-in date is %s.') % rec.check_in)
-            if rec.room_id.state != 'available':
+            if rec.room_id.status != 'available':
                 raise ValidationError(_(
                     'Room %(room)s is not available (current status: %(state)s).',
-                    room=rec.room_id.display_name, state=rec.room_id.state))
+                    room=rec.room_id.display_name, state=rec.room_id.status))
             rec.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
-            rec.room_id.write({'state': 'occupied'})
+            rec.room_id.write({'status': 'occupied'})
 
     def action_check_out(self):
         for rec in self:
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
-            # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            rec.room_id.write({'state': 'dirty'})  # Dareen: ينشئ housekeeping task
+            # 🔴 التعديل هنا: استخدام status بدلاً من state
+            rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""

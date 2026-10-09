@@ -78,10 +78,16 @@ class HotelGuest(models.Model):
     @api.depends('partner_id')
     def _compute_total_stays(self):
         for record in self:
-            # بيحسب عدد الحجوزات الخاصة بالنزيل ده من موديل الحجوزات
-            record.total_stays = self.env['hotel.reservation'].search_count([
-                ('guest_id', '=', record.id)
-            ])
+            if 'hotel.reservation' in self.env:
+                try:
+                    # بيحسب عدد الحجوزات من موديل الحجوزات عادي جداً
+                    record.total_stays = self.env['hotel.reservation'].search_count([
+                        ('guest_id', '=', record.id)
+                    ])
+                except Exception:
+                    record.total_stays = 0
+            else:
+                record.total_stays = 0
 
     def action_view_reservations(self):
         """Action للـ Stat Button بيفتح قائمة حجوزات النزيل ده فقط"""

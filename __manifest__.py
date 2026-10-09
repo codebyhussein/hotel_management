@@ -18,21 +18,23 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'mail'],
 
     # always loaded
     'data': [
-         'security/ir.model.access.csv',
+        'security/hotel_security.xml',  # 👈 لازم يتحمل الأول عشان يتعرفوا الـ Groups! (تأكدي من اسم الملف عندك)
+        'security/ir.model.access.csv',  # 👈 ملف الـ CSV ييجي بعده
         'views/views.xml',
         'views/templates.xml',
         'views/housekeeping.xml',
         'views/guest.xml',
-        'views/hotel_reservation.xml',
+        'views/hotel_reservation_views.xml',
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
         'views/menus.xml',
     ],
+
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',

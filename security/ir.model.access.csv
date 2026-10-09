@@ -1,9 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hotel_management_hotel_management,hotel_management.hotel_management,model_hotel_management_hotel_management,base.group_user,1,1,1,1
-ccess_hotel_guest_user,hotel.guest.user,model_hotel_guest,base.group_user,1,1,1,0
+access_hotel_guest_user,hotel.guest.user,model_hotel_guest,base.group_user,1,1,1,0
 access_hotel_housekeeping_task_user,hotel.housekeeping.task.user,model_hotel_housekeeping_task,base.group_user,1,1,1,0
 access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1
-access_hotel_room_employee,hotel.room employee,model_hotel_room,group_hotel_property_employee,1,1,1,0
-access_hotel_room_manager,hotel.room manager,model_hotel_room,group_hotel_property_manager,1,1,1,1
-access_hotel_property_employee,hotel.property employee,model_hotel_property,group_hotel_property_employee,1,0,0,0
-access_hotel_property_manager,hotel.property manager,model_hotel_property,group_hotel_property_manager,1,1,1,1
+access_hotel_room_employee,hotel.room employee,model_hotel_room,hotel_management.group_hotel_property_employee,1,1,1,0
+access_hotel_room_manager,hotel.room manager,model_hotel_room,hotel_management.group_hotel_property_manager,1,1,1,1
+access_hotel_property_employee,hotel.property employee,model_hotel_property,hotel_management.group_hotel_property_employee,1,0,0,0
+access_hotel_property_manager,hotel.property manager,model_hotel_property,hotel_management.group_hotel_property_manager,1,1,1,1

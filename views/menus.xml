@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
+
+    <!-- 1. الـ Root Menu الرئيسي للموديول -->
+    <menuitem id="menu_hotel_management_root"
               name="Hotel Management"
+              sequence="10"/>
 
+    <!-- 2. قائمة الضيوف (Guests) -->
+    <menuitem id="menu_hotel_guests"
+              name="Guests"
+              parent="menu_hotel_management_root"
+              action="action_hotel_guest"
+              sequence="10"/>
 
-    <!-- Direct Menu for Housekeeping & Maintenance -->
-    <menuitem id="menu_hotel_housekeeping"
-              name="Housekeeping &amp; Maintenance"
-              parent="menu_hotel_root"
-              action="action_hotel_housekeeping_task"
+    <!-- 3. قائمة الغرف (Rooms) -->
+    <menuitem id="menu_hotel_rooms_root"
+              name="Rooms"
+              parent="menu_hotel_management_root"
+              sequence="15"/>
+
+    <menuitem id="menu_hotel_rooms_list"
+              name="Rooms"
+              parent="menu_hotel_rooms_root"
+              action="action_hotel_room"
+              sequence="10"/>
+
+    <!-- 4. قائمة الحجوزات (Reservations) -->
+    <menuitem id="menu_hotel_reservation"
+              name="Reservations"
+              parent="menu_hotel_management_root"
+              action="action_hotel_reservation"
               sequence="20"/>
+
+    <!-- 5. قائمة الخدمات والترتيب (Housekeeping) -->
+    <menuitem id="menu_hotel_housekeeping"
+              name="Housekeeping"
+              parent="menu_hotel_management_root"
+              action="action_hotel_housekeeping_task"
+              sequence="25"/>
+
 </odoo>

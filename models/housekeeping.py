@@ -64,3 +64,5 @@ class HotelHousekeepingTask(models.Model):
         for rec in self:
             rec.state = 'done'
             rec.done_date = fields.Datetime.now()
+            if rec.room_id:
+                rec.room_id.write({'status': 'available'})
