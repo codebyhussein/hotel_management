@@ -95,7 +95,7 @@ class HotelReservation(models.Model):
     def _compute_nightly_rate(self):
         for rec in self:
             if rec.room_id:
-                rec.nightly_rate = rec.room_id.nightly_rate
+                rec.nightly_rate = rec.room_id.price
 
     @api.depends('nights', 'nightly_rate')
     def _compute_room_total(self):
@@ -172,20 +172,20 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Reservation must be confirmed before check-in.'))
             if today < rec.check_in:
                 raise ValidationError(_('Too early: check-in date is %s.') % rec.check_in)
-            if rec.room_id.state != 'available':
+            if rec.room_id.status != 'available':
                 raise ValidationError(_(
                     'Room %(room)s is not available (current status: %(state)s).',
-                    room=rec.room_id.display_name, state=rec.room_id.state))
+                    room=rec.room_id.display_name, state=rec.room_id.status))
             rec.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
-            rec.room_id.write({'state': 'occupied'})
+            rec.room_id.write({'status': 'occupied'})
 
     def action_check_out(self):
         for rec in self:
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
-            # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            rec.room_id.write({'state': 'dirty'})  # Dareen: ينشئ housekeeping task
+            # 🔴 التعديل هنا: استخدام status بدلاً من state
+            rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""

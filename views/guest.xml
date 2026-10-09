@@ -7,6 +7,14 @@
             <form string="Guest Profile">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
+                    <button name="action_view_reservations"
+                    type="object"
+                    class="oe_stat_button"
+                     icon="fa-bed">
+                    <field name="total_stays" string="Stays" widget="statinfo"/>
+                    </button>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
                         <button name="action_view_reservations" type="object" class="oe_stat_button" icon="fa-bed">
                             <field name="total_stays" widget="statinfo" string="Stays"/>
                         </button>
