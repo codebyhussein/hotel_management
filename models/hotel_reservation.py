@@ -41,16 +41,13 @@ class HotelReservation(models.Model):
         'hotel.property', string='Property', related='room_id.property_id', store=True
     )
 
-    # حقل room_type في hotel.room نوعه Selection وليس Many2one
     room_type = fields.Selection([
         ('single', 'Single'),
         ('double', 'Double'),
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type = fields.Selection(
-        'hotel.room', string='Room Type', related='room_id.room_type' , store=True )
+
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -72,23 +69,11 @@ class HotelReservation(models.Model):
         currency_field='currency_id')
     room_total = fields.Monetary(
         compute='_compute_room_total', store=True, currency_field='currency_id')
-    # Mahmoud (Feature 4) سيضيف folio_total / paid_amount / balance ويعدّل total_amount
     total_amount = fields.Monetary(
         compute='_compute_total_amount', store=True, currency_field='currency_id')
 
     special_request = fields.Text()
     cancel_reason = fields.Text(readonly=True, copy=False)
-
-    # ------------------------------------------------------------------
-    # Sequence عند الإنشاء
-    # ------------------------------------------------------------------
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         if vals.get('name', _('New')) == _('New'):
-    #             vals['name'] = self.env['ir.sequence'].next_by_code(
-    #                 'hotel.reservation.sequence') or _('New')
-    #     return super().create(vals_list)
 
     # ------------------------------------------------------------------
     # Computes
@@ -194,7 +179,6 @@ class HotelReservation(models.Model):
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            # 🔴 التعديل هنا: استخدام status بدلاً من state
             rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
@@ -245,7 +229,7 @@ class HotelReservation(models.Model):
         if missing:
             raise UserError(_('Missing required fields: %s') % ', '.join(missing))
         clean['source'] = 'website'
-        rec = self.create(clean)   # الـ constrains بترفض التداخل/السعة/المحظور
+        rec = self.create(clean)
         rec.action_confirm()
         return {
             'id': rec.id,
@@ -253,15 +237,4 @@ class HotelReservation(models.Model):
             'state': rec.state,
             'nights': rec.nights,
             'total_amount': rec.total_amount,
-        }
-
-    def action_cancel(self):
-        self.ensure_one()
-        ...
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'hotel.reservation.cancel.wizard',
-            'view_mode': 'form',
-            'target': 'new',          # دي اللي بتخليه popup
-            'context': {'default_reservation_id': self.id},
         }
