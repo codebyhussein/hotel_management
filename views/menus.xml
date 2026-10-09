@@ -49,5 +49,13 @@
               parent="menu_hotel_management_root"
               action="action_hotel_services"
               sequence="40"/>
+
+ <!-- Direct Menu for Reservations -->
+    <menuitem id="menu_hotel_reservations"
+              name="Reservations"
+              parent="menu_hotel_management_root"
+              action="action_hotel_reservation"
+              sequence="50"/>
+ 
               
 </odoo>
