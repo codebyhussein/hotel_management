@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-    <data>
 
-        <!-- Main Top Menu -->
-        <menuitem id="menu_hotel_root"
-                  name="Hotel Management"
-                  web_icon="hotel_management,static/description/icon.png"
-                  sequence="10"/>
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_hotel_management_root"
+        name="Hotel Management"
+        sequence="10"
+    />
 
-        <!-- Operations Menu Category -->
-        <menuitem id="menu_hotel_operations"
-                  name="Operations"
-                  parent="menu_hotel_root"
-                  sequence="10"/>
+    <!-- Rooms Parent -->
+    <menuitem
+        id="menu_hotel_rooms"
+        name="Rooms"
+        parent="menu_hotel_management_root"
+        sequence="10"
+    />
 
-        <menuitem id="menu_hotel_reservation"
-                  name="Reservations"
-                  parent="menu_hotel_operations"
-                  action="action_hotel_reservation"
-                  sequence="10"/>
+    <!-- Rooms List -->
+    <menuitem
+        id="menu_hotel_rooms_list"
+        name="Rooms"
+        parent="menu_hotel_rooms"
+        action="action_hotel_room"
+        sequence="10"
+    />
 
-        <menuitem id="menu_hotel_guest"
-                  name="Guests"
-                  parent="menu_hotel_operations"
-                  action="action_hotel_guest"
-                  sequence="20"/>
+    <!-- Properties -->
+<menuitem
+    id="menu_hotel_properties"
+    name="Properties"
+    parent="menu_hotel_rooms"
+    action="action_hotel_property"
+    groups="hotel_management.group_hotel_property_manager"
+    sequence="20"
+/>
 
-        <menuitem id="menu_hotel_room"
-                  name="Rooms"
-                  parent="menu_hotel_operations"
-                  action="action_hotel_room"
-                  sequence="30"/>
+    <!-- Direct Menu for Guests -->
+    <menuitem id="menu_hotel_guest"
+              name="Guests"
+              parent="menu_hotel_management_root"
+              action="action_hotel_guest"
+              sequence="30"/>
 
+    <!-- Direct Menu for Services -->
+    <menuitem id="menu_hotel_services"
+              name="Services"
+              parent="menu_hotel_management_root"
+              action="action_hotel_services"
+              sequence="40"/>
 
-        <menuitem id="menu_hotel_housekeeping"
-                  name="Housekeeping"
-                  parent="menu_hotel_operations"
-                  action="action_hotel_housekeeping"
-                  sequence="20"/>
-
-        <!-- Configuration Menu Category -->
-        <menuitem id="menu_hotel_config"
-                  name="Configuration"
-                  parent="menu_hotel_root"
-                  sequence="100"/>
-
-        <menuitem id="menu_hotel_property"
-                  name="Properties"
-                  parent="menu_hotel_config"
-                  action="action_hotel_property"
-                  sequence="10"/>
-
-    </data>
+ <!-- Direct Menu for Reservations -->
+    <menuitem id="menu_hotel_reservations"
+              name="Reservations"
+              parent="menu_hotel_management_root"
+              action="action_hotel_reservation"
+              sequence="50"/>
+ 
+              
 </odoo>
