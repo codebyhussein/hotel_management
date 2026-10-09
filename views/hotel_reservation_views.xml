@@ -53,7 +53,7 @@
                             <field name="guest_id" readonly="state != 'draft'"/>
                             <field name="room_id" readonly="state != 'draft'"/>
                             <field name="property_id"/>
-                            <field name="room_type_id"/>
+                            <field name="room_type"/>
                             <field name="source"/>
                         </group>
                         <group string="Dates &amp; Guests">

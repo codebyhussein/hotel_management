@@ -35,6 +35,10 @@ class HotelRoom(models.Model):
         store=True,
         readonly=True,
     )
+    nightly_rate = fields.Float(
+        related='price',
+        string='Nightly Rate',
+    )
 
     property_id = fields.Many2one(
         'hotel.property',
