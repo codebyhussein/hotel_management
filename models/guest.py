@@ -28,15 +28,12 @@ class HotelGuest(models.Model):
     _sql_constraints = [
         ('unique_id_number', 'unique(id_number)', 'The ID/Passport number must be unique!')
     ]
+    reservation_ids = fields.One2many(
+        'hotel.reservation',
+        'guest_id',
+        string='Reservations'
+    )
 
-    @api.depends('partner_id')
-    def _compute_total_stays(self):
-        for record in self:
-            # record.total_stays = self.env['hotel.reservation'].search_count([
-            #     ('guest_id', '=', record.id),
-            #     ('state', '=', 'checked_out')
-            # ])
-            record.total_stays = 0
 
     def action_view_reservations(self):
         self.ensure_one()

@@ -32,11 +32,12 @@
                   action="action_hotel_room"
                   sequence="30"/>
 
+
         <menuitem id="menu_hotel_housekeeping"
                   name="Housekeeping"
                   parent="menu_hotel_operations"
-                  action="action_hotel_services"
-                  sequence="40"/>
+                  action="action_hotel_housekeeping"
+                  sequence="20"/>
 
         <!-- Configuration Menu Category -->
         <menuitem id="menu_hotel_config"
