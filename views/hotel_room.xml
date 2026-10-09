@@ -24,116 +24,133 @@
             </tree>
         </field>
     </record>
+<!-- =========================
+     Room Form View
+========================== -->
 
+<record id="view_hotel_room_form" model="ir.ui.view">
 
-    <!-- =========================
-         Room Form View
-    ========================== -->
+    <field name="name">hotel.room.form</field>
+    <field name="model">hotel.room</field>
 
-    <record id="view_hotel_room_form" model="ir.ui.view">
-        <field name="name">hotel.room.form</field>
-        <field name="model">hotel.room</field>
+    <field name="arch" type="xml">
 
-        <field name="arch" type="xml">
+        <form string="Room">
 
-            <form string="Room">
+            <!-- Status Bar + Buttons -->
 
-                <!-- Status Bar + Buttons -->
+            <header>
 
-                <header>
+                <button name="action_set_available"
+                        string="Mark as Available"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status != 'occupied'"/>
 
-                    <button name="action_set_available"
-                            string="Mark as Available"
-                            type="object"
-                            class="btn-primary"
-                            invisible="status != 'occupied'"/>
+                <button name="action_set_occupied"
+                        string="Check-in"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status not in ('available', 'maintenance')"/>
 
-                    <button name="action_set_occupied"
-                            string="Check-in"
-                            type="object"
-                            class="btn-primary"
-                            invisible="status not in ('available', 'maintenance')"/>
+                <button name="action_set_maintenance"
+                        string="Start Maintenance"
+                        type="object"
+                        invisible="status not in ('occupied', 'needs_cleaning')"/>
 
-                    <button name="action_set_maintenance"
-                            string="Start Maintenance"
-                            type="object"
-                            invisible="status not in ('occupied', 'needs_cleaning')"/>
+                <button name="action_set_needs_cleaning"
+                        string="Needs Cleaning"
+                        type="object"
+                        invisible="status != 'maintenance'"/>
 
-                    <button name="action_set_needs_cleaning"
-                            string="Needs Cleaning"
-                            type="object"
-                            invisible="status != 'maintenance'"/>
+                <field name="status"
+                       widget="statusbar"
+                       statusbar_visible="available,occupied,maintenance,needs_cleaning"/>
 
-                    <field name="status"
-                           widget="statusbar"
-                           statusbar_visible="available,occupied,maintenance,needs_cleaning"/>
+            </header>
 
-                </header>
+            <sheet>
 
+                 <field name="room_image" widget="image" class="oe_avatar"/>
+                <!-- Room Number -->
 
-                <sheet>
+                <div class="oe_title">
 
-                    <!-- Room Information -->
+                    <label for="room_number"/>
 
-                    <group>
+                    <h1>
+                        <field name="room_number"
+                               placeholder="Enter Room Number"/>
+                    </h1>
 
-                        <group string="Room Information">
+                </div>
+ 
+                <group>
 
-                            <field name="room_number"/>
-                            <field name="room_type"/>
-                            <field name="price"/>
+                    <group string="Room Information">
 
-                        </group>
+                        <field name="room_type"/>
 
+                        <field name="price"/>
 
-                        <group string="Room Details">
-
-                            <field name="capacity"/>
-                            <field name="employee_name"
-                                   string="Responsible Employee"
-                                   domain="[('property_id', '=', property_id)]"/>
-                            <field name="property_id"/>
-                            <field name="status" readonly="1"/>
-
-                        </group>
+                        <field name="property_id"/>
 
                     </group>
 
+                    <group string="Room Details">
 
-                    <!-- Description -->
+                        <field name="capacity"/>
 
-                    <group string="Description">
+                        <field name="employee_name"
+                               string="Responsible Employee"
+                               domain="[('property_id', '=', property_id)]"/>
 
-                        <field name="description"
-                               placeholder="Enter room description..."/>
+                        <field name="status" readonly="1"/>
 
                     </group>
 
-                </sheet>
+                </group>
 
+                <!-- Description -->
 
-                <!-- =========================
-                     Chatter
-                ========================== -->
+                <separator string="Description"/>
 
-                <div class="oe_chatter">
+                <group>
 
-                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="description"
+                           placeholder="Enter room description..."
+                           />
 
-                    <div class="oe_chatter_activity">
-                        <field name="activity_ids" widget="mail_activity"/>
-                    </div>
+                </group>
 
-                    <field name="message_ids" widget="mail_thread"/>
+            </sheet>
+
+            <!-- =========================
+                 Chatter
+            ========================== -->
+
+            <div class="oe_chatter">
+
+                <field name="message_follower_ids"
+                       widget="mail_followers"/>
+
+                <div class="oe_chatter_activity">
+
+                    <field name="activity_ids"
+                           widget="mail_activity"/>
 
                 </div>
 
-            </form>
+                <field name="message_ids"
+                       widget="mail_thread"/>
 
-        </field>
-    </record>
+            </div>
 
+        </form>
 
+    </field>
+
+</record>
     <!-- =========================
          Room Search View
     ========================== -->

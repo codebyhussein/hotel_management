@@ -10,8 +10,14 @@ class HotelReservation(models.Model):
     _order = 'check_in desc, id desc'
 
     name = fields.Char(
-        string='Reservation Reference', required=True, copy=False,
-        readonly=True, default=lambda self: _('New'))
+        string='Reservation Reference',
+        required=True,
+        readonly=True,
+        copy=False,
+        default=lambda self: self.env['ir.sequence'].next_by_code(
+            'hotel.reservation.sequence'
+        ) or 'New',
+    )
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -42,6 +48,9 @@ class HotelReservation(models.Model):
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
+        'hotel.property', string='Property', related='room_id.property_id', store=True)
+    room_type = fields.Selection(
+        'hotel.room', string='Room Type', related='room_id.room_type' , store=True )
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -54,7 +63,7 @@ class HotelReservation(models.Model):
     actual_check_in = fields.Datetime(string='Actual Check-in', readonly=True, copy=False)
     actual_check_out = fields.Datetime(string='Actual Check-out', readonly=True, copy=False)
 
-    adults = fields.Integer(string='Adults', default=1, required=True)
+    adults = fields.Integer(string='Adults', default=0, required=True)
     children = fields.Integer(string='Children', default=0)
 
     nights = fields.Integer(compute='_compute_nights', store=True)
@@ -73,13 +82,13 @@ class HotelReservation(models.Model):
     # ------------------------------------------------------------------
     # Sequence عند الإنشاء
     # ------------------------------------------------------------------
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code(
-                    'hotel.reservation.sequence') or _('New')
-        return super().create(vals_list)
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get('name', _('New')) == _('New'):
+    #             vals['name'] = self.env['ir.sequence'].next_by_code(
+    #                 'hotel.reservation.sequence') or _('New')
+    #     return super().create(vals_list)
 
     # ------------------------------------------------------------------
     # Computes

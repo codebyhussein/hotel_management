@@ -23,6 +23,10 @@ class HotelRoom(models.Model):
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', required=True)
+    room_image = fields.Binary(
+        string='Room Image',
+    
+    )
 
     price = fields.Float(
         string='Price',
@@ -34,6 +38,10 @@ class HotelRoom(models.Model):
         compute='_compute_capacity',
         store=True,
         readonly=True,
+    )
+    nightly_rate = fields.Float(
+        related='price',
+        string='Nightly Rate',
     )
 
     property_id = fields.Many2one(

@@ -186,11 +186,5 @@
         <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
 
-    <!-- Menus -->
-    <menuitem id="menu_hotel_root_temp" name="Hotel" sequence="10"/>
-    <menuitem id="menu_hotel_reservation_root" name="Reservations"
-              parent="menu_hotel_root_temp" sequence="20"/>
-    <menuitem id="menu_hotel_reservation" name="All Reservations"
-              parent="menu_hotel_reservation_root"
-              action="action_hotel_reservation" sequence="10"/>
+    
 </odoo>

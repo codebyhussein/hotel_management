@@ -19,6 +19,23 @@
               parent="menu_hotel_management_root"
               sequence="15"/>
 
+<odoo>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_hotel_management_root"
+        name="Hotel Management"
+        sequence="10"
+    />
+
+    <!-- Rooms Parent -->
+    <menuitem
+        id="menu_hotel_rooms"
+        name="Rooms"
+        parent="menu_hotel_management_root"
+        sequence="10"
+    />
+
     <menuitem id="menu_hotel_rooms_list"
               name="Rooms"
               parent="menu_hotel_rooms_root"
@@ -38,5 +55,27 @@
               parent="menu_hotel_management_root"
               action="action_hotel_housekeeping_task"
               sequence="25"/>
+
+    <!-- Direct Menu for Guests -->
+    <menuitem id="menu_hotel_guest"
+              name="Guests"
+              parent="menu_hotel_management_root"
+              action="action_hotel_guest"
+              sequence="30"/>
+
+    <!-- Direct Menu for Services -->
+    <menuitem id="menu_hotel_services"
+              name="Services"
+              parent="menu_hotel_management_root"
+              action="action_hotel_services"
+              sequence="40"/>
+
+ <!-- Direct Menu for Reservations -->
+    <menuitem id="menu_hotel_reservations"
+              name="Reservations"
+              parent="menu_hotel_management_root"
+              action="action_hotel_reservation"
+              sequence="50"/>
+
 
 </odoo>
