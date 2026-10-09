@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-    <!-- Root Menu for Hotel Management -->
-    <menuitem id="menu_hotel_root"
-              name="Hotel Management"
-              sequence="10"/>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_hotel_management_root"
+        name="Hotel Management"
+        sequence="10"
+    />
+
+    <!-- Rooms Parent -->
+    <menuitem
+        id="menu_hotel_rooms"
+        name="Rooms"
+        parent="menu_hotel_management_root"
+        sequence="10"
+    />
+
+    <!-- Rooms List -->
+    <menuitem
+        id="menu_hotel_rooms_list"
+        name="Rooms"
+        parent="menu_hotel_rooms"
+        action="action_hotel_room"
+        sequence="10"
+    />
+
+    <!-- Properties -->
+<menuitem
+    id="menu_hotel_properties"
+    name="Properties"
+    parent="menu_hotel_rooms"
+    action="action_hotel_property"
+    groups="hotel_management.group_hotel_property_manager"
+    sequence="20"
+/>
 
     <!-- Direct Menu for Guests -->
     <menuitem id="menu_hotel_guest"
               name="Guests"
-              parent="menu_hotel_root"
+              parent="menu_hotel_management_root"
               action="action_hotel_guest"
-              sequence="10"/>
+              sequence="30"/>
 
     <!-- Direct Menu for Services -->
     <menuitem id="menu_hotel_services"
               name="Services"
-              parent="menu_hotel_root"
+              parent="menu_hotel_management_root"
               action="action_hotel_services"
-              sequence="20"/>
+              sequence="40"/>
+              
 </odoo>
