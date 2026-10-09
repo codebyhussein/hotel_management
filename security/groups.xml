@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Employee: غرف property بتاعته بس -->
+    <record id="rule_hotel_room_own_property" model="ir.rule">
+        <field name="name">Hotel Room: Own Property</field>
+        <field name="model_id" ref="model_hotel_room"/>
+        <field name="groups" eval="[(6, 0, [ref('group_hotel_property_employee')])]"/>
+        <field name="domain_force">[('property_id', '=', user.property_id.id)]</field>
+    </record>
+
+    <!-- Employee: property بتاعته بس -->
+    <record id="rule_hotel_property_own" model="ir.rule">
+        <field name="name">Hotel Property: Own Property</field>
+        <field name="model_id" ref="model_hotel_property"/>
+        <field name="groups" eval="[(6, 0, [ref('group_hotel_property_employee')])]"/>
+        <field name="domain_force">[('id', '=', user.property_id.id)]</field>
+    </record>
+
+    <!-- Manager: كل الغرف -->
+    <record id="rule_hotel_room_manager_all" model="ir.rule">
+        <field name="name">Hotel Room: Manager All</field>
+        <field name="model_id" ref="model_hotel_room"/>
+        <field name="groups" eval="[(6, 0, [ref('group_hotel_property_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Manager: كل الـ properties -->
+    <record id="rule_hotel_property_manager_all" model="ir.rule">
+        <field name="name">Hotel Property: Manager All</field>
+        <field name="model_id" ref="model_hotel_property"/>
+        <field name="groups" eval="[(6, 0, [ref('group_hotel_property_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>
