@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- =========================
+         Property Tree View
+    ========================== -->
+
+    <record id="view_hotel_property_tree" model="ir.ui.view">
+        <field name="name">hotel.property.tree</field>
+        <field name="model">hotel.property</field>
+
+        <field name="arch" type="xml">
+            <tree string="Properties">
+
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <field name="room_count"/>
+                <field name="active"/>
+
+
+            </tree>
+        </field>
+    </record>
+
+
+    <!-- =========================
+         Property Form View
+    ========================== -->
+
+    <record id="view_hotel_property_form" model="ir.ui.view">
+        <field name="name">hotel.property.form</field>
+        <field name="model">hotel.property</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Property">
+
+                <sheet>
+
+                    <!-- Property Name -->
+
+                    <div class="oe_title">
+                        <label for="name"/>
+
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+
+                    <!-- Property Information -->
+
+                    <group>
+
+                        <group string="Property Information">
+
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="active"/>
+
+                        </group>
+
+
+                        <group string="Contact Information">
+                            
+                            <field name="phone"/>
+                            <field name="email"/>
+                            
+
+                        </group>
+
+                    </group>
+
+
+                    <!-- Location -->
+
+                    <group string="Location">
+
+                        <field name="address"/>
+                        <field name="city"/>
+                        <field name="country"/>
+
+                    </group>
+
+
+                    <!-- Description -->
+
+                    <group string="Description">
+
+                        <field
+                            name="description"
+                            placeholder="Enter property description..."
+                        />
+
+                    </group>
+
+
+                    <!-- =========================
+                         Related Rooms
+                    ========================== -->
+
+                    <notebook>
+
+                        <page string="Rooms">
+
+                            <field name="room_ids">
+
+                                <tree>
+
+                                    <field
+                                        name="display_name"
+                                        string="Room"
+                                    />
+
+                                    <field name="room_type"/>
+
+                                    <field name="price"/>
+
+                                    <field name="capacity"/>
+
+                                    <field name="status"/>
+
+                                </tree>
+
+                            </field>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- =========================
+         Property Action
+    ========================== -->
+
+    <record
+        id="action_hotel_property"
+        model="ir.actions.act_window"
+    >
+
+        <field name="name">Properties</field>
+        <field name="res_model">hotel.property</field>
+        <field name="view_mode">tree,form</field>
+
+    </record>
+
+</odoo>

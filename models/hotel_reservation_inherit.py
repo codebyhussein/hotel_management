@@ -38,7 +38,7 @@ class HotelReservation(models.Model):
             raise UserError("An invoice already exists for this reservation.")
 
         lines = [(0, 0, {
-            'name': f'Room {self.room_id.number} - {self.nights} nights',
+            'name': f'Room {self.room_id.room_number} - {self.nights} nights',
             'quantity': self.nights,
             'price_unit': self.nightly_rate,
         })]

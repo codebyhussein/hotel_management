@@ -1,8 +1,0 @@
-<odoo noupdate="1">
-    <record id="seq_hotel_reservation" model="ir.sequence">
-        <field name="name">Hotel Reservation</field>
-        <field name="code">hotel.reservation</field>
-        <field name="prefix">RES/</field>
-        <field name="padding">4</field>
-    </record>
-</odoo>

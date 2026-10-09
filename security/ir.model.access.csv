@@ -1,10 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hotel_room_type_manager,hotel.room.type manager,model_hotel_room_type,group_hotel_manager,1,1,1,1
-access_hotel_room_type_receptionist,hotel.room.type receptionist,model_hotel_room_type,group_hotel_receptionist,1,0,0,0
-access_hotel_room_type_housekeeper,hotel.room.type housekeeper,model_hotel_room_type,group_hotel_housekeeper,1,0,0,0
-access_hotel_room_manager,hotel.room manager,model_hotel_room,group_hotel_manager,1,1,1,1
-access_hotel_room_receptionist,hotel.room receptionist,model_hotel_room,group_hotel_receptionist,1,1,0,0
-access_hotel_room_housekeeper,hotel.room housekeeper,model_hotel_room,group_hotel_housekeeper,1,1,0,0
+access_hotel_room_employee,hotel.room employee,model_hotel_room,group_hotel_property_employee,1,1,1,0
+access_hotel_room_manager,hotel.room manager,model_hotel_room,group_hotel_property_manager,1,1,1,1
+access_hotel_property_employee,hotel.property employee,model_hotel_property,group_hotel_property_employee,1,0,0,0
+access_hotel_property_manager,hotel.property manager,model_hotel_property,group_hotel_property_manager,1,1,1,1
+access_hotel_guest_user,hotel.guest.user,model_hotel_guest,base.group_user,1,1,1,0
+access_hotel_housekeeping_task_user,hotel.housekeeping.task.user,model_hotel_housekeeping_task,base.group_user,1,1,1,0
+access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1
+access_hotel_reservation_cancel_wizard,hotel.reservation.cancel.wizard,model_hotel_reservation_cancel_wizard,base.group_user,1,0,0,0
 access_hotel_guest_manager,hotel.guest manager,model_hotel_guest,group_hotel_manager,1,1,1,1
 access_hotel_guest_receptionist,hotel.guest receptionist,model_hotel_guest,group_hotel_receptionist,1,1,1,0
 access_hotel_reservation_manager,hotel.reservation manager,model_hotel_reservation,group_hotel_manager,1,1,1,1

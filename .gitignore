@@ -1,5 +1,6 @@
 Odoo_17.log
 .filestore/
-__pycache__
-controllers/__pycache__
-models/__pycache__
+__pycache__/
+*.pyc
+controllers/__pycache__/
+models/__pycache__/

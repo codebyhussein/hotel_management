@@ -1,135 +1,246 @@
-from odoo import models, fields, api
+# -*- coding: utf-8 -*-
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
 class HotelReservation(models.Model):
     _name = 'hotel.reservation'
-    _description = 'Reservation'
-    _order = 'check_in desc'
+    _description = 'Hotel Reservation'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'check_in desc, id desc'
 
-    name = fields.Char(default='New', readonly=True, copy=False)
-    guest_id = fields.Many2one('hotel.guest', required=True)
-    room_type_id = fields.Many2one('hotel.room.type', required=True)
-    room_id = fields.Many2one(
-        'hotel.room', required=True,
-        domain="[('room_type_id', '=', room_type_id)]")
-    company_id = fields.Many2one('res.company', default=lambda s: s.env.company)
-    currency_id = fields.Many2one(
-        'res.currency', default=lambda s: s.env.company.currency_id)
-    check_in = fields.Date(required=True, default=fields.Date.context_today)
-    check_out = fields.Date(required=True)
-    actual_check_in = fields.Datetime(readonly=True)
-    actual_check_out = fields.Datetime(readonly=True)
-    nights = fields.Integer(compute='_compute_nights', store=True)
-    adults = fields.Integer(default=1)
-    children = fields.Integer()
-    nightly_rate = fields.Monetary(compute='_compute_nightly_rate', store=True, readonly=False)
-    room_total = fields.Monetary(compute='_compute_room_total', store=True)
+    name = fields.Char(
+        string='Reservation Reference',
+        required=True,
+        readonly=True,
+        copy=False,
+        default=lambda self: self.env['ir.sequence'].next_by_code(
+            'hotel.reservation.sequence'
+        ) or 'New',
+    )
+
     state = fields.Selection([
-        ('draft', 'Draft'), ('confirmed', 'Confirmed'),
-        ('checked_in', 'Checked-in'), ('checked_out', 'Checked-out'),
-        ('cancelled', 'Cancelled'), ('no_show', 'No Show')],
-        default='draft', required=True)
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('checked_in', 'Checked In'),
+        ('checked_out', 'Checked Out'),
+        ('cancelled', 'Cancelled'),
+        ('no_show', 'No Show'),
+    ], string='Status', default='draft', tracking=True, copy=False)
 
+    source = fields.Selection([
+        ('walk_in', 'Walk-in'),
+        ('phone', 'Phone'),
+        ('website', 'Website'),
+        ('other', 'Other'),
+    ], string='Source', default='walk_in')
+
+    guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
+    room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
+    property_id = fields.Many2one(
+        'hotel.property', string='Property', related='room_id.property_id', store=True)
+    room_type = fields.Selection(
+        related='room_id.room_type', string='Room Type', store=True)
+    responsible_id = fields.Many2one(
+        'res.users', string='Responsible', default=lambda self: self.env.user)
+    company_id = fields.Many2one(
+        'res.company', string='Company', default=lambda self: self.env.company)
+    currency_id = fields.Many2one(
+        'res.currency', related='company_id.currency_id', store=True)
+
+    check_in = fields.Date(string='Check-in', required=True, tracking=True)
+    check_out = fields.Date(string='Check-out', required=True, tracking=True)
+    actual_check_in = fields.Datetime(string='Actual Check-in', readonly=True, copy=False)
+    actual_check_out = fields.Datetime(string='Actual Check-out', readonly=True, copy=False)
+
+    adults = fields.Integer(string='Adults', default=0, required=True)
+    children = fields.Integer(string='Children', default=0)
+
+    nights = fields.Integer(compute='_compute_nights', store=True)
+    nightly_rate = fields.Monetary(
+        compute='_compute_nightly_rate', store=True, readonly=False,
+        currency_field='currency_id')
+    room_total = fields.Monetary(
+        compute='_compute_room_total', store=True, currency_field='currency_id')
+    # Mahmoud (Feature 4) سيضيف folio_total / paid_amount / balance ويعدّل total_amount
+    total_amount = fields.Monetary(
+        compute='_compute_total_amount', store=True, currency_field='currency_id')
+
+    special_request = fields.Text()
+    cancel_reason = fields.Text(readonly=True, copy=False)
+
+    # ------------------------------------------------------------------
+    # Sequence عند الإنشاء
+    # ------------------------------------------------------------------
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if vals.get('name', _('New')) == _('New'):
+    #             vals['name'] = self.env['ir.sequence'].next_by_code(
+    #                 'hotel.reservation.sequence') or _('New')
+    #     return super().create(vals_list)
+
+    # ------------------------------------------------------------------
+    # Computes
+    # ------------------------------------------------------------------
     @api.depends('check_in', 'check_out')
     def _compute_nights(self):
-        for r in self:
-            r.nights = (r.check_out - r.check_in).days if r.check_in and r.check_out else 0
+        for rec in self:
+            if rec.check_in and rec.check_out:
+                rec.nights = max((rec.check_out - rec.check_in).days, 0)
+            else:
+                rec.nights = 0
 
     @api.depends('room_id')
     def _compute_nightly_rate(self):
-        for r in self:
-            r.nightly_rate = r.room_id.nightly_rate
+        for rec in self:
+            if rec.room_id:
+                rec.nightly_rate = rec.room_id.nightly_rate
 
     @api.depends('nights', 'nightly_rate')
     def _compute_room_total(self):
-        for r in self:
-            r.room_total = r.nights * r.nightly_rate
+        for rec in self:
+            rec.room_total = rec.nights * rec.nightly_rate
 
+    @api.depends('room_total')
+    def _compute_total_amount(self):
+        for rec in self:
+            rec.total_amount = rec.room_total
+
+    # ------------------------------------------------------------------
+    # Constraints
+    # ------------------------------------------------------------------
     @api.constrains('check_in', 'check_out')
     def _check_dates(self):
-        for r in self:
-            if r.check_in and r.check_out and r.check_out <= r.check_in:
-                raise ValidationError("Check-out must be after check-in.")
+        for rec in self:
+            if rec.check_in and rec.check_out and rec.check_out <= rec.check_in:
+                raise ValidationError(_('Check-out date must be strictly after the Check-in date.'))
 
     @api.constrains('room_id', 'check_in', 'check_out', 'state')
     def _check_double_booking(self):
-        for r in self:
-            if r.state in ('cancelled', 'no_show'):
+        for rec in self:
+            if not (rec.room_id and rec.check_in and rec.check_out):
                 continue
-            clash = self.search_count([
-                ('id', '!=', r.id), ('room_id', '=', r.room_id.id),
-                ('state', 'not in', ('cancelled', 'no_show', 'checked_out')),
-                ('check_in', '<', r.check_out), ('check_out', '>', r.check_in)])
-            if clash:
-                raise ValidationError("This room is already booked for these dates.")
+            if rec.state in ('cancelled', 'no_show'):
+                continue
+            overlap = self.search([
+                ('room_id', '=', rec.room_id.id),
+                ('id', '!=', rec.id),
+                ('state', 'not in', ['cancelled', 'no_show']),
+                ('check_in', '<', rec.check_out),
+                ('check_out', '>', rec.check_in),
+            ], limit=1)
+            if overlap:
+                raise ValidationError(_(
+                    'Room %(room)s is already booked for these dates (%(ref)s).',
+                    room=rec.room_id.display_name, ref=overlap.name))
 
     @api.constrains('adults', 'children', 'room_id')
     def _check_capacity(self):
-        for r in self:
-            if r.adults + r.children > r.room_id.capacity:
-                raise ValidationError("Guests exceed the room capacity.")
+        for rec in self:
+            if rec.adults < 1:
+                raise ValidationError(_('There must be at least 1 adult in the reservation.'))
+            if rec.children < 0:
+                raise ValidationError(_('Children cannot be negative.'))
+            if rec.room_id:
+                total = rec.adults + rec.children
+                capacity = rec.room_id.capacity
+                if capacity > 0 and total > capacity:
+                    raise ValidationError(_(
+                        'The total number of guests (%(total)s) exceeds the room capacity (%(cap)s).',
+                        total=total, cap=capacity))
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for v in vals_list:
-            if v.get('name', 'New') == 'New':
-                v['name'] = self.env['ir.sequence'].next_by_code('hotel.reservation') or 'New'
-        return super().create(vals_list)
+    @api.constrains('guest_id')
+    def _check_blacklist(self):
+        for rec in self:
+            if rec.guest_id.blacklisted:
+                raise ValidationError(_('Guest "%s" is blacklisted and cannot book.') % rec.guest_id.display_name)
 
+    # ------------------------------------------------------------------
+    # Workflow actions
+    # ------------------------------------------------------------------
     def action_confirm(self):
-         for r in self:
-             if r.state != 'draft':
-                 raise UserError("Only draft reservations can be confirmed.")
-             if r.guest_id.blacklisted:
-                 raise UserError("This guest is blacklisted.")
-         self.write({'state': 'confirmed'})
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(_('Only draft reservations can be confirmed.'))
+            rec.state = 'confirmed'
 
     def action_check_in(self):
-        for r in self:
-            if r.state != 'confirmed':
-                raise UserError("Only confirmed reservations can be checked in.")
-        self.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
-        self.mapped('room_id').write({'state': 'occupied'})
+        today = fields.Date.context_today(self)
+        for rec in self:
+            if rec.state != 'confirmed':
+                raise ValidationError(_('Reservation must be confirmed before check-in.'))
+            if today < rec.check_in:
+                raise ValidationError(_('Too early: check-in date is %s.') % rec.check_in)
+            if rec.room_id.status != 'available':
+                raise ValidationError(_(
+                    'Room %(room)s is not available (current status: %(state)s).',
+                    room=rec.room_id.display_name, state=rec.room_id.status))
+            rec.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
+            rec.room_id.write({'status': 'occupied'})
 
     def action_check_out(self):
-        for r in self:
-            if r.state != 'checked_in':
-                raise UserError("Only checked-in reservations can be checked out.")
-        self.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-        self.mapped('room_id').write({'state': 'dirty'})
+        for rec in self:
+            if rec.state != 'checked_in':
+                raise ValidationError(_('Reservation must be checked in before check-out.'))
+            # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
+            rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
+            rec.room_id.write({'status': 'needs_cleaning'})  # Dareen: ينشئ housekeeping task
 
     def action_cancel(self):
-        for r in self:
-            if r.state not in ('draft', 'confirmed'):
-                raise UserError("Only draft or confirmed reservations can be cancelled.")
-        self.write({'state': 'cancelled'})
+        """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""
+        self.ensure_one()
+        if self.state not in ('draft', 'confirmed'):
+            raise ValidationError(_('Only draft or confirmed reservations can be cancelled.'))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Cancel Reservation'),
+            'res_model': 'hotel.reservation.cancel.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_reservation_id': self.id},
+        }
+
+    def _do_cancel(self, reason):
+        for rec in self:
+            if rec.state not in ('draft', 'confirmed'):
+                raise ValidationError(_('Only draft or confirmed reservations can be cancelled.'))
+            rec.write({'state': 'cancelled', 'cancel_reason': reason})
+            rec.message_post(body=_('Reservation cancelled. Reason: %s') % reason)
 
     def action_no_show(self):
-        for r in self:
-            if r.state != 'confirmed':
-                raise UserError("Only confirmed reservations can be marked as no-show.")
-        self.write({'state': 'no_show'})
+        for rec in self:
+            if rec.state != 'confirmed':
+                raise ValidationError(_('Only confirmed reservations can be marked as No Show.'))
+            rec.state = 'no_show'
 
-    # FIX M1 (Haneen - Feature 3): scheduled job invoked by data/cron.xml.
-    # Any confirmed reservation whose check-in date has passed is flagged as no_show.
+    # ------------------------------------------------------------------
+    # Cron + Website API
+    # ------------------------------------------------------------------
     @api.model
-    def _cron_mark_no_show(self):
-        late = self.search([
-            ('state', '=', 'confirmed'),
-            ('check_in', '<', fields.Date.today())])
-        if late:
-            late.write({'state': 'no_show'})
-        return True
+    def _cron_check_no_show(self):
+        today = fields.Date.context_today(self)
+        late = self.search([('state', '=', 'confirmed'), ('check_in', '<', today)])
+        for rec in late:
+            rec.state = 'no_show'
+            rec.message_post(body=_('Automatically marked as No Show (guest did not arrive).'))
 
-    # FIX M2 (Haneen - Feature 3): entry point used by the public Website/API.
-    # It strips server-controlled/read-only keys and always creates in draft;
-    # the existing SQL/API constraints then validate dates, capacity and overlaps.
     @api.model
     def create_from_website(self, vals):
-        values = dict(vals or {})
-        for key in ('name', 'state', 'actual_check_in', 'actual_check_out',
-                    'folio_line_ids', 'payment_ids', 'invoice_id'):
-            values.pop(key, None)
-        values['state'] = 'draft'
-        return self.create(values)
+        """تُستدعى من الـ website/API. ترجّع dict منظم."""
+        allowed = {'guest_id', 'room_id', 'check_in', 'check_out',
+                   'adults', 'children', 'special_request'}
+        clean = {k: v for k, v in (vals or {}).items() if k in allowed}
+        missing = [k for k in ('guest_id', 'room_id', 'check_in', 'check_out') if not clean.get(k)]
+        if missing:
+            raise UserError(_('Missing required fields: %s') % ', '.join(missing))
+        clean['source'] = 'website'
+        rec = self.create(clean)   # الـ constrains بترفض التداخل/السعة/المحظور
+        rec.action_confirm()
+        return {
+            'id': rec.id,
+            'name': rec.name,
+            'state': rec.state,
+            'nights': rec.nights,
+            'total_amount': rec.total_amount,
+        }

@@ -3,7 +3,6 @@
     'name': "Hotel Management",
 
     'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
-
     'description': """
 Hotel Management
 ================
@@ -31,22 +30,31 @@ and improve operational efficiency.
     # for the full list
     'category': 'Uncategorized',
     'version': '0.1',
+    'application': True,   # <-- ضيفيها
+    'installable': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'product'],
+    'depends': ['base', 'mail', 'account', 'product'],
 
     # always loaded
     'data': [
+        'security/hotel_security.xml',
+        'security/groups.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
-        'data/sequence.xml',
-        'data/cron.xml',
+        'data/hotel_reservation_data.xml',
+        'views/hotel_room.xml',
+        'views/property.xml',
+        'views/res_user.xml',
+        'views/housekeeping.xml',
+        'views/guest.xml',
         'views/hotel_reservation_views.xml',
+        'views/menus.xml',
         'views/folio_payment_views.xml',
         'views/hotel_reservation_inherit_views.xml',
         'report/folio_report.xml',
     ],
-    # only loaded in demonstration mode
+
     'demo': [
         'demo/demo.xml',
     ],
