@@ -34,7 +34,8 @@ and improve operational efficiency.
     'installable': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail','website'],
+   
 
     # always loaded
     'data': [
@@ -56,7 +57,11 @@ and improve operational efficiency.
     
         'views/housekeeping.xml',
         'views/guest.xml',
-                'views/hotel_reservation_views.xml',
+        'views/hotel_reservation_views.xml',
+        #  website templates
+        'views/homepage.xml',
+        'views/room_templates_website.xml',
+        'views/online_booking_templates.xml',
         'views/menus.xml',
     ],
 
