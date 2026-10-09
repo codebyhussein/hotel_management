@@ -10,6 +10,12 @@
     'category': 'Uncategorized',
     'version': '0.1',
     'depends': ['base', 'mail', 'website'],
+
+    # any module necessary for this one to work correctly
+    'depends': ['base', 'mail','website'],
+
+
+    # always loaded
     'data': [
         # Security
         'security/hotel_security.xml',

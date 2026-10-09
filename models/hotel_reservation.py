@@ -180,6 +180,8 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
             rec.room_id.write({'status': 'needs_cleaning'})
+            # 🔴 التعديل هنا: استخدام status بدلاً من state
+            rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""

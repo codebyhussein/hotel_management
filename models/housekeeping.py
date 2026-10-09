@@ -3,6 +3,7 @@ from odoo import models, fields, api
 class HotelHousekeepingTask(models.Model):
     _name = 'hotel.housekeeping.task'
     _description = 'Housekeeping Task'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     room_id = fields.Many2one('hotel.room', string='Room')
     name = fields.Char(string='Task Title', required=True)
