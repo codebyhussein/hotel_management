@@ -30,6 +30,8 @@ and improve operational efficiency.
     # for the full list
     'category': 'Uncategorized',
     'version': '0.1',
+    'application': True,   # <-- ضيفيها
+    'installable': True,
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'mail'],
@@ -37,15 +39,19 @@ and improve operational efficiency.
     # always loaded
     'data': [
         
-        # Security
+      
         'security/hotel_security.xml',
         'security/ir.model.access.csv',
-        'security/groups.xml',
 
+        'security/groups.xml',
+# data files
+        'data/hotel_reservation_data.xml',
         # Views
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
+        'views/hotel_reservation_views.xml',
+        
         'views/menus.xml',
         'views/housekeeping.xml',
         'views/guest.xml',
