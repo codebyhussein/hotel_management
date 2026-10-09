@@ -39,22 +39,24 @@ and improve operational efficiency.
     # always loaded
     'data': [
         
-      
+    #   security files
         'security/hotel_security.xml',
         'security/ir.model.access.csv',
-
         'security/groups.xml',
-# data files
+        
+        # data files
+
         'data/hotel_reservation_data.xml',
-        # Views
+        
+        # Views files
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
-        'views/hotel_reservation_views.xml',
-        
-        'views/menus.xml',
+
+    
         'views/housekeeping.xml',
         'views/guest.xml',
+                'views/hotel_reservation_views.xml',
         'views/menus.xml',
     ],
 

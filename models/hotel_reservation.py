@@ -34,7 +34,7 @@ class HotelReservation(models.Model):
     property_id = fields.Many2one(
         'hotel.property', string='Property', related='room_id.property_id', store=True)
     room_type_id = fields.Many2one(
-        'hotel.room.type', string='Room Type', related='room_id.room_type_id', store=True)
+        'hotel.room', string='Room Type',  store=True)
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
