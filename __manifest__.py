@@ -3,7 +3,6 @@
     'name': "Hotel Management",
 
     'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
-
     'description': """
 Hotel Management
 ================
@@ -37,14 +36,22 @@ and improve operational efficiency.
 
     # always loaded
     'data': [
+        
+        # Security
+        'security/hotel_security.xml',
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'security/groups.xml',
+
+        # Views
+        'views/hotel_room.xml',
+        'views/property.xml',
+        'views/res_user.xml',
+        'views/menus.xml',
         'views/housekeeping.xml',
         'views/guest.xml',
         'views/menus.xml',
     ],
-    # only loaded in demonstration mode
+
     'demo': [
         'demo/demo.xml',
     ],
