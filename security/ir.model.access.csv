@@ -8,3 +8,4 @@ access_hotel_housekeeping_task_user,hotel.housekeeping.task.user,model_hotel_hou
 
 access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1
 access_hotel_reservation_cancel_wizard,hotel.reservation.cancel.wizard,model_hotel_reservation_cancel_wizard,base.group_user,1,0,0,0
+access_room_history_report_wizard,access.room.history.report.wizard,model_room_history_report_wizard,base.group_user,1,1,1,1

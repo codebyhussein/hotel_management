@@ -42,6 +42,7 @@
                         <group>
                             <field name="name"/>
                             <field name="task_type"/>
+                            <field name="room_id"/>
                             <field name="maintenance_type"
                                    invisible="task_type != 'maintenance'"
                                    required="task_type == 'maintenance'"/>

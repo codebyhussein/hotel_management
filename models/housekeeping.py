@@ -20,6 +20,13 @@ class HotelHousekeepingTask(models.Model):
         ('other', 'Other')
     ], string='Maintenance Type')
 
+    room_id = fields.Many2one(
+    'hotel.room',
+    string='Room',
+    ondelete='restrict',
+    index=True,
+    )
+
     priority = fields.Selection([
         ('0', '0 - Very Low'),
         ('1', '1 - Low'),

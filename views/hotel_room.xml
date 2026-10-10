@@ -46,23 +46,27 @@
                             string="Mark as Available"
                             type="object"
                             class="btn-primary"
-                            invisible="status != 'occupied'"/>
+                            invisible="status == 'available'"/>
 
                     <button name="action_set_occupied"
                             string="Check-in"
                             type="object"
                             class="btn-primary"
-                            invisible="status not in ('available', 'maintenance')"/>
+                            invisible="status == 'occupied'"/>
 
                     <button name="action_set_maintenance"
                             string="Start Maintenance"
                             type="object"
-                            invisible="status not in ('occupied', 'needs_cleaning')"/>
+                            invisible="status == 'maintenance'"/>
 
                     <button name="action_set_needs_cleaning"
                             string="Needs Cleaning"
                             type="object"
-                            invisible="status != 'maintenance'"/>
+                            invisible="status == 'needs_cleaning'"/>
+                    <button name="action_open_room_history_report"
+                            string="Room History Report"
+                            type="object"
+                            class="oe_highlight"/>
 
                     <field name="status"
                            widget="statusbar"
@@ -72,6 +76,42 @@
 
 
                 <sheet>
+
+                    <!-- =========================
+                         Smart Buttons
+                    ========================== -->
+
+                    <div class="oe_button_box" name="button_box">
+
+                        <!-- Reservations Smart Button -->
+
+                        <button name="action_view_reservations"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar">
+
+                            <field name="reservation_count"
+                                   widget="statinfo"
+                                   string="Reservations"/>
+
+                        </button>
+
+
+                        <!-- Maintenance Smart Button -->
+
+                        <button name="action_view_maintenance"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-wrench">
+
+                            <field name="maintenance_count"
+                                   widget="statinfo"
+                                   string="Maintenance"/>
+
+                        </button>
+
+                    </div>
+
 
                     <!-- Room Information -->
 
@@ -89,10 +129,13 @@
                         <group string="Room Details">
 
                             <field name="capacity"/>
+
+                            <field name="property_id"/>
+
                             <field name="employee_name"
                                    string="Responsible Employee"
                                    domain="[('property_id', '=', property_id)]"/>
-                            <field name="property_id"/>
+
                             <field name="status" readonly="1"/>
 
                         </group>
@@ -118,13 +161,14 @@
 
                 <div class="oe_chatter">
 
-                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
 
-                    <div class="oe_chatter_activity">
-                        <field name="activity_ids" widget="mail_activity"/>
-                    </div>
+                    <field name="activity_ids"
+                           widget="mail_activity"/>
 
-                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="message_ids"
+                           widget="mail_thread"/>
 
                 </div>
 
@@ -147,51 +191,69 @@
             <search string="Search Rooms">
 
                 <!-- Search by typing -->
+
                 <field name="room_number" string="Room Number"/>
                 <field name="property_id"/>
                 <field name="employee_name" string="Responsible Employee"/>
 
-                <!-- Room Type filters -->
+
+                <!-- Room Type Filters -->
+
                 <filter string="Single"
                         name="filter_single"
                         domain="[('room_type', '=', 'single')]"/>
+
                 <filter string="Double"
                         name="filter_double"
                         domain="[('room_type', '=', 'double')]"/>
+
                 <filter string="Triple"
                         name="filter_triple"
                         domain="[('room_type', '=', 'triple')]"/>
+
                 <filter string="Suite"
                         name="filter_suite"
                         domain="[('room_type', '=', 'suite')]"/>
 
+
                 <separator/>
 
-                <!-- Status filters -->
+
+                <!-- Status Filters -->
+
                 <filter string="Available"
                         name="filter_available"
                         domain="[('status', '=', 'available')]"/>
+
                 <filter string="Occupied"
                         name="filter_occupied"
                         domain="[('status', '=', 'occupied')]"/>
+
                 <filter string="Under Maintenance"
                         name="filter_maintenance"
                         domain="[('status', '=', 'maintenance')]"/>
+
                 <filter string="Dirty / Needs Cleaning"
                         name="filter_needs_cleaning"
                         domain="[('status', '=', 'needs_cleaning')]"/>
 
+
                 <!-- Group By -->
+
                 <group expand="0" string="Group By">
+
                     <filter string="Room Type"
                             name="group_room_type"
                             context="{'group_by': 'room_type'}"/>
+
                     <filter string="Status"
                             name="group_status"
                             context="{'group_by': 'status'}"/>
+
                     <filter string="Property"
                             name="group_property"
                             context="{'group_by': 'property_id'}"/>
+
                 </group>
 
             </search>
@@ -210,7 +272,9 @@
         <field name="res_model">hotel.room</field>
 
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_hotel_room_search"/>
+
+        <field name="search_view_id"
+               ref="view_hotel_room_search"/>
 
     </record>
 
