@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 controllers/__pycache__/
 models/__pycache__/
+tests/
+wizard/__pycache__/
