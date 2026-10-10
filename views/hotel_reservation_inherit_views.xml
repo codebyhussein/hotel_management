@@ -11,9 +11,7 @@
                     invisible="invoice_id or state not in ('checked_in', 'checked_out')"/>
             </xpath>
 
-            <!-- FIX M3 (Mahmoud - Feature 4): smart button that opens the generated invoice.
-                 //sheet/group matches the base form's first group, so position="before"
-                 places the button box at the top of the sheet. -->
+            <!-- Smart button -->
             <xpath expr="//div[hasclass('oe_title')]" position="after">
                 <div class="oe_button_box" name="button_box">
                     <button name="action_view_invoice" type="object" class="oe_stat_button"
@@ -47,9 +45,6 @@
                             <field name="method"/>
                             <field name="amount" sum="Total"/>
                             <field name="reference"/>
-                            <!-- FIX M3: state is controlled by the payment workflow buttons,
-                                 so it is read-only here; currency_id is required so the
-                                 Monetary "amount" column is formatted correctly. -->
                             <field name="state" readonly="1"/>
                             <field name="currency_id" column_invisible="1"/>
                         </tree>
