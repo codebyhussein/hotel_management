@@ -1,21 +1,43 @@
-# -*- coding: utf-8 -*-
+
 {
-    'name': "hotel_management",
+    'name': "Hotel Management",
+
     'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
+
     'description': """
-        Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.
+Hotel Management
+================
+
+A complete Odoo solution for managing hotel operations efficiently.
+
+Key Features:
+- Manage hotel rooms and room types.
+- Manage guests and their information.
+- Create and manage hotel bookings.
+- Track room availability and booking status.
+- Manage check-in and check-out operations.
+- Organize hotel data through clear and user-friendly views.
+- Support efficient day-to-day hotel management.
+
+This module provides a centralized system to simplify hotel management
+and improve operational efficiency.
     """,
+
     'author': "My Company",
     'website': "https://www.yourcompany.com",
+
     'category': 'Uncategorized',
     'version': '0.1',
-    'depends': ['base', 'mail', 'website'],
 
-    # any module necessary for this one to work correctly
-    'depends': ['base', 'mail','website'],
+    'application': True,
+    'installable': True,
 
+    'depends': [
+        'base',
+        'mail',
+        'website',
+    ],
 
-    # always loaded
     'data': [
         # Security
         'security/hotel_security.xml',
@@ -33,7 +55,7 @@
         'views/property.xml',
         'views/res_user.xml',
 
-        # Website templates
+        # Website Templates
         'views/homepage.xml',
         'views/room_templates_website.xml',
         'views/online_booking_templates.xml',
@@ -41,6 +63,7 @@
         # Menus
         'views/menus.xml',
     ],
+
     'demo': [
         'demo/demo.xml',
     ],
