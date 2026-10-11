@@ -64,6 +64,33 @@ class HotelRoom(models.Model):
     description = fields.Text(
     string='Description'
     )
+
+        # All reservations linked to this room
+    reservation_ids = fields.One2many(
+        'hotel.reservation',
+        'room_id',
+        string='Reservations'
+    )
+
+    reservation_count = fields.Integer(
+        string='Reservations Count',
+        compute='_compute_room_history_counts'
+    )
+
+    # All housekeeping and maintenance tasks linked to this room
+    housekeeping_task_ids = fields.One2many(
+        'hotel.housekeeping.task',
+        'room_id',
+        string='Housekeeping Tasks'
+    )
+
+    maintenance_count = fields.Integer(
+        string='Maintenance Count',
+        compute='_compute_room_history_counts'
+    )
+
+
+
     
     # =========================
     # Room Status
@@ -102,3 +129,65 @@ class HotelRoom(models.Model):
 
     def action_set_needs_cleaning(self):
         self.write({'status': 'needs_cleaning'})
+
+    @api.depends(
+    'reservation_ids',
+    'housekeeping_task_ids',
+    'housekeeping_task_ids.task_type'
+    )
+    def _compute_room_history_counts(self):
+        for room in self:
+            room.reservation_count = len(room.reservation_ids)
+
+            room.maintenance_count = len(
+                room.housekeeping_task_ids.filtered(
+                    lambda task: task.task_type == 'maintenance'
+                )
+            )
+    def action_view_reservations(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Room Reservations',
+            'res_model': 'hotel.reservation',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('room_id', '=', self.id)
+            ],
+            'context': {
+                'default_room_id': self.id,
+            },
+        }
+
+
+    def action_view_maintenance(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Room Maintenance',
+            'res_model': 'hotel.housekeeping.task',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('room_id', '=', self.id),
+                ('task_type', '=', 'maintenance'),
+            ],
+            'context': {
+                'default_room_id': self.id,
+                'default_task_type': 'maintenance',
+            },
+        }
+    def action_open_room_history_report(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Room History Report',
+            'res_model': 'room.history.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_room_id': self.id,
+            },
+        }
