@@ -2,5 +2,7 @@
 
 from . import controllers
 from . import home_controllers
-from . import api
 from . import rooms_report
+from . import api_token
+from . import api_with_token
+from . import api_with_session
