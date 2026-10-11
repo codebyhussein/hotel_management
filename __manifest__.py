@@ -53,13 +53,16 @@ and improve operational efficiency.
         'views/property.xml',
         'views/res_user.xml',
         'wizard/room_report_excel.xml',
+        'wizard/room_report_piecharm.xml',
 
     
         'views/housekeeping.xml',
         'views/guest.xml',
-                'views/hotel_reservation_views.xml',
+        'views/hotel_reservation_views.xml',
+        'views/room_report.xml',
         'views/menus.xml',
         'wizard/room_service.xml',
+        
     ],
 
     'demo': [
