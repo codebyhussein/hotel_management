@@ -50,9 +50,6 @@
                             <field name="room_id"/>
                             <field name="task_type"/>
                             <field name="room_id"/>
-                            <field name="maintenance_type"
-                                   invisible="task_type != 'maintenance'"
-                                   required="task_type == 'maintenance'"/>
                             <field name="priority" widget="priority"/>
                         </group>
                         <group string="Assignment &amp; Schedule">
@@ -85,7 +82,6 @@
 
                 <filter string="Urgent Priority" name="urgent_priority" domain="[('priority', '=', '5')]"/>
                 <filter string="Scheduled Today" name="today" domain="[('scheduled_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="Maintenance Tasks" name="maintenance" domain="[('task_type', '=', 'maintenance')]"/>
             </search>
         </field>
     </record>
@@ -98,4 +94,13 @@
         <field name="search_view_id" ref="view_hotel_housekeeping_task_search"/>
     </record>
 
+
+    <record id="action_hotel_housekeeping_task" model="ir.actions.act_window">
+        <field name="name">Housekeeping Tasks</field>
+        <field name="res_model">hotel.housekeeping.task</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
 </odoo>
+

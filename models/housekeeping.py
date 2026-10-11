@@ -14,13 +14,6 @@ class HotelHousekeepingTask(models.Model):
         ('maintenance', 'Maintenance')
     ], default='housekeeping', string='Task Type')
 
-    maintenance_type = fields.Selection([
-        ('plumbing', 'Plumbing'),
-        ('electrical', 'Electrical'),
-        ('ac', 'AC / HVAC'),
-        ('furniture', 'Furniture / Carpentry'),
-        ('other', 'Other')
-    ], string='Maintenance Type')
 
     room_id = fields.Many2one(
     'hotel.room',

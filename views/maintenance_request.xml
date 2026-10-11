@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Form View -->
+        <record id="view_hotel_maintenance_request_form" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.form</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <form string="Maintenance Request">
+                    <header>
+                        <button name="action_start_maintenance" string="Start Work" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_set_done" string="Mark As Done" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Room &amp; Guest Info">
+                                <field name="room_id"/>
+                                <field name="property_id"/>
+                                <field name="reservation_id"/>
+                                <field name="guest_id"/>
+                            </group>
+                            <group string="Issue Details">
+                                <field name="issue_type"/>
+                                <field name="urgency" widget="priority"/>
+                                <field name="assigned_to"/>
+                                <field name="actual_cost"/>
+                            </group>
+                        </group>
+                        <group string="Dates">
+                            <group>
+                                <field name="preferred_date"/>
+                                <field name="scheduled_date"/>
+                            </group>
+                            <group>
+                                <field name="completion_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" placeholder="Describe the maintenance problem here..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree / List View -->
+        <record id="view_hotel_maintenance_request_tree" model="ir.ui.view">
+            <field name="name">hotel.maintenance.request.tree</field>
+            <field name="model">hotel.maintenance.request</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Requests" decoration-danger="urgency == '4'" decoration-muted="state == 'cancelled'" decoration-success="state == 'done'">
+                    <field name="name"/>
+                    <field name="room_id"/>
+                    <field name="property_id"/>
+                    <field name="issue_type"/>
+                    <field name="urgency" widget="priority"/>
+                    <field name="assigned_to"/>
+                    <field name="scheduled_date"/>
+                    <field name="state" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_hotel_maintenance_request" model="ir.actions.act_window">
+            <field name="name">Maintenance Requests</field>
+            <field name="res_model">hotel.maintenance.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Cron Job 1: Maintenance Reminder -->
+        <record id="ir_cron_maintenance_reminder" model="ir.cron">
+            <field name="name">Hotel: Maintenance Reminder</field>
+            <field name="model_id" ref="model_hotel_maintenance_request"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_maintenance_reminder()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron Job 2: Auto Schedule Emergency Repairs -->
+        <record id="ir_cron_set_emergency_date_action" model="ir.cron">
+            <field name="name">Hotel: Auto Schedule Emergency Repairs</field>
+            <field name="model_id" ref="model_hotel_maintenance_request"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_set_emergency_date()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

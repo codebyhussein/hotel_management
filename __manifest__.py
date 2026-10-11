@@ -54,6 +54,8 @@ and improve operational efficiency.
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
+        'views/maintenance_request.xml',
+        'views/mail_template.xml',
         'wizard/room_report_excel.xml',
 
         # Website Templates

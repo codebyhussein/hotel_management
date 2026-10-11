@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
 
     <!-- Main Menu -->
@@ -27,14 +26,14 @@
     />
 
     <!-- Properties -->
-<menuitem
-    id="menu_hotel_properties"
-    name="Properties"
-    parent="menu_hotel_rooms"
-    action="action_hotel_property"
-    groups="hotel_management.group_hotel_property_manager"
-    sequence="20"
-/>
+    <menuitem
+        id="menu_hotel_properties"
+        name="Properties"
+        parent="menu_hotel_rooms"
+        action="action_hotel_property"
+        groups="hotel_management.group_hotel_property_manager"
+        sequence="20"
+    />
 
     <!-- Direct Menu for Guests -->
     <menuitem id="menu_hotel_guest"
@@ -43,19 +42,31 @@
               action="action_hotel_guest"
               sequence="30"/>
 
-    <!-- Direct Menu for Services -->
-    <menuitem id="menu_hotel_services"
+    <!-- Services Root Menu -->
+    <menuitem id="menu_hotel_services_root"
               name="Services"
               parent="menu_hotel_management_root"
-              action="action_hotel_services"
               sequence="40"/>
 
- <!-- Direct Menu for Reservations -->
+    <!-- Sub-Menu: Housekeeping -->
+    <menuitem id="menu_hotel_housekeeping_task"
+              name="Housekeeping"
+              parent="menu_hotel_services_root"
+              action="action_hotel_housekeeping_task"
+              sequence="10"/>
+
+    <!-- Sub-Menu: Maintenance Requests -->
+    <menuitem id="menu_hotel_maintenance_request"
+              name="Maintenance Requests"
+              parent="menu_hotel_services_root"
+              action="action_hotel_maintenance_request"
+              sequence="20"/>
+
+    <!-- Direct Menu for Reservations -->
     <menuitem id="menu_hotel_reservations"
               name="Reservations"
               parent="menu_hotel_management_root"
               action="action_hotel_reservation"
               sequence="50"/>
- 
               
 </odoo>
