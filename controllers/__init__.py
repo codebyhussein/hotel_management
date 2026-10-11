@@ -3,3 +3,4 @@
 from . import controllers
 from . import home_controllers
 from . import api
+from . import rooms_report

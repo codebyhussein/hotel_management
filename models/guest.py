@@ -5,6 +5,7 @@ class HotelGuest(models.Model):
     _name = 'hotel.guest'
     _description = 'Hotel Guest Registry'
     _inherits = {'res.partner': 'partner_id'}
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     partner_id = fields.Many2one('res.partner', string='Partner', required=True, ondelete='cascade')
     nationality_id = fields.Many2one('res.country', string='Nationality')
@@ -20,19 +21,19 @@ class HotelGuest(models.Model):
     total_stays = fields.Integer(string='Total Stays', compute='_compute_total_stays')
     notes = fields.Text(string='Notes')
     active = fields.Boolean(string='Active', default=True)
+    total_stays = fields.Integer(
+        string='Total Stays', compute='_compute_total_stays'
+    )
 
     _sql_constraints = [
         ('unique_id_number', 'unique(id_number)', 'The ID/Passport number must be unique!')
     ]
+    reservation_ids = fields.One2many(
+        'hotel.reservation',
+        'guest_id',
+        string='Reservations'
+    )
 
-    @api.depends('partner_id')
-    def _compute_total_stays(self):
-        for record in self:
-            # record.total_stays = self.env['hotel.reservation'].search_count([
-            #     ('guest_id', '=', record.id),
-            #     ('state', '=', 'checked_out')
-            # ])
-            record.total_stays = 0
 
     def action_view_reservations(self):
         self.ensure_one()
@@ -71,3 +72,29 @@ class HotelGuest(models.Model):
             self.active = False
         else:
             self.active = True
+
+    @api.depends('partner_id')
+    def _compute_total_stays(self):
+        for record in self:
+            if 'hotel.reservation' in self.env:
+                try:
+                    # بيحسب عدد الحجوزات من موديل الحجوزات عادي جداً
+                    record.total_stays = self.env['hotel.reservation'].search_count([
+                        ('guest_id', '=', record.id)
+                    ])
+                except Exception:
+                    record.total_stays = 0
+            else:
+                record.total_stays = 0
+
+    def action_view_reservations(self):
+        """Action للـ Stat Button بيفتح قائمة حجوزات النزيل ده فقط"""
+        self.ensure_one()
+        return {
+            'name': _('Guest Reservations'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hotel.reservation',
+            'view_mode': 'tree,form',
+            'domain': [('guest_id', '=', self.id)],
+            'context': {'default_guest_id': self.id},
+        }
