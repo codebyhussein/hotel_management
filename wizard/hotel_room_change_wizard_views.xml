@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_room_change_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.reservation.room.change.wizard.form</field>
+        <field name="model">hotel.reservation.room.change.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Room">
+                <group>
+                    <group>
+                        <field name="reservation_id" invisible="1"/>
+                        <field name="current_room_id"/>
+                        <field name="new_room_id" options="{'no_create': True}"
+                               domain="[('id', '!=', current_room_id)]"/>
+                    </group>
+                    <group>
+                        <field name="keep_rate"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="reason" placeholder="Upgrade, AC problem, guest request..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm_change" string="Change Room"
+                            type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

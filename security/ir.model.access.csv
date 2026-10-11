@@ -4,3 +4,4 @@ access_hotel_room_type_mock,hotel.room.type.mock,model_hotel_room_type,base.grou
 access_hotel_room_mock,hotel.room.mock,model_hotel_room,base.group_user,1,1,1,1
 access_hotel_guest_mock,hotel.guest.mock,model_hotel_guest,base.group_user,1,1,1,1
 access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1
+access_hotel_reservation_cancel_wizard,hotel.reservation.cancel.wizard.access,model_hotel_reservation_cancel_wizard,base.group_user,1,1,1,1

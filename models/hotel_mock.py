@@ -41,6 +41,7 @@ class HotelRoomMock(models.Model):
 class HotelGuestMock(models.Model):
     _name = 'hotel.guest'
     _description = 'Hotel Guest (temp mock)'
+    email = fields.Char()
 
     name = fields.Char(required=True)
     blacklisted = fields.Boolean()

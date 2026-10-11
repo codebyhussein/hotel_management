@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_hotel_reservation" model="ir.actions.report">
+        <field name="name">Print Reservation</field>
+        <field name="model">hotel.reservation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management.report_hotel_reservation</field>
+        <field name="report_file">hotel_management.report_hotel_reservation</field>
+        <field name="print_report_name">'Reservation - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_hotel_reservation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_hotel_reservation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <t t-set="payment" t-value="payments.get(doc.id)"/>
+                    <t t-set="no_charge" t-value="doc.state in ('cancelled', 'no_show')"/>
+                    <t t-set="scolor" t-value="state_color.get(doc.id) or '#5b2d90'"/>
+                    <div class="page" style="font-size: 13px; color: #2d2d2d;">
+
+                        <!-- Title banner + state -->
+                        <table t-attf-style="width:100%; border-collapse:collapse; margin-bottom:18px; border-bottom:5px solid {{ scolor }};">
+                            <tr>
+                                <td style="background-color:#6f42c1; color:#ffffff; padding:16px 20px;">
+                                <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#e6dcf7;">
+                                    Reservation Details
+</div>
+                                    <div style="font-size:24px; font-weight:bold; color:#ffffff;">
+                                        <span t-field="doc.name"/>
+                                    </div>
+                                </td>
+                                <td t-attf-style="background-color:{{ scolor }}; color:#ffffff; padding:16px 20px; text-align:right; width:30%;">
+                                    <div style="font-size:11px; color:#ffffff; opacity:0.8;">STATUS</div>
+                                    <div style="font-size:18px; font-weight:bold; color:#ffffff;">
+                                        <span t-field="doc.state"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Guest + Room -->
+                        <table style="width:100%; border-collapse:separate; border-spacing:10px 0; margin:0 -10px 14px -10px; width:calc(100% + 20px);">
+                            <tr>
+                                <td style="width:50%; vertical-align:top; border:1px solid #d9c9f2; border-top:4px solid #6f42c1; padding:12px 14px;">
+                                    <div style="color:#6f42c1; font-weight:bold; font-size:14px; margin-bottom:8px;">Guest</div>
+                                    <div style="font-size:16px; font-weight:bold;"><span t-field="doc.guest_id"/></div>
+                                    <div t-if="guest_phone.get(doc.id)" style="color:#666;">
+                                        Phone: <span t-esc="guest_phone.get(doc.id)"/>
+                                    </div>
+                                    <div t-if="guest_email.get(doc.id)" style="color:#666;">
+                                        Email: <span t-esc="guest_email.get(doc.id)"/>
+                                    </div>
+                                    <div style="margin-top:6px; color:#666;">
+                                        Adults: <strong><span t-field="doc.adults"/></strong>
+                                        &#160;|&#160;
+                                        Children: <strong><span t-field="doc.children"/></strong>
+                                    </div>
+                                    <div style="color:#666;">
+                                        Source: <span t-field="doc.source"/>
+                                    </div>
+                                    <div style="color:#666;">
+                                        Previous stays: <strong><t t-esc="guest_stays.get(doc.id, 0)"/></strong>
+                                    </div>
+                                </td>
+                                <td style="width:50%; vertical-align:top; border:1px solid #d9c9f2; border-top:4px solid #6f42c1; padding:12px 14px;">
+                                    <div style="color:#6f42c1; font-weight:bold; font-size:14px; margin-bottom:8px;">Room</div>
+                                    <div style="font-size:16px; font-weight:bold;"><span t-field="doc.room_id"/></div>
+                                    <div style="margin-top:6px; color:#666;">
+                                        Property: <span t-field="doc.property_id"/>
+                                    </div>
+                                    <div style="color:#666;">
+                                        Type: <span t-field="doc.room_type_id"/>
+                                    </div>
+                                    <div style="color:#666;">
+                                        Bookings after this stay: <strong><t t-esc="other_bookings.get(doc.id, 0)"/></strong>
+                                    </div>
+                                    <div t-if="next_booking.get(doc.id)" style="color:#666;">
+                                        Next arrival on this room:
+                                        <strong><span t-esc="next_booking.get(doc.id)" t-options='{"widget": "date"}'/></strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Stay details: لون كل th لوحده عشان قالب أودو ما يكسرهوش -->
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+                            <thead>
+                                <tr>
+                                    <th style="padding:8px 10px; text-align:left; color:#ffffff; background-color:#6f42c1;">Check-in</th>
+                                    <th style="padding:8px 10px; text-align:left; color:#ffffff; background-color:#6f42c1;">Check-out</th>
+                                    <th style="padding:8px 10px; text-align:center; color:#ffffff; background-color:#6f42c1;">Nights</th>
+                                    <th style="padding:8px 10px; text-align:right; color:#ffffff; background-color:#6f42c1;">Nightly Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color:#f6f1fd;">
+                                    <td style="padding:10px; border-bottom:1px solid #e3d6f6;"><span t-field="doc.check_in"/></td>
+                                    <td style="padding:10px; border-bottom:1px solid #e3d6f6;"><span t-field="doc.check_out"/></td>
+                                    <td style="padding:10px; border-bottom:1px solid #e3d6f6; text-align:center;"><span t-field="doc.nights"/></td>
+                                    <td style="padding:10px; border-bottom:1px solid #e3d6f6; text-align:right;">
+                                        <span t-field="doc.nightly_rate"
+                                              t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Actual times -->
+                        <t t-if="doc.actual_check_in or doc.actual_check_out">
+                            <table style="width:100%; margin-bottom:14px; color:#555;">
+                                <tr>
+                                    <td t-if="doc.actual_check_in">
+                                        Actual check-in: <strong><span t-field="doc.actual_check_in"/></strong>
+                                    </td>
+                                    <td t-if="doc.actual_check_out" style="text-align:right;">
+                                        Actual check-out: <strong><span t-field="doc.actual_check_out"/></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+
+                        <!-- Totals -->
+                        <table style="width:45%; margin-left:55%; border-collapse:collapse; margin-bottom:18px;">
+                            <tr>
+                                <td style="padding:6px 10px; color:#666;">Room Total</td>
+                                <td t-attf-style="padding:6px 10px; text-align:right; {{ 'text-decoration:line-through; color:#999;' if no_charge else '' }}">
+                                    <span t-field="doc.room_total"
+                                          t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                            <t t-if="no_charge">
+                                <tr>
+                                    <td style="padding:10px; background-color:#aa3333; color:#ffffff; font-weight:bold; font-size:15px;">Total Amount</td>
+                                    <td style="padding:10px; background-color:#aa3333; color:#ffffff; font-weight:bold; font-size:15px; text-align:right;">No charge</td>
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td style="padding:10px; background-color:#6f42c1; color:#ffffff; font-weight:bold; font-size:15px;">Total Amount</td>
+                                    <td style="padding:10px; background-color:#6f42c1; color:#ffffff; font-weight:bold; font-size:15px; text-align:right;">
+                                        <span t-field="doc.total_amount"
+                                              t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="doc.deposit_paid">
+                                <td style="padding:6px 10px; color:#666;">Deposit Paid</td>
+                                <td style="padding:6px 10px; text-align:right;">
+                                    <span t-field="doc.deposit_amount"
+                                        t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                                </tr>
+                                <t t-if="payment">
+                                    <tr>
+                                        <td style="padding:6px 10px; color:#666;">Paid</td>
+                                        <td style="padding:6px 10px; text-align:right;">
+                                            <span t-out="payment['paid']"
+                                                  t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr style="font-weight:bold; color:#aa3333;">
+                                        <td style="padding:6px 10px;">Balance Due</td>
+                                        <td style="padding:6px 10px; text-align:right;">
+                                            <span t-out="payment['balance']"
+                                                  t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+
+                        <!-- Special request -->
+                        <div t-if="doc.special_request"
+                             style="border-left:4px solid #6f42c1; background-color:#f6f1fd; padding:10px 14px; margin-bottom:12px;">
+                            <div style="color:#6f42c1; font-weight:bold;">Special Request</div>
+                            <div><span t-field="doc.special_request"/></div>
+                        </div>
+
+                        <!-- Cancel reason -->
+                        <div t-if="doc.state == 'cancelled' and doc.cancel_reason"
+                             style="border-left:4px solid #aa3333; background-color:#fdf1f1; padding:10px 14px; margin-bottom:12px;">
+                            <div style="color:#aa3333; font-weight:bold;">Cancellation Reason</div>
+                            <div><span t-field="doc.cancel_reason"/></div>
+                        </div>
+
+                        <!-- Terms -->
+                        <t t-if="no_charge">
+                            <tr>
+                                <td style="padding:10px; background-color:#aa3333; color:#ffffff; font-weight:bold; font-size:15px;">
+                                    <t t-if="doc.cancellation_fee">Cancellation Fee</t>
+                                    <t t-else="">Total Amount</t>
+                                </td>
+                                <td style="padding:10px; background-color:#aa3333; color:#ffffff; font-weight:bold; font-size:15px; text-align:right;">
+                                    <t t-if="doc.cancellation_fee">
+                                        <span t-field="doc.cancellation_fee"
+                                            t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </t>
+                                    <t t-else="">No charge</t>
+                                </td>
+                            </tr>
+                            <tr t-if="doc.deposit_refund">
+                                <td style="padding:6px 10px; color:#666;">Deposit Refund</td>
+                                <td style="padding:6px 10px; text-align:right;">
+                                    <span t-field="doc.deposit_refund"
+                                        t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>
+                        <!-- Footer note -->
+                        <div style="margin-top:24px; padding-top:10px; border-top:2px solid #6f42c1; text-align:center; color:#6f42c1; font-size:12px;">
+                            Thank you for choosing us. We look forward to welcoming you!
+                            <div style="color:#888; margin-top:4px;">
+                                Handled by: <span t-field="doc.responsible_id"/>
+                            </div>
+                            <div style="color:#888; font-size:11px;">
+                                Printed on: <span t-esc="report_date"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

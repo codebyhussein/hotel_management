@@ -21,6 +21,14 @@
             <field name="interval_type">days</field>
             <field name="active" eval="True"/>
         </record>
+        
+        <record id="seq_hotel_group" model="ir.sequence">
+            <field name="name">Hotel Group Booking Sequence</field>
+            <field name="code">hotel.group.sequence</field>
+            <field name="prefix">GRP-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
 
     </data>
 </odoo>
