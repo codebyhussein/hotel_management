@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
+from psycopg2 import IntegrityError
 
 
 class HotelReservation(models.Model):
@@ -74,6 +75,20 @@ class HotelReservation(models.Model):
 
     special_request = fields.Text()
     cancel_reason = fields.Text(readonly=True, copy=False)
+    
+    external_id = fields.Char(
+    string='External ID',
+    copy=False,
+    index=True,
+    help='Unique identifier provided by an external system.',
+    )
+    _sql_constraints = [
+    (
+        'external_id_unique',
+        'UNIQUE(external_id)',
+        'External ID must be unique.',
+    ),
+]
 
     # ------------------------------------------------------------------
     # Computes
@@ -240,3 +255,87 @@ class HotelReservation(models.Model):
             'nights': rec.nights,
             'total_amount': rec.total_amount,
         }
+            
+            
+    @api.model
+    def create_from_external_api(self, vals):
+        """Create an external reservation with idempotency support."""
+
+        vals = vals or {}
+
+        # 1. Validate external_id
+        external_id = str(vals.get('external_id') or '').strip()
+
+        if not external_id:
+            raise UserError(_('The external_id field is required.'))
+
+        # 2. Return existing reservation if already created
+        existing = self.search([
+            ('external_id', '=', external_id),
+        ], limit=1)
+
+        if existing:
+            return existing, False
+
+        # 3. Allow only the required reservation fields
+        allowed_fields = {
+            'guest_id',
+            'room_id',
+            'check_in',
+            'check_out',
+            'adults',
+            'children',
+            'special_request',
+        }
+
+        clean = {
+            key: vals[key]
+            for key in allowed_fields
+            if key in vals
+        }
+
+        # 4. Validate required fields
+        required_fields = [
+            'guest_id',
+            'room_id',
+            'check_in',
+            'check_out',
+        ]
+
+        missing = [
+            field
+            for field in required_fields
+            if not clean.get(field)
+        ]
+
+        if missing:
+            raise UserError(
+                _('Missing required fields: %s')
+                % ', '.join(missing)
+            )
+
+        # 5. Set trusted values on the server
+        clean.update({
+            'external_id': external_id,
+            'source': 'other',
+            'state': 'draft',
+        })
+
+        # 6. Protect against simultaneous duplicate requests
+        try:
+            with self.env.cr.savepoint():
+                reservation = self.create(clean)
+                reservation.action_confirm()
+
+        except IntegrityError:
+            # Another request may have created the same external_id
+            existing = self.search([
+                ('external_id', '=', external_id),
+            ], limit=1)
+
+            if existing:
+                return existing, False
+
+            raise
+
+        return reservation, True
