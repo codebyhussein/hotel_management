@@ -59,6 +59,7 @@ and improve operational efficiency.
         'views/guest.xml',
                 'views/hotel_reservation_views.xml',
         'views/menus.xml',
+        'wizard/room_service.xml',
     ],
 
     'demo': [
