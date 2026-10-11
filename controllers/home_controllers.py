@@ -312,12 +312,13 @@ class HotelRoomController(http.Controller):
             {'featured_rooms': featured_rooms}
         )
 
+        # =====================================================
+    # Website Room List
+    # =====================================================
 
-# =====================================================
-# Website Room List
-# =====================================================
     @http.route('/rooms', type='http', auth='public', website=True)
     def rooms(self, **kwargs):
+        search = (kwargs.get('search') or '').strip()
         check_in = kwargs.get('check_in', '')
         check_out = kwargs.get('check_out', '')
         adults = self._to_int(kwargs.get('adults'), 1)
@@ -346,10 +347,32 @@ class HotelRoomController(http.Controller):
         else:
             rooms = self._get_available_rooms(False, False, adults, children)
 
+        # ---------------------------------------------
+        # Text search (room number, property, type, description)
+        # ---------------------------------------------
+        if search and rooms:
+            term = search.lower()
+            room_type_labels = dict(
+                request.env['hotel.room']._fields['room_type']
+                ._description_selection(request.env)
+            )
+
+            def _matches(room):
+                values = [
+                    room.room_number or '',
+                    room.property_id.name or '',
+                    room.description or '',
+                    room_type_labels.get(room.room_type, room.room_type) or '',
+                ]
+                return any(term in str(value).lower() for value in values)
+
+            rooms = rooms.filtered(_matches)
+
         return request.render(
             'hotel_management.room_list',
             {
                 'rooms': rooms,
+                'search': search,
                 'check_in': check_in,
                 'check_out': check_out,
                 'adults': adults,
@@ -357,10 +380,10 @@ class HotelRoomController(http.Controller):
                 'error': error,
             }
         )
-        
         # ===========================================
-        #room details route
+        # room details route
         # =========================================
+
     @http.route('/room/<int:room_id>', type='http', auth='public',
                 website=True)
     def room_details(self, room_id, **kwargs):

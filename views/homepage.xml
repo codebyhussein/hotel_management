@@ -546,6 +546,87 @@
                     }
 
                     /* =========================================
+                       HERO SEARCH BAR
+                    ========================================= */
+
+                    .nile-vista-search-form {
+                        display: flex;
+                        align-items: stretch;
+                        gap: 10px;
+                        max-width: 760px;
+                        margin: 0 auto 28px;
+                        padding: 10px;
+                        background-color: rgba(247, 243, 234, 0.96);
+                        border: 1px solid #C9A24B;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(20, 32, 47, 0.3);
+                    }
+
+                    .nile-vista-search-field {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        flex: 1;
+                        padding: 0 14px;
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 6px;
+                        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                    }
+
+                    .nile-vista-search-field:focus-within {
+                        border-color: #C9A24B;
+                        box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.2);
+                    }
+
+                    .nile-vista-search-field i {
+                        color: #B38F3F;
+                    }
+
+                    .nile-vista-search-field input {
+                        width: 100%;
+                        padding: 13px 0;
+                        border: 0;
+                        outline: none;
+                        background: transparent;
+                        color: #1B2A41;
+                        font-size: 15px;
+                    }
+
+                    .nile-vista-search-field input::placeholder {
+                        color: #8490A0;
+                    }
+
+                    .nile-vista-search-btn {
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        border: 2px solid #C9A24B;
+                        border-radius: 6px;
+                        padding: 0 26px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        white-space: nowrap;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nile-vista-search-btn:hover {
+                        background-color: #D9B96A;
+                        border-color: #D9B96A;
+                        color: #14202F;
+                        transform: translateY(-2px);
+                    }
+
+                    @media (max-width: 767px) {
+                        .nile-vista-search-form {
+                            flex-direction: column;
+                        }
+
+                        .nile-vista-search-btn {
+                            padding: 13px 26px;
+                        }
+                    }
+
+                    /* =========================================
                        RESPONSIVE DESIGN
                     ========================================= */
 
@@ -630,6 +711,26 @@
                             hospitality. Discover the perfect room for your
                             next stay with us.
                         </p>
+
+                        <!-- Room Search -->
+
+                        <form action="/rooms" method="get" class="nile-vista-search-form">
+
+                            <div class="nile-vista-search-field">
+                                <i class="fa fa-search" aria-hidden="true"/>
+                                <input
+                                    type="text"
+                                    name="search"
+                                    placeholder="Search by room number, type or keyword"
+                                    aria-label="Search rooms"
+                                />
+                            </div>
+
+                            <button type="submit" class="nile-vista-search-btn">
+                                Search
+                            </button>
+
+                        </form>
 
                         <div class="nile-vista-hero-actions">
 
