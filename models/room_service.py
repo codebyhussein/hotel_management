@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 # =========================================
@@ -43,20 +44,6 @@ class RoomTaskWizard(models.TransientModel):
         string='Maintenance Type',
     )
 
-    priority = fields.Selection(
-        [
-            ('0', '0 - Very Low'),
-            ('1', '1 - Low'),
-            ('2', '2 - Normal'),
-            ('3', '3 - Medium'),
-            ('4', '4 - High'),
-            ('5', '5 - Urgent'),
-        ],
-        string='Priority',
-        required=True,
-        default='0',
-    )
-
     assigned_user_id = fields.Many2one(
         'res.users',
         string='Assigned Staff',
@@ -87,7 +74,6 @@ class RoomTaskWizard(models.TransientModel):
                 'name': self.name,
                 'room_id': self.room_id.id,
                 'issue_type': self.maintenance_type,
-                'urgency': self.priority,
                 'assigned_user_id': self.assigned_user_id.id or False,
                 'description': self.description or False,
             }
@@ -179,19 +165,25 @@ class HotelHousekeepingTask(models.Model):
 
     def action_mark_in_progress(self):
         for rec in self:
-            rec.state = 'in_progress'
-            rec.start_date = fields.Datetime.now()
+            rec.write({
+                'state': 'in_progress',
+                'start_date': fields.Datetime.now()
+            })
 
     def action_mark_done(self):
         for rec in self:
-            rec.state = 'done'
-            rec.done_date = fields.Datetime.now()
+            rec.write({
+                'state': 'done',
+                'done_date': fields.Datetime.now()
+            })
             if rec.room_id:
                 rec.room_id.write({'status': 'available'})
 
     def action_cancel(self):
         for rec in self:
-            rec.state = 'cancel'
+            if rec.state in ('done', 'cancel'):
+                raise UserError(_("You cannot cancel a task that is already done or cancelled!"))
+            rec.write({'state': 'cancel'})
 
 
 # =========================================
@@ -234,19 +226,18 @@ class HotelMaintenanceRequest(models.Model):
 
     def action_start_maintenance(self):
         for rec in self:
-            rec.state = 'in_progress'
+            rec.write({'state': 'in_progress'})
 
     def action_done(self):
         for rec in self:
-            rec.state = 'done'
+            rec.write({'state': 'done'})
 
     def action_set_done(self):
-        """مطابقة اسم الأكشن الموجود في ملف الـ XML للـ Form"""
         return self.action_done()
 
     def action_cancel(self):
         for rec in self:
-            rec.state = 'cancel'
+            rec.write({'state': 'cancel'})
 
 
 # =========================================

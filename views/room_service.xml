@@ -24,6 +24,7 @@
         <field name="arch" type="xml">
             <form string="Room Service Request">
                 <header>
+                    <field name="state" invisible="1"/>
                     <button name="action_mark_in_progress"
                             string="Start Work"
                             type="object"
@@ -37,7 +38,8 @@
                     <button name="action_cancel"
                             string="Cancel"
                             type="object"
-                            invisible="state in ('done', 'cancel')"/>
+                            invisible="state in ('done', 'cancel')"
+                            class="btn-secondary"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,in_progress,done,cancel"/>
                 </header>
                 <sheet>
@@ -76,7 +78,7 @@
                         <field name="guest_supplies_type" invisible="not is_guest_supplies"/>
                     </group>
 
-                    <!-- Food Items Table (Appears directly below when Food Ordering is checked) -->
+                    <!-- Food Items Table -->
                     <separator string="Food &amp; Drink Items" invisible="not is_food_ordering"/>
                     <field name="food_item_ids" invisible="not is_food_ordering">
                         <tree editable="bottom">
@@ -86,7 +88,7 @@
                         </tree>
                     </field>
 
-                    <!-- Notebook for Special Instructions only -->
+                    <!-- Notebook -->
                     <notebook>
                         <page string="Special Instructions" name="instructions">
                             <field name="description" placeholder="Enter special instructions or guest preferences..."/>
