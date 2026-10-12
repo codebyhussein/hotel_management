@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
 
     <!-- Main Menu -->
@@ -27,14 +26,14 @@
     />
 
     <!-- Properties -->
-    <menuitem
-        id="menu_hotel_properties"
-        name="Properties"
-        parent="menu_hotel_rooms"
-        action="action_hotel_property"
-        groups="hotel_management.group_hotel_property_manager"
-        sequence="20"
-    />
+        <menuitem
+            id="menu_hotel_properties"
+            name="Properties"
+            parent="menu_hotel_rooms"
+            action="action_hotel_property"
+            groups="hotel_management.group_hotel_property_manager"
+            sequence="20"
+        />
 
     <!-- Guests -->
     <menuitem
@@ -45,39 +44,31 @@
         sequence="30"
     />
 
-    <!-- Services -->
-    <menuitem
-        id="menu_hotel_services"
-        name="Services"
-        parent="menu_hotel_management_root"
-        action="action_hotel_services"
-        sequence="40"
-    />
+    <!-- Services Root Menu -->
+    <menuitem id="menu_hotel_services_root"
+              name="Services"
+              parent="menu_hotel_management_root"
+              sequence="40"/>
 
-    <!-- Reservations -->
-    <menuitem
-        id="menu_hotel_reservations"
-        name="Reservations"
-        parent="menu_hotel_management_root"
-        action="action_hotel_reservation"
-        sequence="50"
-    />
+    <!-- Sub-Menu: Room Services -->
+    <menuitem id="menu_hotel_housekeeping_task"
+              name="Room Services"
+              parent="menu_hotel_services_root"
+              action="action_hotel_housekeeping_task"
+              sequence="10"/>
 
-    <!-- Reports Parent Menu -->
-    <menuitem
-        id="menu_hotel_reports"
-        name="Reports"
-        parent="menu_hotel_management_root"
-        sequence="60"
-    />
+    <!-- Sub-Menu: Maintenance Requests -->
+    <menuitem id="menu_hotel_maintenance_request"
+              name="Maintenance Requests"
+              parent="menu_hotel_services_root"
+              action="action_hotel_maintenance_request"
+              sequence="20"/>
 
-    <!-- Rooms Report: Open Date Filter Wizard -->
-    <menuitem
-        id="menu_hotel_rooms_report"
-        name="Rooms"
-        parent="menu_hotel_reports"
-        action="action_room_status_report_wizard"
-        sequence="10"
-    />
-
+    <!-- Direct Menu for Reservations -->
+    <menuitem id="menu_hotel_reservations"
+              name="Reservations"
+              parent="menu_hotel_management_root"
+              action="action_hotel_reservation"
+              sequence="50"/>
+              
 </odoo>
