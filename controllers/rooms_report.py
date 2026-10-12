@@ -42,7 +42,6 @@ class RoomHistoryReportWizard(models.TransientModel):
             ('all', 'All Tasks'),
             ('maintenance', 'Maintenance'),
             ('housekeeping', 'Housekeeping'),
-            ('room_service', 'Room Service'),
         ],
         string='Task Type',
         default='all',

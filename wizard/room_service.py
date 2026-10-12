@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 # =========================================
-# 1. Wizard Model
+# 1. Wizard Model (Simplified & Fast)
 # =========================================
 class RoomTaskWizard(models.TransientModel):
     _name = 'room.task.wizard'
-    _description = 'Room Maintenance / Housekeeping Wizard'
+    _description = 'Room Maintenance / Service Wizard'
 
     room_id = fields.Many2one(
         'hotel.room',
@@ -20,11 +21,11 @@ class RoomTaskWizard(models.TransientModel):
     task_type = fields.Selection(
         [
             ('maintenance', 'Maintenance'),
-            ('housekeeping', 'Housekeeping'),
+            ('room_service', 'Room Service'),
         ],
         string='Task Type',
         required=True,
-        default='maintenance',
+        default='room_service',
     )
 
     name = fields.Char(
@@ -49,7 +50,7 @@ class RoomTaskWizard(models.TransientModel):
     )
 
     description = fields.Text(
-        string='Description',
+        string='Description / Instructions',
     )
 
     def action_create_task(self):
@@ -73,7 +74,6 @@ class RoomTaskWizard(models.TransientModel):
                 'name': self.name,
                 'room_id': self.room_id.id,
                 'issue_type': self.maintenance_type,
-                'urgency': self.priority,
                 'assigned_user_id': self.assigned_user_id.id or False,
                 'description': self.description or False,
             }
@@ -120,7 +120,7 @@ class HotelHousekeepingTask(models.Model):
         ('room_service', 'Room Service')
     ], default='room_service', string='Task Type')
 
-    is_housekeeping = fields.Boolean(string='Housekeeping')
+    is_housekeeping = fields.Boolean(string='Housekeeping', default=True)
     is_food_ordering = fields.Boolean(string='Food Ordering')
     is_laundry = fields.Boolean(string='Laundry')
     is_extra_towels = fields.Boolean(string='Extra Towels')
@@ -165,19 +165,25 @@ class HotelHousekeepingTask(models.Model):
 
     def action_mark_in_progress(self):
         for rec in self:
-            rec.state = 'in_progress'
-            rec.start_date = fields.Datetime.now()
+            rec.write({
+                'state': 'in_progress',
+                'start_date': fields.Datetime.now()
+            })
 
     def action_mark_done(self):
         for rec in self:
-            rec.state = 'done'
-            rec.done_date = fields.Datetime.now()
+            rec.write({
+                'state': 'done',
+                'done_date': fields.Datetime.now()
+            })
             if rec.room_id:
                 rec.room_id.write({'status': 'available'})
 
     def action_cancel(self):
         for rec in self:
-            rec.state = 'cancel'
+            if rec.state in ('done', 'cancel'):
+                raise UserError(_("You cannot cancel a task that is already done or cancelled!"))
+            rec.write({'state': 'cancel'})
 
 
 # =========================================
@@ -220,15 +226,18 @@ class HotelMaintenanceRequest(models.Model):
 
     def action_start_maintenance(self):
         for rec in self:
-            rec.state = 'in_progress'
+            rec.write({'state': 'in_progress'})
 
     def action_done(self):
         for rec in self:
-            rec.state = 'done'
+            rec.write({'state': 'done'})
+
+    def action_set_done(self):
+        return self.action_done()
 
     def action_cancel(self):
         for rec in self:
-            rec.state = 'cancel'
+            rec.write({'state': 'cancel'})
 
 
 # =========================================
