@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="inquiry_confirmation" name="Booking Request Received">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="container py-5 text-center">
+
+                    <i class="fa fa-check-circle fa-4x mb-3"
+                       style="color: #C9A24B;"
+                       aria-hidden="true"/>
+
+                    <h2 style="color: #1B2A41; font-weight: 700;">
+                        Booking Request Received
+                    </h2>
+
+                    <p class="mt-3" style="color: #5B6677; line-height: 1.8;">
+                        Thank you,
+                        <strong t-out="data['guest_name']"/>.
+                        Our reception team will review your request
+                        and contact you at
+                        <strong t-out="data['email']"/>
+                        to confirm your reservation.
+                    </p>
+
+                    <div class="mx-auto mt-4 p-4"
+                         style="max-width: 460px; background: #F7F3EA;
+                                border: 1px solid #E6DCC3; border-radius: 12px;
+                                text-align: left;">
+                        <p class="mb-2">
+                            <strong>Room:</strong>
+                            <span t-out="room.room_number"/>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Check-in:</strong>
+                            <span t-out="data['check_in']"/>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Check-out:</strong>
+                            <span t-out="data['check_out']"/>
+                        </p>
+                        <p class="mb-0">
+                            <strong>Guests:</strong>
+                            <span t-out="data['adults']"/> adult(s),
+                            <span t-out="data['children']"/> child(ren)
+                        </p>
+                    </div>
+
+                    <a href="/rooms" class="btn mt-4"
+                       style="background: #1B2A41; color: #F7F3EA;">
+                        Back to Rooms
+                    </a>
+
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -269,6 +269,51 @@ class HotelRoomController(http.Controller):
             'id_number': data['id_number'],
         })
 
+    @staticmethod
+    def _check_guest_allowed(data):
+        """Refuse blacklisted guests (matched by ID/passport or email)."""
+        Guest = request.env['hotel.guest'].sudo()
+        guest = Guest.search(
+            [('id_number', '=', data['id_number'])], limit=1
+        ) or Guest.search(
+            [('email', '=ilike', data['email'])], limit=1
+        )
+        if guest and guest.blacklisted:
+            raise ValidationError(
+                'This guest cannot make a reservation. '
+                'Please contact the hotel.'
+            )
+
+    @staticmethod
+    def _create_inquiry_lead(room, data):
+        """Create the CRM inquiry lead for a website booking request.
+
+        No guest and no reservation are created here. Reception opens
+        the lead and presses "Convert to Guest + Reservation", which
+        creates the guest and a DRAFT reservation from this data.
+        """
+        Lead = request.env['crm.lead'].sudo().with_context(
+            mail_create_nosubscribe=True,
+            mail_notrack=True,
+        )
+        return Lead.create({
+            'name': 'Website booking - Room %s - %s' % (
+                room.room_number, data['guest_name']
+            ),
+            'type': 'opportunity',
+            'lead_source': 'website',
+            'contact_name': data['guest_name'],
+            'email_from': data['email'],
+            'phone': data['phone'],
+            'id_number': data['id_number'],
+            'room_id': room.id,
+            'check_in': data['check_in'],
+            'check_out': data['check_out'],
+            'adults': data['adults'],
+            'children': data['children'],
+            'description': data['special_request'],
+        })
+
     # =====================================================
     # Routes
     # =====================================================
@@ -298,9 +343,10 @@ class HotelRoomController(http.Controller):
             'phone': partner.phone or '',
         }
 
-# =====================================================
-# Website Home Page
-# =====================================================
+    # =====================================================
+    # Website Home Page
+    # =====================================================
+
     @http.route('/', type='http', auth='public', website=True)
     def home(self, **kwargs):
         featured_rooms = request.env['hotel.room'].sudo().search([
@@ -312,7 +358,7 @@ class HotelRoomController(http.Controller):
             {'featured_rooms': featured_rooms}
         )
 
-        # =====================================================
+    # =====================================================
     # Website Room List
     # =====================================================
 
@@ -380,9 +426,10 @@ class HotelRoomController(http.Controller):
                 'error': error,
             }
         )
-        # ===========================================
-        # room details route
-        # =========================================
+
+    # =====================================================
+    # Room details route
+    # =====================================================
 
     @http.route('/room/<int:room_id>', type='http', auth='public',
                 website=True)
@@ -397,9 +444,10 @@ class HotelRoomController(http.Controller):
             {'room': room}
         )
 
-# =====================================================
-# Booking route
-# =====================================================
+    # =====================================================
+    # Booking route
+    # =====================================================
+
     @http.route(
         '/booking/<int:room_id>',
         type='http',
@@ -422,27 +470,13 @@ class HotelRoomController(http.Controller):
         try:
             data = self._parse_booking_form(post)
             self._validate_booking_request(room, data)
-            guest = self._get_or_create_guest(data)
+            self._check_guest_allowed(data)
 
-            # Use the existing reservation method.
-            result = request.env['hotel.reservation'].sudo(
-            ).create_from_website({
-                'guest_id': guest.id,
-                'room_id': room.id,
-                'check_in': data['check_in'],
-                'check_out': data['check_out'],
-                'adults': data['adults'],
-                'children': data['children'],
-                'special_request': data['special_request'],
-            })
-
-            reservation = request.env['hotel.reservation'].sudo().browse(
-                result['id']
-            )
+            lead = self._create_inquiry_lead(room, data)
 
             return request.render(
-                'hotel_management.booking_confirmation',
-                {'reservation': reservation, 'result': result}
+                'hotel_management.inquiry_confirmation',
+                {'lead': lead, 'room': room, 'data': data}
             )
 
         except (ValidationError, UserError) as exc:
