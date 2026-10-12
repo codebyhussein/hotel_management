@@ -23,3 +23,4 @@ access_hotel_room_service_food_line_user,hotel.room.service.food.line.user,model
 access_hotel_guest_custom_group,hotel.guest.custom.group,model_hotel_guest,hotel_management.group_hotel_guest_user,1,1,1,0
 access_hotel_maintenance_request_employee,hotel.maintenance.request.employee,model_hotel_maintenance_request,hotel_management.group_hotel_property_employee,1,1,1,0
 access_hotel_maintenance_request_manager,hotel.maintenance.request.manager,model_hotel_maintenance_request,hotel_management.group_hotel_property_manager,1,1,1,1
+access_hotel_reservation_cancel_wizard,hotel.reservation.cancel.wizard.access,model_hotel_reservation_cancel_wizard,base.group_user,1,1,1,1

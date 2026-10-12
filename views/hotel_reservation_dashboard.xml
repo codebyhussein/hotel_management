@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hotel_reservation_graph" model="ir.ui.view">
+        <field name="name">hotel.reservation.graph</field>
+        <field name="model">hotel.reservation</field>
+        <field name="arch" type="xml">
+            <graph string="Revenue" type="bar">
+                <field name="check_in" interval="month"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_hotel_reservation_pivot" model="ir.ui.view">
+        <field name="name">hotel.reservation.pivot</field>
+        <field name="model">hotel.reservation</field>
+        <field name="arch" type="xml">
+        <pivot string="Occupancy &amp; Revenue">
+            <field name="property_id" type="row"/>
+            <field name="check_in" interval="month" type="col"/>
+            <field name="nights" type="measure"/>
+            <field name="total_amount" type="measure"/>
+        </pivot>        
+        </field>
+    </record>
+
+    <record id="action_hotel_reservation_dashboard" model="ir.actions.act_window">
+        <field name="name">Occupancy &amp; Revenue</field>
+        <field name="res_model">hotel.reservation</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="domain">[('state', 'not in', ['cancelled', 'no_show', 'draft'])]</field>
+    </record>
+
+    <menuitem id="menu_hotel_dashboard" name="Occupancy &amp; Revenue"
+              parent="menu_hotel_reports_root"
+              action="action_hotel_reservation_dashboard" sequence="20"/>
+</odoo>

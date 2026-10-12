@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- ========================================================== 
+Mail template: Arrival Reminder Sent one day before check-in.
+========================================================== -->
+    <data noupdate="0">
+        <record id="mail_template_reservation_reminder" model="mail.template">
+            <field name="name">Hotel: Arrival Reminder</field>
+            <field name="model_id" ref="model_hotel_reservation"/>
+            <field name="subject">See you tomorrow! Reservation {{ object.name }}</field>
+            <field name="email_to">{{ object.guest_id.email }}</field>
+            <field name="email_from">{{ (object.responsible_id.email_formatted or object.company_id.email_formatted) }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Arial, Helvetica, sans-serif; color:#2d2d2d;">
+  <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
+    <tr>
+      <td style="background-color:#6f42c1; color:#ffffff; padding:24px; text-align:center;">
+        <div style="font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#e6dcf7;">Arrival Reminder</div>
+        <div style="font-size:24px; font-weight:bold; margin-top:6px;">
+          Hello <t t-out="object.guest_id.display_name"/>, we're expecting you tomorrow!
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:24px;">
+        <p>Your stay <strong><t t-out="object.name"/></strong> starts tomorrow:</p>
+        <ul style="line-height:1.8;">
+          <li>Check-in: <strong><t t-out="object.check_in"/></strong> (from 2:00 PM)</li>
+          <li>Check-out: <strong><t t-out="object.check_out"/></strong> (until 12:00 PM)</li>
+          <li>Room: <t t-out="object.room_id.display_name"/></li>
+        </ul>
+        <p>Please bring a valid photo ID or passport.</p>
+        <p>If you plan to arrive late, let us know so we hold your room.</p>
+        <p>Warm regards,<br/><strong><t t-out="object.company_id.name"/></strong></p>
+      </td>
+    </tr>
+  </table>
+</div>
+            </field>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <record id="ir_cron_arrival_reminder" model="ir.cron">
+            <field name="name">Hotel: Send Arrival Reminders</field>
+            <field name="model_id" ref="model_hotel_reservation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_arrival_reminder()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+
+</odoo>
