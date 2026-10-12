@@ -23,6 +23,10 @@ class HotelRoom(models.Model):
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', required=True)
+    room_image= fields.Binary(
+        string='Room Image',
+        attachment=True,
+    )
 
     price = fields.Float(
         string='Price',
