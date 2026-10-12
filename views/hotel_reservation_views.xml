@@ -84,6 +84,7 @@
                         <field name="special_request" />
                         <field name="cancel_reason" invisible="state != 'cancelled'" />
                     </group>
+                    <notebook/>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" />

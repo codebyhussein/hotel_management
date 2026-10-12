@@ -35,14 +35,15 @@ and improve operational efficiency.
 
     'depends': [
         'base',
-        'mail',
+        'mail', 'account', 'product',
         'website',
         'crm',
     ],
 
     'data': [
-        # Security
         'security/hotel_security.xml',
+        'security/groups.xml',
+        'security/security.xml',
         'security/groups.xml',
         'security/ir.model.access.csv',
 
@@ -90,6 +91,9 @@ and improve operational efficiency.
         # Reports and Menus
         'views/room_report.xml',
         'views/menus.xml',
+        'views/folio_payment_views.xml',
+        'views/hotel_reservation_inherit_views.xml',
+        'report/folio_report.xml',
     ],
 
     'demo': [

@@ -39,16 +39,9 @@ class HotelReservation(models.Model):
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
     property_id = fields.Many2one(
-        'hotel.property', string='Property', related='room_id.property_id', store=True
-    )
-
-    room_type = fields.Selection([
-        ('single', 'Single'),
-        ('double', 'Double'),
-        ('triple', 'Triple'),
-        ('suite', 'Suite'),
-    ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
-
+        'hotel.property', string='Property', related='room_id.property_id', store=True)
+    room_type = fields.Selection(
+        related='room_id.room_type', string='Room Type', store=True)
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -194,9 +187,7 @@ class HotelReservation(models.Model):
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            rec.room_id.write({'status': 'needs_cleaning'})
-            # 🔴 التعديل هنا: استخدام status بدلاً من state
-            rec.room_id.write({'status': 'needs_cleaning'})
+            rec.room_id.write({'status': 'needs_cleaning'})  # Dareen: ينشئ housekeeping task
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""
