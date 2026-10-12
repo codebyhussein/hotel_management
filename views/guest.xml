@@ -27,6 +27,9 @@
                     <!-- Main Groups (Two Columns) -->
                     <group>
                         <group string="Contact Details">
+                            <field name="partner_id"
+                                   string="Linked Contact"
+                                   help="The contact / portal account this guest belongs to. Link it to the portal user's contact so the guest can see their reservations on the website."/>
                             <field name="email"/>
                             <field name="phone"/>
                             <field name="nationality_id"/>
@@ -93,7 +96,9 @@
             <search string="Search Guests">
                 <field name="name"/>
                 <field name="phone"/>
+                <field name="email"/>
                 <field name="id_number"/>
+                <field name="partner_id"/>
                 <filter string="VIP Guests" name="vip" domain="[('vip', '=', True)]"/>
                 <filter string="Blacklisted" name="blacklisted" domain="[('blacklisted', '=', True)]"/>
                 <filter string="Passports Only" name="passport" domain="[('id_type', '=', 'passport')]"/>
