@@ -2,7 +2,6 @@
 from odoo import api, fields, models
 from odoo.tools.misc import format_datetime
 
-# نفس منطق الـ list: confirmed = أزرق، checked_in = أخضر، cancelled/no_show = أحمر
 STATE_COLORS = {
     'draft': '#757575',
     'confirmed': '#1565c0',
@@ -22,12 +21,12 @@ class HotelReservationReport(models.AbstractModel):
         Reservation = self.env['hotel.reservation']
         reservations = Reservation.browse(docids)
 
-        guest_stays = {}      # عدد حجوزات الضيف المنتهية قبل كده
-        other_bookings = {}   # حجوزات قادمة لنفس الغرفة بعد خروج الضيف ده
-        next_booking = {}     # تاريخ أقرب حجز جاي بعده على نفس الغرفة
+        guest_stays = {}     
+        other_bookings = {}  
+        next_booking = {}   
         guest_phone = {}
         guest_email = {}
-        payments = {}         # يظهر تلقائياً أول ما paid_amount تتضاف للموديل
+        payments = {}        
         state_color = {}
 
         for rec in reservations:

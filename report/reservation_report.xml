@@ -27,7 +27,7 @@
                                 <td style="background-color:#6f42c1; color:#ffffff; padding:16px 20px;">
                                 <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#e6dcf7;">
                                     Reservation Details
-</div>
+                                </div>
                                     <div style="font-size:24px; font-weight:bold; color:#ffffff;">
                                         <span t-field="doc.name"/>
                                     </div>
@@ -85,7 +85,7 @@
                             </tr>
                         </table>
 
-                        <!-- Stay details: لون كل th لوحده عشان قالب أودو ما يكسرهوش -->
+
                         <table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
                             <thead>
                                 <tr>

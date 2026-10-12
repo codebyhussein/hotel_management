@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<!-- ========================================================== 
+Mail template: Arrival Reminder Sent one day before check-in.
+========================================================== -->
     <data noupdate="0">
         <record id="mail_template_reservation_reminder" model="mail.template">
             <field name="name">Hotel: Arrival Reminder</field>

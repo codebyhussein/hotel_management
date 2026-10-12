@@ -4,7 +4,6 @@ from datetime import timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
-# الإلغاء المجاني لحد يومين قبل الوصول (48 ساعة)
 CANCEL_FREE_DAYS = 2
 
 
@@ -61,14 +60,13 @@ class HotelReservation(models.Model):
         currency_field='currency_id', tracking=True)
     room_total = fields.Monetary(
         compute='_compute_room_total', store=True, currency_field='currency_id')
-    # Mahmoud (Feature 4) سيضيف folio_total / paid_amount / balance
+    # Mahmoud
     total_amount = fields.Monetary(
         compute='_compute_total_amount', store=True, currency_field='currency_id')
 
     special_request = fields.Text()
     cancel_reason = fields.Text(readonly=True, copy=False)
 
-    # ----  سياسة الإلغاء ----
     cancellation_fee = fields.Monetary(
         readonly=True, copy=False, currency_field='currency_id')
 
@@ -91,7 +89,7 @@ class HotelReservation(models.Model):
     reminder_sent = fields.Boolean(copy=False, readonly=True)
 
     # ------------------------------------------------------------------
-    # Sequence عند الإنشاء
+    # Sequence
     # ------------------------------------------------------------------
     @api.model_create_multi
     def create(self, vals_list):
@@ -167,6 +165,7 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Check-out date must be strictly after the Check-in date.'))
 
     @api.constrains('room_id', 'check_in', 'check_out', 'state')
+    @api.constrains('room_id', 'check_in', 'check_out', 'state')
     def _check_double_booking(self):
         for rec in self:
             if not (rec.room_id and rec.check_in and rec.check_out):
@@ -179,12 +178,15 @@ class HotelReservation(models.Model):
                 ('state', 'not in', ['cancelled', 'no_show']),
                 ('check_in', '<', rec.check_out),
                 ('check_out', '>', rec.check_in),
+                '|', ('state', '!=', 'checked_out'),
+                     ('actual_check_out', '=', False),
             ], limit=1)
             if overlap:
                 raise ValidationError(_(
                     'Room %(room)s is already booked for these dates (%(ref)s).',
                     room=rec.room_id.display_name, ref=overlap.name))
-
+                
+                
     @api.constrains('adults', 'children', 'room_id')
     def _check_capacity(self):
         for rec in self:
@@ -257,16 +259,24 @@ class HotelReservation(models.Model):
             rec.room_id.write({'state': 'occupied'})
 
     def action_check_out(self):
+        today = fields.Date.context_today(self)
         for rec in self:
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
             # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
-            rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            rec.room_id.write({'state': 'dirty'})  # Dareen: ينشئ housekeeping task
 
-    # ---- (7) Cancel + fee ----
+            vals = {'state': 'checked_out', 'actual_check_out': fields.Datetime.now()}
+
+            if today < rec.check_out and today > rec.check_in:
+                vals['check_out'] = today
+                rec.message_post(body=_(
+                    'Early check-out: stay shortened from %(old)s to %(new)s.',
+                    old=rec.check_out, new=today))
+            rec.write(vals)
+            rec.room_id.write({'state': 'dirty'}) 
+            
+                # ---- Cancel + fee ----
     def _get_cancellation_fee(self):
-        """مجاني لو الحجز Draft أو الإلغاء قبل الوصول بيومين أو أكتر، غير كده ليلة واحدة."""
         self.ensure_one()
         if self.state != 'confirmed' or not self.check_in:
             return 0.0
@@ -278,7 +288,6 @@ class HotelReservation(models.Model):
         return max(self.deposit_amount - fee, 0.0) if self.deposit_paid else 0.0
 
     def action_cancel(self):
-        """يفتح wizard لإدخال سبب الإلغاء (إجباري) ويعرض الغرامة."""
         self.ensure_one()
         if self.state not in ('draft', 'confirmed'):
             raise ValidationError(_('Only draft or confirmed reservations can be cancelled.'))
@@ -309,7 +318,7 @@ class HotelReservation(models.Model):
 
     def _mark_no_show(self, auto=False):
         for rec in self:
-            fee = rec.nightly_rate   # عدم الحضور = ليلة واحدة
+            fee = rec.nightly_rate  
             refund = rec._refund_for_fee(fee)
             rec.write({
                 'state': 'no_show',
@@ -326,7 +335,7 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Only confirmed reservations can be marked as No Show.'))
         self._mark_no_show()
 
-    # ---- (8) Deposit ----
+    # ---- Deposit ----
     def action_register_deposit(self):
         for rec in self:
             if rec.state not in ('draft', 'confirmed'):
@@ -341,7 +350,7 @@ class HotelReservation(models.Model):
             })
             rec.message_post(body=_('Deposit of %s received.') % rec.deposit_amount)
 
-    # ---- (1) Room change ----
+    # ----  Room change ----
     def action_change_room(self):
         self.ensure_one()
         if self.state not in ('confirmed', 'checked_in'):
@@ -372,7 +381,7 @@ class HotelReservation(models.Model):
         vals = {'room_id': new_room.id}
         if keep_rate:
             vals['nightly_rate'] = self.nightly_rate
-        self.write(vals)   # الـ constrains بتفحص التداخل والسعة
+        self.write(vals)   
 
         if self.state == 'checked_in':
             old_room.write({'state': 'dirty'})
@@ -382,7 +391,7 @@ class HotelReservation(models.Model):
             'Room changed from %(old)s to %(new)s. Reason: %(reason)s',
             old=old_room.display_name, new=new_room.display_name, reason=reason))
 
-            # ---- (2) Extend / shorten stay ----
+            # ---- Extend / shorten stay ----
     def action_extend_stay(self):
         self.ensure_one()
         if self.state not in ('confirmed', 'checked_in'):
@@ -409,7 +418,7 @@ class HotelReservation(models.Model):
             raise ValidationError(_('For an in-house guest, check-out must be after today. Use Check Out instead.'))
 
         old_total = self.room_total
-        # لو تمديد: الـ constrains (_check_double_booking) بترفض لو الغرفة محجوزة في الأيام الإضافية
+
         self.write({'check_out': new_checkout})
 
         diff = self.room_total - old_total
@@ -441,7 +450,6 @@ class HotelReservation(models.Model):
 
     @api.model
     def _cron_send_arrival_reminder(self):
-        """(11) تذكير للضيف قبل الوصول بيوم."""
         template = self.env.ref(
             'hotel_management.mail_template_reservation_reminder',
             raise_if_not_found=False)
@@ -460,8 +468,21 @@ class HotelReservation(models.Model):
             rec.reminder_sent = True
 
     @api.model
+    def _cron_auto_check_out(self):
+        today = fields.Date.context_today(self)
+        due = self.search([('state', '=', 'checked_in'), ('check_out', '<=', today)])
+        for rec in due:
+            try:
+                with self.env.cr.savepoint():
+                    rec.action_check_out()
+                    rec.message_post(body=_('Automatically checked out (check-out date reached).'))
+            except Exception as e:
+                rec.message_post(body=_('Auto check-out failed: %s') % e)
+
+
+
+    @api.model
     def create_from_website(self, vals):
-        """تُستدعى من الـ website/API. ترجّع dict منظم."""
         allowed = {'guest_id', 'room_id', 'check_in', 'check_out',
                    'adults', 'children', 'special_request'}
         clean = {k: v for k, v in (vals or {}).items() if k in allowed}

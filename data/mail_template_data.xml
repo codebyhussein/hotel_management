@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+
+<!-- ========================================================== 
+Mail template: Reservation Confirmation Sent to the guest when a reservation is confirmed.
+========================================================== -->
     <data noupdate="0">
         <record id="mail_template_reservation_confirmation" model="mail.template">
             <field name="name">Hotel: Reservation Confirmation</field>
