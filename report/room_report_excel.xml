@@ -70,6 +70,12 @@
                     <button string="Cancel"
                             special="cancel"
                             class="btn-secondary"/>
+                    <button
+                        name="action_print_pdf"
+                        string="Print PDF"
+                        type="object"
+                        class="btn-primary"
+                    />
 
                 </footer>
 

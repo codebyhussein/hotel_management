@@ -871,3 +871,9 @@ class RoomHistoryReportWizard(models.TransientModel):
             ) % self.id,
             'target': 'self',
         }
+    def action_print_pdf(self):
+        self.ensure_one()
+
+        return self.env.ref(
+            'hotel_management.action_report_room_history_pdf'
+        ).report_action(self)

@@ -60,6 +60,9 @@ class HotelRoom(models.Model):
     description = fields.Text(
     string='Description'
     )
+    floor_number = fields.Integer(
+    string='Floor Number'
+    )
 
         # All reservations linked to this room
     reservation_ids = fields.One2many(

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- PDF Report Action -->
+    <record id="action_report_room_history_pdf" model="ir.actions.report">  
+            
+
+        <field name="name">Room History PDF</field>
+        <field name="model">room.history.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management.report_room_history_pdf</field>
+        <field name="report_file">hotel_management.report_room_history_pdf</field>
+        <field name="print_report_name">'Room History - %s' % (object.room_id.room_number)</field>
+
+    </record>
+
+
+    <!-- PDF Report Template -->
+    <template id="report_room_history_pdf">
+
+        <t t-call="web.html_container">
+
+            <t t-foreach="docs" t-as="o">
+
+                <t t-call="web.external_layout">
+
+                    <div class="page">
+
+                        <h2 class="text-center">
+                            HOTEL - ROOM HISTORY REPORT
+                        </h2>
+
+                        <hr/>
+
+                        <!-- Room Information -->
+                        <h3>Room Information</h3>
+
+                        <table class="table table-sm table-bordered">
+
+                            <tbody>
+
+                                <tr>
+                                    <th>Room Number</th>
+                                    <td>
+                                        <span t-field="o.room_id.room_number"/>
+                                    </td>
+
+                                    <th>Room Type</th>
+                                    <td>
+                                        <span t-field="o.room_id.room_type"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Floor Number</th>
+                                    <td>
+                                        <span t-field="o.room_id.floor_number"/>
+                                    </td>
+
+                                    <th>Property</th>
+                                    <td>
+                                        <span t-field="o.room_id.property_id"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Capacity</th>
+                                    <td>
+                                        <span t-field="o.room_id.capacity"/>
+                                    </td>
+
+                                    <th>Nightly Rate</th>
+                                    <td>
+                                        <span t-field="o.room_id.price"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Current Status</th>
+                                    <td colspan="3">
+                                        <span t-field="o.room_id.status"/>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+
+                        <!-- Report Period -->
+                        <h3>Report Period</h3>
+
+                        <p>
+                            <strong>From:</strong>
+                            <span t-field="o.date_from"/>
+
+                            <strong>To:</strong>
+                            <span t-field="o.date_to"/>
+                        </p>
+
+
+                        <!-- Reservation History -->
+                        <t t-if="o.include_reservations">
+
+                            <h3>Reservation History</h3>
+
+                            <table class="table table-sm table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Guest</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Nights</th>
+                                        <th>Total Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <t t-set="reservations"
+                                       t-value="report_data[o.id]['reservations']"/>
+
+                                    <t t-if="reservations">
+
+                                        <tr t-foreach="reservations" t-as="reservation">
+
+                                            <td>
+                                                <span t-field="reservation.name"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.guest_id"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.check_in"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.check_out"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.nights"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.total_amount"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="reservation.state"/>
+                                            </td>
+
+                                        </tr>
+
+                                    </t>
+
+                                    <t t-else="">
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                No reservations found for this period.
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </tbody>
+
+                            </table>
+
+                        </t>
+
+
+                        <!-- Maintenance & Housekeeping History -->
+                        <t t-if="o.include_tasks">
+
+                            <h3>Maintenance &amp; Housekeeping History</h3>
+
+                            <table class="table table-sm table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Task Type</th>
+                                        <th>Maintenance Type</th>
+                                        <th>Assigned Employee</th>
+                                        <th>Scheduled Date</th>
+                                        <th>Completed Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <t t-set="tasks"
+                                       t-value="report_data[o.id]['tasks']"/>
+
+                                    <t t-if="tasks">
+
+                                        <tr t-foreach="tasks" t-as="task">
+
+                                            <td>
+                                                <span t-field="task.name"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.task_type"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.maintenance_type"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.assigned_user_id"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.scheduled_date"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.done_date"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.state"/>
+                                            </td>
+
+                                        </tr>
+
+                                    </t>
+
+                                    <t t-else="">
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                No tasks found for this period.
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </tbody>
+
+                            </table>
+
+                        </t>
+
+                    </div>
+
+                </t>
+
+            </t>
+
+        </t>
+
+    </template>
+
+</odoo>
