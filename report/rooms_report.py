@@ -96,7 +96,10 @@ class RoomHistoryReportWizard(models.TransientModel):
 
         room = self.room_id
 
-        # Validate date range
+        # =================================================
+        # Validate Date Range
+        # =================================================
+
         if (
             self.date_from
             and self.date_to
@@ -106,7 +109,10 @@ class RoomHistoryReportWizard(models.TransientModel):
                 _('Date From cannot be later than Date To.')
             )
 
-        # At least one section must be selected
+        # =================================================
+        # Validate Report Sections
+        # =================================================
+
         if (
             not self.include_reservations
             and not self.include_tasks
@@ -164,8 +170,7 @@ class RoomHistoryReportWizard(models.TransientModel):
                 ('task_type', '=', self.task_type)
             )
 
-        # Maintenance Type applies only to maintenance tasks.
-        # If Housekeeping is selected, ignore maintenance type.
+        # Filter by maintenance type
         if (
             self.maintenance_type
             and self.maintenance_type != 'all'
@@ -174,6 +179,7 @@ class RoomHistoryReportWizard(models.TransientModel):
             task_domain.append(
                 ('task_type', '=', 'maintenance')
             )
+
             task_domain.append(
                 ('maintenance_type', '=', self.maintenance_type)
             )
@@ -271,6 +277,19 @@ class RoomHistoryReportWizard(models.TransientModel):
             'border': 1,
             'border_color': '#D9D9D9',
             'bg_color': '#F2F7FC',
+            'valign': 'vcenter',
+            'text_wrap': True,
+        })
+
+        # Special format for merged room number
+        room_number_format = workbook.add_format({
+            'bold': True,
+            'font_size': 12,
+            'font_color': '#1F1F1F',
+            'bg_color': '#E2F0D9',
+            'border': 1,
+            'border_color': '#D9D9D9',
+            'align': 'center',
             'valign': 'vcenter',
             'text_wrap': True,
         })
@@ -509,7 +528,6 @@ class RoomHistoryReportWizard(models.TransientModel):
 
         worksheet.set_row(2, 25)
 
-        # Start report content at Excel row 6 (zero-based row 5)
         row = 5
 
         # =================================================
@@ -645,7 +663,9 @@ class RoomHistoryReportWizard(models.TransientModel):
             if self.include_reservations:
                 row += 2
 
+            # Room Number is added as the first column.
             maintenance_headers = [
+                'Room Number',
                 'Task Name',
                 'Task Type',
                 'Maintenance Type',
@@ -700,10 +720,14 @@ class RoomHistoryReportWizard(models.TransientModel):
                 task_model._fields['state'].selection
             )
 
+            # Keep track of the first and last row for this room.
+            room_tasks_start_row = row
+
             for index, task in enumerate(tasks):
                 alternate = index % 2 == 1
 
                 values = [
+                    # Room Number is written separately below.
                     task.name or '',
                     task_type_labels.get(
                         task.task_type,
@@ -724,9 +748,12 @@ class RoomHistoryReportWizard(models.TransientModel):
                     task.description or '',
                 ]
 
-                for col, value in enumerate(values):
+                # Write the remaining task columns.
+                # Column 0 is reserved for the merged room number.
+                for value_index, value in enumerate(values):
+                    col = value_index + 1
 
-                    if col in (4, 5, 6):
+                    if col in (5, 6, 7):
                         write_date(
                             row,
                             col,
@@ -745,7 +772,31 @@ class RoomHistoryReportWizard(models.TransientModel):
                 worksheet.set_row(row, 42)
                 row += 1
 
-            if not tasks:
+            room_tasks_end_row = row - 1
+
+            # =================================================
+            # Merge Room Number Across All Task Rows
+            # =================================================
+
+            if tasks:
+                if room_tasks_start_row == room_tasks_end_row:
+                    worksheet.write(
+                        room_tasks_start_row,
+                        0,
+                        room.room_number or '',
+                        room_number_format,
+                    )
+                else:
+                    worksheet.merge_range(
+                        room_tasks_start_row,
+                        0,
+                        room_tasks_end_row,
+                        0,
+                        room.room_number or '',
+                        room_number_format,
+                    )
+
+            else:
                 worksheet.merge_range(
                     row,
                     0,
@@ -768,16 +819,16 @@ class RoomHistoryReportWizard(models.TransientModel):
         # =================================================
 
         column_widths = {
-            0: 25,   # Reservation Reference / Task Name
-            1: 25,   # Guest / Task Type
-            2: 23,   # Room Type / Maintenance Type
-            3: 23,   # Check-in / Assigned Staff
-            4: 19,   # Check-out / Scheduled Date
-            5: 19,   # Adults / Start Date
-            6: 19,   # Children / Done Date
-            7: 17,   # Nights / Status
-            8: 25,   # Nightly Rate / Description
-            9: 17,   # Room Total
+            0: 16,  # Room Number / Reservation Reference
+            1: 25,  # Guest / Task Name
+            2: 23,  # Room Type / Task Type
+            3: 23,  # Check-in / Maintenance Type
+            4: 23,  # Check-out / Assigned Staff
+            5: 19,  # Adults / Scheduled Date
+            6: 19,  # Children / Start Date
+            7: 19,  # Nights / Done Date
+            8: 25,  # Nightly Rate / Status
+            9: 20,  # Room Total / Description
             10: 17,  # Total Amount
             11: 17,  # Reservation Status
         }
@@ -871,10 +922,14 @@ class RoomHistoryReportWizard(models.TransientModel):
             ) % self.id,
             'target': 'self',
         }
+
+    # =====================================================
+    # Print PDF
+    # =====================================================
+
     def action_print_pdf(self):
         self.ensure_one()
 
         return self.env.ref(
             'hotel_management.action_report_room_history_pdf'
         ).report_action(self)
-    # add commit
