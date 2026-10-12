@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_lead_view_form_hotel" model="ir.ui.view">
+        <field name="name">crm.lead.form.hotel</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Convert button -->
+            <xpath expr="//header" position="inside">
+                <button name="action_convert_to_guest_reservation"
+                        type="object"
+                        string="Convert to Guest + Reservation"
+                        class="btn-primary"
+                        invisible="reservation_id"/>
+            </xpath>
+
+            <!-- Hotel inquiry details -->
+            <xpath expr="//sheet" position="inside">
+                <group string="Hotel Inquiry">
+                    <group>
+                        <field name="lead_source"/>
+                        <field name="room_id"/>
+                        <field name="id_number"/>
+                        <field name="balance"/>
+                        <field name="adults"/>
+                        <field name="children"/>
+                    </group>
+                    <group>
+                        <field name="check_in"/>
+                        <field name="check_out"/>
+                        <field name="guest_id"/>
+                        <field name="reservation_id"/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -28,6 +28,7 @@ class HotelGuest(models.Model):
     _sql_constraints = [
         ('unique_id_number', 'unique(id_number)', 'The ID/Passport number must be unique!')
     ]
+    balance = fields.Float(string='Balance', )
     reservation_ids = fields.One2many(
         'hotel.reservation',
         'guest_id',
