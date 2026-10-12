@@ -57,6 +57,7 @@ class HotelReservation(models.Model):
             'currency_id': self.currency_id.id,
             'invoice_line_ids': lines,
         })
+        move.action_post()
         self.invoice_id = move
         self.folio_line_ids.write({'invoice_id': move.id})
         return move
