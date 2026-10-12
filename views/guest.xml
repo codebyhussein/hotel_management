@@ -36,6 +36,7 @@
                         <group string="Identification &amp; Status">
                             <field name="id_type"/>
                             <field name="id_number"/>
+                            <field name="balance"/>
                             <field name="vip"/>
                             <field name="blacklisted"/>
                             <field name="active"/>
@@ -56,8 +57,8 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Notes" name="notes">
-                            <field name="notes" placeholder="Add guest preferences or special notes..."/>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Add guest preferences or special description..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -76,6 +77,7 @@
                 <field name="email"/>
                 <field name="id_type"/>
                 <field name="id_number"/>
+                <field name="balance"/>
                 <field name="vip" widget="boolean_toggle"/>
                 <field name="blacklisted" widget="boolean_toggle"/>
                 <field name="total_stays"/>
