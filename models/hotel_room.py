@@ -1,5 +1,5 @@
 from odoo import models, fields , api
-
+from odoo.exceptions import ValidationError
 
 class HotelRoom(models.Model):
     _name = 'hotel.room'
@@ -23,10 +23,6 @@ class HotelRoom(models.Model):
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', required=True)
-    room_image = fields.Binary(
-        string='Room Image',
-    
-    )
 
     price = fields.Float(
         string='Price',
@@ -63,6 +59,9 @@ class HotelRoom(models.Model):
 
     description = fields.Text(
     string='Description'
+    )
+    floor_number = fields.Integer(
+    string='Floor Number'
     )
 
         # All reservations linked to this room
@@ -191,13 +190,7 @@ class HotelRoom(models.Model):
                 'default_room_id': self.id,
             },
         }
-    _sql_constraints = [
-    (
-        'room_number_property_unique',
-        'UNIQUE(room_number, property_id)',
-        'Room number must be unique within the same property!'
-    ),
-]
+
     def action_open_room_task_wizard(self):
         self.ensure_one()
 
@@ -214,3 +207,17 @@ class HotelRoom(models.Model):
                 'default_room_id': self.id,
             },
         }
+    @api.constrains('room_number', 'property_id')
+    def _check_room_number_unique(self):
+        for room in self:
+            if room.room_number and room.property_id:
+                existing_room = self.search([
+                    ('room_number', '=', room.room_number),
+                    ('property_id', '=', room.property_id.id),
+                    ('id', '!=', room.id),
+                ], limit=1)
+
+                if existing_room:
+                    raise ValidationError(
+                        'Room number must be unique within the same property!'
+                    )

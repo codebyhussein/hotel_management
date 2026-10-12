@@ -1,4 +1,3 @@
-
 {
     'name': "Hotel Management",
 
@@ -55,7 +54,6 @@ and improve operational efficiency.
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
-<<<<<<< HEAD
 
         'views/crm_lead_view.xml',
         # wizards
@@ -66,7 +64,6 @@ and improve operational efficiency.
         'views/online_booking_templates.xml',
 
         # Menus
-=======
         'wizard/room_report_excel.xml',
         'wizard/room_report_piecharm.xml',
 
@@ -75,7 +72,6 @@ and improve operational efficiency.
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
         'views/room_report.xml',
->>>>>>> origin/room_feature
         'views/menus.xml',
         'wizard/room_service.xml',
         
