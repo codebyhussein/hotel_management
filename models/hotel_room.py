@@ -1,5 +1,6 @@
-from odoo import models, fields , api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+
 
 class HotelRoom(models.Model):
     _name = 'hotel.room'
@@ -14,7 +15,11 @@ class HotelRoom(models.Model):
     room_number = fields.Char(
         string='Room Number',
         required=True,
-        index=True
+        index=True,
+        copy=False,
+        readonly=True,
+        default='New',
+        tracking=True,
     )
 
     room_type = fields.Selection([
@@ -23,14 +28,15 @@ class HotelRoom(models.Model):
         ('triple', 'Triple'),
         ('suite', 'Suite'),
     ], string='Room Type', required=True)
-    room_image= fields.Binary(
+
+    room_image = fields.Binary(
         string='Room Image',
         attachment=True,
     )
 
     price = fields.Float(
         string='Price',
-        required=True
+        required=True,
     )
 
     capacity = fields.Integer(
@@ -39,6 +45,7 @@ class HotelRoom(models.Model):
         store=True,
         readonly=True,
     )
+
     nightly_rate = fields.Float(
         related='price',
         string='Nightly Rate',
@@ -52,54 +59,55 @@ class HotelRoom(models.Model):
         index=True,
         default=lambda self: self.env.user.property_id,
     )
+
     employee_name = fields.Many2one(
-    'res.users',
-    string='Employee Name',
-    required=True,
-    
-    index=True,
-   
+        'res.users',
+        string='Employee Name',
+        required=True,
+        index=True,
     )
 
     description = fields.Text(
-    string='Description'
-    )
-    floor_number = fields.Integer(
-    string='Floor Number'
+        string='Description',
     )
 
-        # All reservations linked to this room
+    floor_number = fields.Integer(
+        string='Floor Number',
+    )
+
+    # =========================
+    # Reservations
+    # =========================
+
     reservation_ids = fields.One2many(
         'hotel.reservation',
         'room_id',
-        string='Reservations'
+        string='Reservations',
     )
 
     reservation_count = fields.Integer(
         string='Reservations Count',
-        compute='_compute_room_history_counts'
+        compute='_compute_room_history_counts',
     )
 
-    # All housekeeping and maintenance tasks linked to this room
+    # =========================
+    # Housekeeping & Maintenance
+    # =========================
+
     housekeeping_task_ids = fields.One2many(
         'hotel.housekeeping.task',
         'room_id',
-        string='Housekeeping Tasks'
+        string='Housekeeping Tasks',
     )
 
     maintenance_count = fields.Integer(
         string='Maintenance Count',
-        compute='_compute_room_history_counts'
+        compute='_compute_room_history_counts',
     )
 
-
-
-    
     # =========================
     # Room Status
     # =========================
-
-
 
     status = fields.Selection([
         ('available', 'Available'),
@@ -107,10 +115,76 @@ class HotelRoom(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('needs_cleaning', 'Needs Cleaning'),
     ], string='Status', default='available', required=True, tracking=True)
+
+    # =========================
+    # Room Sequence
+    # =========================
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            property_id = vals.get('property_id')
+
+            if not property_id:
+                property_id = self.env.user.property_id.id
+
+                if property_id:
+                    vals['property_id'] = property_id
+
+            room_number = vals.get('room_number', 'New')
+
+            if room_number == 'New':
+                if not property_id:
+                    raise ValidationError(
+                        _('Please select a Property before creating a room.')
+                    )
+
+                sequence_code = f'hotel.room.{property_id}'
+
+                sequence = self.env['ir.sequence'].sudo().search([
+                    ('code', '=', sequence_code),
+                ], limit=1)
+
+                if not sequence:
+                    sequence = self.env['ir.sequence'].sudo().create({
+                        'name': f'Room Sequence - Property {property_id}',
+                        'code': sequence_code,
+                        'prefix': '',
+                        'padding': 3,
+                        'number_next': 1,
+                        'number_increment': 1,
+                        'implementation': 'standard',
+                        'company_id': False,
+                    })
+
+                next_number = sequence.next_by_id()
+
+                if not next_number:
+                    raise ValidationError(
+                        _('Could not generate a room number for this Property.')
+                    )
+
+                vals['room_number'] = next_number
+
+        return super().create(vals_list)
+
+    # =========================
+    # Display Name
+    # =========================
+
     @api.depends('room_number')
     def _compute_display_name(self):
         for room in self:
-            room.display_name = f"Room {room.room_number}" if room.room_number else 'New Room'
+            room.display_name = (
+                f"Room {room.room_number}"
+                if room.room_number
+                else 'New Room'
+            )
+
+    # =========================
+    # Capacity
+    # =========================
+
     @api.depends('room_type')
     def _compute_capacity(self):
         capacity_map = {
@@ -119,8 +193,14 @@ class HotelRoom(models.Model):
             'triple': 3,
             'suite': 2,
         }
+
         for room in self:
             room.capacity = capacity_map.get(room.room_type, 0)
+
+    # =========================
+    # Room Status Actions
+    # =========================
+
     def action_set_available(self):
         self.write({'status': 'available'})
 
@@ -133,10 +213,14 @@ class HotelRoom(models.Model):
     def action_set_needs_cleaning(self):
         self.write({'status': 'needs_cleaning'})
 
+    # =========================
+    # Room History Counts
+    # =========================
+
     @api.depends(
-    'reservation_ids',
-    'housekeeping_task_ids',
-    'housekeeping_task_ids.task_type'
+        'reservation_ids',
+        'housekeeping_task_ids',
+        'housekeeping_task_ids.task_type',
     )
     def _compute_room_history_counts(self):
         for room in self:
@@ -147,6 +231,11 @@ class HotelRoom(models.Model):
                     lambda task: task.task_type == 'maintenance'
                 )
             )
+
+    # =========================
+    # View Reservations
+    # =========================
+
     def action_view_reservations(self):
         self.ensure_one()
 
@@ -156,13 +245,16 @@ class HotelRoom(models.Model):
             'res_model': 'hotel.reservation',
             'view_mode': 'tree,form',
             'domain': [
-                ('room_id', '=', self.id)
+                ('room_id', '=', self.id),
             ],
             'context': {
                 'default_room_id': self.id,
             },
         }
 
+    # =========================
+    # View Maintenance
+    # =========================
 
     def action_view_maintenance(self):
         self.ensure_one()
@@ -181,6 +273,11 @@ class HotelRoom(models.Model):
                 'default_task_type': 'maintenance',
             },
         }
+
+    # =========================
+    # Room History Report Wizard
+    # =========================
+
     def action_open_room_history_report(self):
         self.ensure_one()
 
@@ -194,6 +291,10 @@ class HotelRoom(models.Model):
                 'default_room_id': self.id,
             },
         }
+
+    # =========================
+    # Room Task Wizard
+    # =========================
 
     def action_open_room_task_wizard(self):
         self.ensure_one()
@@ -211,6 +312,11 @@ class HotelRoom(models.Model):
                 'default_room_id': self.id,
             },
         }
+
+    # =========================
+    # Unique Room Number per Property
+    # =========================
+
     @api.constrains('room_number', 'property_id')
     def _check_room_number_unique(self):
         for room in self:
@@ -223,5 +329,8 @@ class HotelRoom(models.Model):
 
                 if existing_room:
                     raise ValidationError(
-                        'Room number must be unique within the same property!'
+                        _(
+                            'Room number must be unique '
+                            'within the same property!'
+                        )
                     )
