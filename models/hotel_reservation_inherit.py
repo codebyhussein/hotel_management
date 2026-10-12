@@ -12,7 +12,7 @@ class HotelReservation(models.Model):
     paid_amount = fields.Monetary(compute='_compute_balance', store=True)
     balance = fields.Monetary(compute='_compute_balance', store=True)
     invoice_id = fields.Many2one('account.move', readonly=True, copy=False)
-
+    
     @api.depends('room_total', 'folio_line_ids.amount','payment_ids.amount', 'payment_ids.state')
     def _compute_balance(self):
         for r in self:

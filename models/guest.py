@@ -20,7 +20,22 @@ class HotelGuest(models.Model):
     total_stays = fields.Integer(string='Total Stays', compute='_compute_total_stays')
     notes = fields.Text(string='Notes')
     active = fields.Boolean(string='Active', default=True)
+    # Inherit balance field from hotel_reservation
+    
+    reservation_ids = fields.One2many('hotel.reservation', 'guest_id', string='Reservations')
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id.id)
+    deposit = fields.Monetary(string='Deposit', currency_field='currency_id')
+    charges = fields.Monetary(string='Charges', compute='_compute_balance', store=True, currency_field='currency_id')
+    balance = fields.Monetary(string='Balance', compute='_compute_balance', store=True, currency_field='currency_id')
 
+    
+    @api.depends('deposit', 'reservation_ids.state','reservation_ids.room_total','reservation_ids.folio_line_ids.amount')
+    def _compute_balance(self):
+        for g in self:
+            res = g.reservation_ids.filtered(lambda r: r.state not in ('cancelled', 'no_show'))
+            g.charges = sum(res.mapped('room_total')) + sum(res.mapped('folio_line_ids.amount'))
+            g.balance = (g.deposit or 0.0) - (g.charges or 0.0)
+    
     _sql_constraints = [
         ('unique_id_number', 'unique(id_number)', 'The ID/Passport number must be unique!')
     ]

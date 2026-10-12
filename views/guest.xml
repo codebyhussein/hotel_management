@@ -28,6 +28,12 @@
                             <field name="active"/>
                         </group>
                     </group>
+                    <!-- Guest deposit / balance: deposit (manual) minus charges from reservations + folio lines. -->
+                    <group string="Financials" name="financials">
+                        <field name="deposit"/>
+                        <field name="charges"/>
+                        <field name="balance"/>
+                    </group>
                     <notebook>
                         <page string="Notes">
                             <field name="notes"/>

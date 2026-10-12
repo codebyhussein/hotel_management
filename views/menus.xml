@@ -55,7 +55,7 @@
               name="Reservations"
               parent="menu_hotel_management_root"
               action="action_hotel_reservation"
-              sequence="50"/>
+              sequence="40"/>
  
               
 </odoo>
