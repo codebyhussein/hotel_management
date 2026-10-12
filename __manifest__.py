@@ -41,16 +41,14 @@ and improve operational efficiency.
     ],
 
     'data': [
+        'security/security_group.xml',
         'security/hotel_security.xml',
-        'security/groups.xml',
-        'security/security.xml',
-        'security/groups.xml',
         'security/ir.model.access.csv',
 
         # Data
         'data/hotel_reservation_data.xml',
         'data/inquiry_confirmation.xml',
-        'data/maintenance_sequence.xml',
+        'data/ir_sequence.xml',
 
         # Views
         'views/guest.xml',
@@ -64,7 +62,7 @@ and improve operational efficiency.
         # wizards
         'views/maintenance_request.xml',
         'views/mail_template.xml',
-        
+
         # Website Templates
         'views/homepage.xml',
         'views/room_templates_website.xml',
@@ -74,8 +72,8 @@ and improve operational efficiency.
         'views/hotel_room.xml',
 
         # Wizards
-        
-        
+
+
         'wizard/room_service.xml',
 
         # PDF Report
@@ -84,7 +82,7 @@ and improve operational efficiency.
         'report/room_report_piecharm.xml',
 
         # Other Views
-         
+
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
 
