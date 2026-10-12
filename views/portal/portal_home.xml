@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         Portal home page (/my) - Nile Vista theme
+         Palette: Navy #1B2A41 | Gold #C9A24B | Cream #F7F3EA
+    ====================================================== -->
+    <template id="portal_my_home_hotel_dashboard"
+              name="Hotel Dashboard Cards"
+              inherit_id="portal.portal_my_home"
+              priority="30">
+
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+
+            <!-- ===== Page styles (whole /my page) ===== -->
+            <style>
+                @keyframes nvHomeFadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(18px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                /* ---------- Welcome hero ---------- */
+
+                .nv-home {
+                    font-family: Arial, sans-serif;
+                    color: #1B2A41;
+                }
+
+                .nv-home .nv-home-hero {
+                    position: relative;
+                    overflow: hidden;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 14px;
+                    padding: 30px;
+                    margin-bottom: 22px;
+                    background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
+                    color: #F7F3EA;
+                    border-radius: 14px;
+                    box-shadow: 0 10px 30px rgba(20, 32, 47, 0.18);
+                    animation: nvHomeFadeIn 0.6s ease both;
+                }
+
+                .nv-home .nv-home-hero::before {
+                    content: "";
+                    position: absolute;
+                    width: 260px;
+                    height: 260px;
+                    border: 1px solid rgba(201, 162, 75, 0.28);
+                    border-radius: 50%;
+                    top: -120px;
+                    right: -60px;
+                    pointer-events: none;
+                }
+
+                .nv-home .nv-home-hero-text {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .nv-home .nv-home-eyebrow {
+                    color: #D9B96A;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 1.5px;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                }
+
+                .nv-home .nv-home-hero h3 {
+                    color: #F7F3EA;
+                    font-weight: 700;
+                    margin: 0;
+                }
+
+                .nv-home .nv-home-btn {
+                    position: relative;
+                    z-index: 1;
+                    display: inline-block;
+                    padding: 10px 22px;
+                    background-color: #C9A24B;
+                    border: 2px solid #C9A24B;
+                    border-radius: 6px;
+                    color: #1B2A41;
+                    font-weight: 700;
+                    font-size: 14px;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+                }
+
+                .nv-home .nv-home-btn:hover {
+                    background-color: #D9B96A;
+                    border-color: #D9B96A;
+                    color: #14202F;
+                    transform: translateY(-2px);
+                }
+
+                .nv-home .nv-home-section {
+                    color: #1B2A41;
+                    font-weight: 700;
+                    margin: 30px 0 14px;
+                }
+
+                .nv-home .nv-invoice-row {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) minmax(110px, auto) auto;
+                    gap: 16px;
+                    padding: 14px 4px;
+                    border-bottom: 1px solid #E6DCC3;
+                    color: #1B2A41;
+                    text-decoration: none;
+                }
+
+                .nv-home .nv-invoice-row:hover {
+                    color: #8A6D2B;
+                    background-color: #FBF8F1;
+                }
+
+                .nv-home .nv-invoice-total {
+                    font-weight: 700;
+                    text-align: right;
+                }
+
+                .o_portal_docs #portal_vendor_category {
+                    display: none !important;
+                }
+
+                /* ---------- Dashboard cards ---------- */
+
+                .nv-home .nv-dash-card {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    height: 100%;
+                    padding: 26px 22px;
+                    background-color: #ffffff !important;
+                    border: 1px solid #E6DCC3;
+                    border-radius: 12px !important;
+                    box-shadow: 0 5px 18px rgba(27, 42, 65, 0.06);
+                    text-decoration: none;
+                    text-align: center;
+                    transition: transform 0.35s ease,
+                                box-shadow 0.35s ease,
+                                border-color 0.35s ease;
+                    animation: nvHomeFadeIn 0.7s ease both;
+                }
+
+                .nv-home .nv-dash-card:hover {
+                    transform: translateY(-8px);
+                    border-color: #C9A24B;
+                    box-shadow: 0 16px 35px rgba(27, 42, 65, 0.14);
+                }
+
+                .nv-home .nv-dash-icon {
+                    width: 70px;
+                    height: 70px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 16px;
+                    border-radius: 50%;
+                    background-color: #EFE6D0;
+                    color: #B38F3F;
+                    font-size: 28px;
+                    transition: all 0.35s ease;
+                }
+
+                .nv-home .nv-dash-card:hover .nv-dash-icon {
+                    background-color: #1B2A41;
+                    color: #C9A24B;
+                    transform: scale(1.08) rotate(5deg);
+                }
+
+                .nv-home .nv-dash-label {
+                    display: block;
+                    color: #8490A0;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 1.2px;
+                    text-transform: uppercase;
+                    margin-bottom: 6px;
+                }
+
+                .nv-home .nv-dash-number {
+                    display: block;
+                    color: #1B2A41;
+                    font-size: 38px;
+                    font-weight: 700;
+                    line-height: 1.1;
+                    margin-bottom: 8px;
+                }
+
+                .nv-home .nv-dash-number small {
+                    color: #8490A0;
+                    font-size: 16px;
+                    font-weight: 400;
+                }
+
+                .nv-home .nv-dash-sub {
+                    display: block;
+                    color: #5B6677;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    margin-top: auto;
+                }
+
+                .nv-home .nv-dash-empty-badge {
+                    display: inline-block;
+                    margin: 0 auto 10px;
+                    padding: 5px 12px;
+                    border-radius: 20px;
+                    background-color: #DDF3E4;
+                    color: #1E7A3C;
+                    font-size: 12px;
+                    font-weight: 700;
+                }
+
+                /* ---------- Default Odoo tiles (Invoices, Security...) ---------- */
+
+/* The element holding the tiles becomes ONE full-width column,
+                   whatever its original class is (row, list-group, grid...). */
+                :has(> .o_portal_index_card) {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    flex-wrap: nowrap !important;
+                    align-items: stretch !important;
+                    gap: 16px;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+
+                /* Each tile spans the full width (overrides col-md-6 etc.) */
+                .o_portal_index_card {
+                    display: block !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    flex: 0 0 auto !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+
+                /* Horizontal card: icon | title + text | arrow */
+                .o_portal_docs .o_portal_index_card > a {
+                    position: relative;
+                    display: flex !important;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 18px;
+                    width: 100% !important;
+                    height: 100%;
+                    padding: 22px 54px 22px 22px;
+                    background-color: #ffffff !important;
+                    border: 1px solid #E6DCC3;
+                    border-radius: 12px !important;
+                    box-shadow: 0 5px 18px rgba(27, 42, 65, 0.06);
+                    text-decoration: none;
+                    text-align: left;
+                    transition: transform 0.35s ease,
+                                box-shadow 0.35s ease,
+                                border-color 0.35s ease;
+                    animation: nvHomeFadeIn 0.7s ease both;
+                }
+
+                .o_portal_docs .o_portal_index_card > a:hover {
+                    transform: translateY(-6px);
+                    border-color: #C9A24B;
+                    box-shadow: 0 16px 35px rgba(27, 42, 65, 0.14);
+                }
+
+                /* Hide the original illustration, use a themed icon */
+                .o_portal_docs .o_portal_index_card img,
+                .o_portal_docs .o_portal_index_card .o_portal_icon {
+                    display: none !important;
+                }
+
+                .o_portal_docs .o_portal_index_card > a::before {
+                    content: "\f15c";
+                    font-family: FontAwesome;
+                    font-style: normal;
+                    flex: 0 0 58px;
+                    width: 58px;
+                    height: 58px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 50%;
+                    background-color: #EFE6D0;
+                    color: #B38F3F;
+                    font-size: 24px;
+                    transition: all 0.35s ease;
+                }
+
+                .o_portal_docs .o_portal_index_card > a:hover::before {
+                    background-color: #1B2A41;
+                    color: #C9A24B;
+                    transform: scale(1.08) rotate(5deg);
+                }
+
+                /* Icon for the invoices tiles */
+                .o_portal_docs .o_portal_index_card > a[href^="/my/invoices"]::before {
+                    content: "\f0f6";
+                }
+
+                /* Our own "Your Invoices" card comes first; hide Odoo's duplicate */
+                .o_portal_index_card.nv-invoices-card {
+                    order: -1;
+                }
+
+                .o_portal_index_card:not(.nv-invoices-card):has(> a[href^="/my/invoices"]) {
+                    display: none !important;
+                }
+
+                /* "Our Invoices" (vendor bills) card is not used in the hotel portal */
+                .o_portal_index_card:has(> a[href^="/my/vendor_bills"]),
+                .o_portal_index_card:has(> a[href*="vendor"]),
+                .o_portal_index_card:has(> a[href*="bill"]),
+                .o_portal_index_card.nv-hidden-card {
+                    display: none !important;
+                }
+
+                .o_portal_docs .o_portal_index_card > a[href^="/my/security"]::before {
+                    content: "\f132";
+                }
+
+                /* Arrow on the right */
+                .o_portal_docs .o_portal_index_card > a::after {
+                    content: "\f105";
+                    font-family: FontAwesome;
+                    position: absolute;
+                    right: 24px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #C9A24B;
+                    font-size: 26px;
+                    transition: right 0.3s ease, color 0.3s ease;
+                }
+
+                .o_portal_docs .o_portal_index_card > a:hover::after {
+                    right: 16px;
+                    color: #1B2A41;
+                }
+
+                /* Text block */
+                .o_portal_docs .o_portal_index_card > a > div {
+                    flex: 1;
+                    min-width: 0;
+                    text-align: left;
+                }
+
+                .o_portal_docs .o_portal_index_card h5,
+                .o_portal_docs .o_portal_index_card .h5 {
+                    color: #1B2A41;
+                    font-size: 17px;
+                    font-weight: 700;
+                    margin: 0 0 4px;
+                }
+
+                .o_portal_docs .o_portal_index_card p,
+                .o_portal_docs .o_portal_index_card .text-muted {
+                    color: #5B6677 !important;
+                    font-size: 14px;
+                    line-height: 1.6;
+                    margin: 0;
+                }
+
+                .o_portal_docs .o_portal_index_card .badge {
+                    background-color: #C9A24B !important;
+                    color: #1B2A41 !important;
+                    font-weight: 700;
+                }
+
+                /* ---------- Profile sidebar ---------- */
+
+                #o_my_sidebar .o_portal_my_details,
+                #o_my_sidebar > div:first-child {
+                    padding: 22px;
+                    background-color: #ffffff;
+                    border: 1px solid #E6DCC3;
+                    border-radius: 12px;
+                    box-shadow: 0 5px 18px rgba(27, 42, 65, 0.06);
+                    animation: nvHomeFadeIn 0.7s ease both;
+                }
+
+                #o_my_sidebar img {
+                    border: 2px solid #C9A24B;
+                    border-radius: 50%;
+                    background-color: #EFE6D0;
+                }
+
+                #o_my_sidebar a[href="/my/account"] {
+                    display: inline-block;
+                    margin-top: 10px;
+                    padding: 6px 16px;
+                    border: 2px solid #1B2A41;
+                    border-radius: 6px;
+                    color: #1B2A41;
+                    font-size: 13px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+                }
+
+                #o_my_sidebar a[href="/my/account"]:hover {
+                    background-color: #1B2A41;
+                    color: #F7F3EA;
+                }
+
+                #o_my_sidebar a[href="/my/account"] i {
+                    color: #B38F3F;
+                }
+
+                #o_my_sidebar a[href="/my/account"]:hover i {
+                    color: #C9A24B;
+                }
+
+                /* ---------- Responsive ---------- */
+
+                @media (max-width: 575px) {
+                    .nv-home .nv-home-hero {
+                        padding: 24px 20px;
+                    }
+
+                    .nv-home .nv-invoice-row {
+                        grid-template-columns: minmax(0, 1fr) auto;
+                        gap: 4px 12px;
+                    }
+
+                    .nv-home .nv-invoice-date {
+                        grid-column: 1;
+                    }
+
+                    .nv-home .nv-invoice-total {
+                        grid-column: 2;
+                        grid-row: 1 / span 2;
+                        align-self: center;
+                    }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .nv-home *,
+                    .o_portal_docs .o_portal_index_card > a,
+                    #o_my_sidebar .o_portal_my_details {
+                        animation-duration: 0.01ms !important;
+                        transition-duration: 0.01ms !important;
+                    }
+                }
+            </style>
+
+            <!-- ===== Welcome hero + dashboard cards ===== -->
+            <div class="nv-home mb-4" t-if="hotel_dashboard">
+
+                <div class="nv-home-hero">
+                    <div class="nv-home-hero-text">
+                        <div class="nv-home-eyebrow">Nile Vista Hotel</div>
+                        <h3>
+                            Welcome back,
+                            <span t-out="request.env.user.name"/>
+                        </h3>
+                    </div>
+
+                    <a href="/rooms" class="nv-home-btn">
+                        Book a Room
+                        <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                    </a>
+                </div>
+
+                <div class="row g-3">
+
+                    <!-- My reservations -->
+                    <div class="col-md-4">
+                        <a href="/my/hotel/reservations" class="nv-dash-card">
+                            <div class="nv-dash-icon">
+                                <i class="fa fa-calendar-check-o" aria-hidden="true"/>
+                            </div>
+                            <span class="nv-dash-label">My Reservations</span>
+                            <span class="nv-dash-number"
+                                  t-out="hotel_dashboard['reservation_count']"/>
+                            <span class="nv-dash-sub">View all my reservations</span>
+                        </a>
+                    </div>
+
+                    <!-- Rooms I booked (current and upcoming) -->
+                    <div class="col-md-4">
+                        <a href="/my/hotel/reservations" class="nv-dash-card">
+                            <div class="nv-dash-icon">
+                                <i class="fa fa-bed" aria-hidden="true"/>
+                            </div>
+                            <span class="nv-dash-label">Booked Rooms</span>
+                            <span class="nv-dash-number"
+                                  t-out="hotel_dashboard['booked_rooms_count']"/>
+                            <span class="nv-dash-sub">
+                                Current and upcoming stays
+                            </span>
+                        </a>
+                    </div>
+
+                    <!-- Hotel availability today -->
+                    <div class="col-md-4">
+                        <a href="/rooms" class="nv-dash-card">
+                            <div class="nv-dash-icon">
+                                <i class="fa fa-building-o" aria-hidden="true"/>
+                            </div>
+                            <span class="nv-dash-label">Available Rooms Today</span>
+                            <span class="nv-dash-number">
+                                <t t-out="hotel_dashboard['available_rooms_count']"/>
+                                <small>
+                                    / <t t-out="hotel_dashboard['total_rooms_count']"/>
+                                </small>
+                            </span>
+
+                            <t t-if="hotel_dashboard['hotel_is_empty']">
+                                <span class="nv-dash-empty-badge">
+                                    The hotel is completely empty
+                                </span>
+                            </t>
+
+                            <span class="nv-dash-sub">Browse and book a room</span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <h5 class="nv-home-section">Documents &amp; Settings</h5>
+
+                <h5 class="nv-home-section">Recent Invoices</h5>
+                <t t-if="hotel_portal_invoices">
+                    <a t-foreach="hotel_portal_invoices" t-as="invoice"
+                       class="nv-invoice-row"
+                       t-att-href="invoice.get_portal_url()">
+                        <span t-out="invoice.name"/>
+                        <span class="nv-invoice-date">
+                            <t t-if="invoice.invoice_date" t-field="invoice.invoice_date"/>
+                            <t t-else="">-</t>
+                        </span>
+                        <span class="nv-invoice-total" t-field="invoice.amount_total"/>
+                    </a>
+                </t>
+                <p t-else="" class="text-muted">
+                    No posted invoices yet.
+                </p>
+
+            </div>
+
+        </xpath>
+
+        <!-- ===== "Your Invoices" card (/my/invoices) ===== -->
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_index_card nv-invoices-card">
+                <a href="/my/invoices" title="Your Invoices">
+                    <div>
+                        <h5>Your Invoices</h5>
+                        <p class="text-muted">
+                            Follow, download or pay your invoices
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

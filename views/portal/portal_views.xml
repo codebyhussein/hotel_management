@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         Shared portal styles (Nile Vista theme)
+         Palette: Navy #1B2A41 | Gold #C9A24B | Cream #F7F3EA
+    ====================================================== -->
+    <template id="portal_hotel_styles" name="Nile Vista Portal Styles">
+        <style>
+            .nile-vista-portal {
+                font-family: Arial, sans-serif;
+                color: #1B2A41;
+            }
+
+            /* ---------- Page header ---------- */
+
+            .nile-vista-portal .nv-header {
+                position: relative;
+                overflow: hidden;
+                background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
+                color: #F7F3EA;
+                border-radius: 14px;
+                padding: 34px 30px;
+                margin-bottom: 28px;
+                box-shadow: 0 10px 30px rgba(20, 32, 47, 0.18);
+                animation: nvFadeIn 0.6s ease both;
+            }
+
+            .nile-vista-portal .nv-header::before {
+                content: "";
+                position: absolute;
+                width: 260px;
+                height: 260px;
+                border: 1px solid rgba(201, 162, 75, 0.28);
+                border-radius: 50%;
+                top: -120px;
+                right: -60px;
+                pointer-events: none;
+            }
+
+            .nile-vista-portal .nv-header-content {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .nile-vista-portal .nv-header h3 {
+                color: #F7F3EA;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .nile-vista-portal .nv-header .nv-eyebrow {
+                color: #D9B96A;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+            }
+
+            /* ---------- Buttons ---------- */
+
+            .nile-vista-portal .nv-btn {
+                display: inline-block;
+                padding: 10px 22px;
+                background-color: #1B2A41;
+                color: #F7F3EA;
+                border: 2px solid #1B2A41;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 14px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .nile-vista-portal .nv-btn:hover {
+                background-color: #2A3F5F;
+                border-color: #2A3F5F;
+                color: #F7F3EA;
+                transform: translateY(-2px);
+            }
+
+            .nile-vista-portal .nv-btn-gold {
+                background-color: #C9A24B;
+                border-color: #C9A24B;
+                color: #1B2A41;
+            }
+
+            .nile-vista-portal .nv-btn-gold:hover {
+                background-color: #D9B96A;
+                border-color: #D9B96A;
+                color: #14202F;
+            }
+
+            .nile-vista-portal .nv-btn-sm {
+                padding: 7px 16px;
+                font-size: 13px;
+            }
+
+            /* ---------- Cards ---------- */
+
+            .nile-vista-portal .nv-card {
+                background-color: #ffffff;
+                border: 1px solid #E6DCC3;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(27, 42, 65, 0.06);
+                overflow: hidden;
+                height: 100%;
+                animation: nvFadeIn 0.7s ease both;
+            }
+
+            .nile-vista-portal .nv-card-title {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 18px 24px;
+                background-color: #F7F3EA;
+                border-bottom: 1px solid #E6DCC3;
+                color: #1B2A41;
+                font-weight: 700;
+                font-size: 17px;
+                margin: 0;
+            }
+
+            .nile-vista-portal .nv-card-title i {
+                color: #B38F3F;
+            }
+
+            .nile-vista-portal .nv-card-body {
+                padding: 24px;
+            }
+
+            /* ---------- Reservations table ---------- */
+
+            .nile-vista-portal .nv-table {
+                width: 100%;
+                margin: 0;
+                border-collapse: collapse;
+            }
+
+            .nile-vista-portal .nv-table thead th {
+                background-color: #F7F3EA;
+                color: #B38F3F;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                padding: 16px 18px;
+                border-bottom: 1px solid #E6DCC3;
+                white-space: nowrap;
+            }
+
+            .nile-vista-portal .nv-table tbody td {
+                padding: 18px;
+                color: #1B2A41;
+                vertical-align: middle;
+                border-bottom: 1px solid #EFE6D0;
+            }
+
+            .nile-vista-portal .nv-table tbody tr {
+                transition: background-color 0.25s ease;
+            }
+
+            .nile-vista-portal .nv-table tbody tr:hover {
+                background-color: #FBF8F1;
+            }
+
+            .nile-vista-portal .nv-table tbody tr:last-child td {
+                border-bottom: 0;
+            }
+
+            .nile-vista-portal .nv-ref {
+                font-weight: 700;
+                color: #1B2A41;
+            }
+
+            .nile-vista-portal .nv-total {
+                font-weight: 700;
+            }
+
+            /* ---------- Status badges ---------- */
+
+            .nile-vista-portal .nv-badge {
+                display: inline-block;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.3px;
+                background-color: #EFE6D0;
+                color: #8A6D2B;
+            }
+
+            .nile-vista-portal .nv-badge-draft {
+                background-color: #EFE6D0;
+                color: #8A6D2B;
+            }
+
+            .nile-vista-portal .nv-badge-confirmed {
+                background-color: #DDEBFA;
+                color: #1B4F8A;
+            }
+
+            .nile-vista-portal .nv-badge-checked_in {
+                background-color: #DDF3E4;
+                color: #1E7A3C;
+            }
+
+            .nile-vista-portal .nv-badge-checked_out {
+                background-color: #E4E7EC;
+                color: #4A5568;
+            }
+
+            .nile-vista-portal .nv-badge-cancelled,
+            .nile-vista-portal .nv-badge-no_show {
+                background-color: #FADDDD;
+                color: #A12B2B;
+            }
+
+            /* ---------- Empty / info states ---------- */
+
+            .nile-vista-portal .nv-empty {
+                text-align: center;
+                padding: 55px 25px;
+                background-color: #ffffff;
+                border: 1px solid #E6DCC3;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(27, 42, 65, 0.06);
+                animation: nvFadeIn 0.6s ease both;
+            }
+
+            .nile-vista-portal .nv-empty-icon {
+                width: 84px;
+                height: 84px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                border-radius: 50%;
+                background-color: #EFE6D0;
+                color: #B38F3F;
+                font-size: 34px;
+            }
+
+            .nile-vista-portal .nv-empty h4 {
+                color: #1B2A41;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+            .nile-vista-portal .nv-empty p {
+                color: #5B6677;
+                line-height: 1.8;
+                max-width: 480px;
+                margin: 0 auto 22px;
+            }
+
+            /* ---------- Detail page ---------- */
+
+            .nile-vista-portal .nv-stat {
+                text-align: center;
+                padding: 22px 16px;
+                background-color: #ffffff;
+                border: 1px solid #E6DCC3;
+                border-radius: 12px;
+                box-shadow: 0 5px 18px rgba(27, 42, 65, 0.05);
+                height: 100%;
+                transition: transform 0.35s ease,
+                            box-shadow 0.35s ease,
+                            border-color 0.35s ease;
+                animation: nvFadeIn 0.7s ease both;
+            }
+
+            .nile-vista-portal .nv-stat:hover {
+                transform: translateY(-6px);
+                border-color: #C9A24B;
+                box-shadow: 0 14px 30px rgba(27, 42, 65, 0.12);
+            }
+
+            .nile-vista-portal .nv-stat i {
+                color: #B38F3F;
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+
+            .nile-vista-portal .nv-stat .nv-stat-label {
+                display: block;
+                color: #8490A0;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+
+            .nile-vista-portal .nv-stat .nv-stat-value {
+                display: block;
+                color: #1B2A41;
+                font-size: 18px;
+                font-weight: 700;
+            }
+
+            .nile-vista-portal .nv-info-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                padding: 14px 0;
+                border-bottom: 1px solid #EFE6D0;
+            }
+
+            .nile-vista-portal .nv-info-item:last-child {
+                border-bottom: 0;
+            }
+
+            .nile-vista-portal .nv-info-icon {
+                flex: 0 0 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background-color: #EFE6D0;
+                color: #B38F3F;
+            }
+
+            .nile-vista-portal .nv-info-label {
+                display: block;
+                color: #8490A0;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.8px;
+                text-transform: uppercase;
+            }
+
+            .nile-vista-portal .nv-info-value {
+                display: block;
+                color: #1B2A41;
+                font-weight: 600;
+            }
+
+            .nile-vista-portal .nv-total-box {
+                text-align: center;
+                padding: 28px 20px;
+                background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
+                color: #F7F3EA;
+                border-radius: 10px;
+            }
+
+            .nile-vista-portal .nv-total-box small {
+                display: block;
+                color: #D9B96A;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
+
+            .nile-vista-portal .nv-total-box .nv-total-amount {
+                color: #F7F3EA;
+                font-size: 30px;
+                font-weight: 700;
+            }
+
+            .nile-vista-portal .nv-request-box {
+                padding: 16px 18px;
+                background-color: #F7F3EA;
+                border-left: 4px solid #C9A24B;
+                border-radius: 6px;
+                color: #5B6677;
+                line-height: 1.8;
+                margin: 0;
+            }
+
+            @keyframes nvFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* ---------- Responsive ---------- */
+
+            @media (max-width: 767px) {
+                .nile-vista-portal .nv-header {
+                    padding: 26px 20px;
+                }
+
+                .nile-vista-portal .nv-card-body {
+                    padding: 18px;
+                }
+
+                .nile-vista-portal .nv-table thead th,
+                .nile-vista-portal .nv-table tbody td {
+                    padding: 14px 12px;
+                }
+
+                .nile-vista-portal .nv-total-box .nv-total-amount {
+                    font-size: 26px;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .nile-vista-portal *,
+                .nile-vista-portal *::before,
+                .nile-vista-portal *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </template>
+
+    <!-- =====================================================
+         No Guest Linked to the Logged-in User
+    ====================================================== -->
+    <template id="portal_no_guest" name="No Hotel Guest">
+        <t t-call="portal.portal_layout">
+            <div class="container py-5 nile-vista-portal">
+                <t t-call="hotel_management.portal_hotel_styles"/>
+
+                <div class="nv-empty">
+                    <div class="nv-empty-icon">
+                        <i class="fa fa-user-circle" aria-hidden="true"/>
+                    </div>
+
+                    <h4>Hotel Account Not Linked</h4>
+
+                    <p>
+                        Your account is not linked to a hotel guest record.
+                        Please contact the hotel reception and we will be
+                        happy to help.
+                    </p>
+
+                    <a href="/contactus" class="nv-btn nv-btn-gold">
+                        Contact Reception
+                        <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- =====================================================
+         Customer Reservations
+    ====================================================== -->
+    <template
+        id="portal_my_hotel_reservations"
+        name="My Hotel Reservations"
+    >
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <div class="container py-4 nile-vista-portal">
+                <t t-call="hotel_management.portal_hotel_styles"/>
+
+                <!-- Page header -->
+                <div class="nv-header">
+                    <div class="nv-header-content">
+                        <div>
+                            <div class="nv-eyebrow">Nile Vista Hotel</div>
+                            <h3>My Reservations</h3>
+                        </div>
+
+                        <a href="/rooms" class="nv-btn nv-btn-gold">
+                            Book a Room
+                            <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                        </a>
+                    </div>
+                </div>
+
+                <t t-if="reservations">
+                    <div class="nv-card">
+                        <div class="table-responsive">
+                            <table class="nv-table">
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Room</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Nights</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th/>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr t-foreach="reservations" t-as="reservation">
+                                        <td>
+                                            <span class="nv-ref"
+                                                  t-field="reservation.name"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="reservation.room_id"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="reservation.check_in"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="reservation.check_out"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-field="reservation.nights"/>
+                                        </td>
+
+                                        <td>
+                                            <span class="nv-total"
+                                                  t-field="reservation.total_amount"
+                                                  t-options="{'widget': 'monetary', 'display_currency': reservation.currency_id}"/>
+                                        </td>
+
+                                        <td>
+                                            <span t-att-class="'nv-badge nv-badge-%s' % reservation.state"
+                                                  t-field="reservation.state"/>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <a t-att-href="'/my/hotel/reservation/%s' % reservation.id"
+                                               class="nv-btn nv-btn-sm">
+                                                View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <t t-call="portal.pager"/>
+                    </div>
+                </t>
+
+                <t t-else="">
+                    <div class="nv-empty">
+                        <div class="nv-empty-icon">
+                            <i class="fa fa-bed" aria-hidden="true"/>
+                        </div>
+
+                        <h4>No Reservations Yet</h4>
+
+                        <p>
+                            You don't have any reservations yet. Discover
+                            our rooms and plan your next stay with us.
+                        </p>
+
+                        <a href="/rooms" class="nv-btn nv-btn-gold">
+                            Explore Our Rooms
+                            <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                        </a>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- =====================================================
+         Reservation Details
+    ====================================================== -->
+    <template
+        id="portal_hotel_reservation_detail"
+        name="Hotel Reservation Details"
+    >
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 nile-vista-portal">
+                <t t-call="hotel_management.portal_hotel_styles"/>
+
+                <!-- Page header -->
+                <div class="nv-header">
+                    <div class="nv-header-content">
+                        <div>
+                            <div class="nv-eyebrow">Reservation</div>
+                            <h3>
+                                <span t-field="reservation.name"/>
+                            </h3>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <span t-att-class="'nv-badge nv-badge-%s' % reservation.state"
+                                  t-field="reservation.state"/>
+
+                            <a href="/my/hotel/reservations"
+                               class="nv-btn nv-btn-gold nv-btn-sm">
+                                <i class="fa fa-arrow-left me-2" aria-hidden="true"/>
+                                Back to My Reservations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick stats -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4 col-6">
+                        <div class="nv-stat">
+                            <i class="fa fa-sign-in" aria-hidden="true"/>
+                            <span class="nv-stat-label">Check-in</span>
+                            <span class="nv-stat-value"
+                                  t-field="reservation.check_in"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-6">
+                        <div class="nv-stat">
+                            <i class="fa fa-sign-out" aria-hidden="true"/>
+                            <span class="nv-stat-label">Check-out</span>
+                            <span class="nv-stat-value"
+                                  t-field="reservation.check_out"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-12">
+                        <div class="nv-stat">
+                            <i class="fa fa-moon-o" aria-hidden="true"/>
+                            <span class="nv-stat-label">Nights</span>
+                            <span class="nv-stat-value"
+                                  t-field="reservation.nights"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- Reservation information -->
+                    <div class="col-lg-8">
+                        <div class="nv-card">
+                            <h5 class="nv-card-title">
+                                <i class="fa fa-info-circle" aria-hidden="true"/>
+                                Reservation Information
+                            </h5>
+
+                            <div class="nv-card-body">
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="nv-info-item">
+                                            <div class="nv-info-icon">
+                                                <i class="fa fa-bed" aria-hidden="true"/>
+                                            </div>
+                                            <div>
+                                                <span class="nv-info-label">Room</span>
+                                                <span class="nv-info-value"
+                                                      t-field="reservation.room_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="nv-info-item">
+                                            <div class="nv-info-icon">
+                                                <i class="fa fa-tag" aria-hidden="true"/>
+                                            </div>
+                                            <div>
+                                                <span class="nv-info-label">Room Type</span>
+                                                <span class="nv-info-value"
+                                                      t-field="reservation.room_type"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="nv-info-item">
+                                            <div class="nv-info-icon">
+                                                <i class="fa fa-user" aria-hidden="true"/>
+                                            </div>
+                                            <div>
+                                                <span class="nv-info-label">Adults</span>
+                                                <span class="nv-info-value"
+                                                      t-field="reservation.adults"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="nv-info-item">
+                                            <div class="nv-info-icon">
+                                                <i class="fa fa-child" aria-hidden="true"/>
+                                            </div>
+                                            <div>
+                                                <span class="nv-info-label">Children</span>
+                                                <span class="nv-info-value"
+                                                      t-field="reservation.children"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12"
+                                         t-if="reservation.special_request">
+                                        <div class="nv-info-item">
+                                            <div class="nv-info-icon">
+                                                <i class="fa fa-commenting-o" aria-hidden="true"/>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <span class="nv-info-label mb-2">
+                                                    Special Requests
+                                                </span>
+                                                <p class="nv-request-box"
+                                                   t-field="reservation.special_request"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment summary -->
+                    <div class="col-lg-4">
+                        <div class="nv-card">
+                            <h5 class="nv-card-title">
+                                <i class="fa fa-credit-card" aria-hidden="true"/>
+                                Summary
+                            </h5>
+
+                            <div class="nv-card-body">
+                                <div class="nv-total-box">
+                                    <small>Total Amount</small>
+                                    <span class="nv-total-amount"
+                                          t-field="reservation.total_amount"
+                                          t-options="{'widget': 'monetary', 'display_currency': reservation.currency_id}"/>
+                                </div>
+
+                                <div class="nv-info-item mt-3">
+                                    <div class="nv-info-icon">
+                                        <i class="fa fa-flag" aria-hidden="true"/>
+                                    </div>
+                                    <div>
+                                        <span class="nv-info-label">Status</span>
+                                        <span t-att-class="'nv-badge nv-badge-%s' % reservation.state"
+                                              t-field="reservation.state"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
