@@ -49,7 +49,7 @@ and improve operational efficiency.
 
         # Views
         'views/guest.xml',
-        'views/housekeeping.xml',
+        'views/room_service.xml',
         'views/hotel_reservation_views.xml',
         'views/hotel_room.xml',
         'views/property.xml',
@@ -57,6 +57,8 @@ and improve operational efficiency.
 
         'views/crm_lead_view.xml',
         # wizards
+        'views/maintenance_request.xml',
+        'views/mail_template.xml',
         'wizard/room_report_excel.xml',
         # Website Templates
         'views/homepage.xml',
@@ -68,7 +70,7 @@ and improve operational efficiency.
         'wizard/room_report_piecharm.xml',
 
     
-        'views/housekeeping.xml',
+         
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
         'views/room_report.xml',
