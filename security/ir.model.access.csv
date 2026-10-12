@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_guest_user,hotel.guest.user,model_hotel_guest,base.group_user,1,1,1,0
+access_hotel_housekeeping_task_user,hotel.housekeeping.task.user,model_hotel_housekeeping_task,base.group_user,1,1,1,0
 access_hotel_room_employee,hotel.room employee,model_hotel_room,group_hotel_property_employee,1,1,1,0
 access_hotel_room_manager,hotel.room manager,model_hotel_room,group_hotel_property_manager,1,1,1,1
 access_hotel_property_employee,hotel.property employee,model_hotel_property,group_hotel_property_employee,1,0,0,0
@@ -6,7 +8,12 @@ access_hotel_property_manager,hotel.property manager,model_hotel_property,group_
 access_hotel_guest_user,hotel.guest.user,model_hotel_guest,base.group_user,1,1,1,0
 access_hotel_housekeeping_task_user,hotel.housekeeping.task.user,model_hotel_housekeeping_task,base.group_user,1,1,1,0
 access_hotel_reservation,hotel.reservation.access,model_hotel_reservation,base.group_user,1,1,1,1
+access_hotel_room_employee,hotel.room employee,model_hotel_room,hotel_management.group_hotel_property_employee,1,1,1,0
+access_hotel_room_manager,hotel.room manager,model_hotel_room,hotel_management.group_hotel_property_manager,1,1,1,1
+access_hotel_property_employee,hotel.property employee,model_hotel_property,hotel_management.group_hotel_property_employee,1,0,0,0
+access_hotel_property_manager,hotel.property manager,model_hotel_property,hotel_management.group_hotel_property_manager,1,1,1,1
 access_hotel_reservation_cancel_wizard,hotel.reservation.cancel.wizard,model_hotel_reservation_cancel_wizard,base.group_user,1,0,0,0
+<<<<<<< HEAD
 access_hotel_guest_manager,hotel.guest manager,model_hotel_guest,group_hotel_manager,1,1,1,1
 access_hotel_guest_receptionist,hotel.guest receptionist,model_hotel_guest,group_hotel_receptionist,1,1,1,0
 access_hotel_reservation_manager,hotel.reservation manager,model_hotel_reservation,group_hotel_manager,1,1,1,1
@@ -16,3 +23,6 @@ access_hotel_folio_line_manager,hotel.folio.line manager,model_hotel_folio_line,
 access_hotel_folio_line_receptionist,hotel.folio.line receptionist,model_hotel_folio_line,group_hotel_receptionist,1,1,1,0
 access_hotel_payment_manager,hotel.payment manager,model_hotel_payment,group_hotel_manager,1,1,1,1
 access_hotel_payment_receptionist,hotel.payment receptionist,model_hotel_payment,group_hotel_receptionist,1,1,1,0
+=======
+access_room_history_report_wizard,access.room.history.report.wizard,model_room_history_report_wizard,base.group_user,1,1,1,1
+>>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998

@@ -3,7 +3,9 @@ from odoo import models, fields, api
 class HotelHousekeepingTask(models.Model):
     _name = 'hotel.housekeeping.task'
     _description = 'Housekeeping Task'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    room_id = fields.Many2one('hotel.room', string='Room')
     name = fields.Char(string='Task Title', required=True)
     assigned_user_id = fields.Many2one('res.users', string='Assigned Staff')
 
@@ -19,6 +21,13 @@ class HotelHousekeepingTask(models.Model):
         ('furniture', 'Furniture / Carpentry'),
         ('other', 'Other')
     ], string='Maintenance Type')
+
+    room_id = fields.Many2one(
+    'hotel.room',
+    string='Room',
+    ondelete='restrict',
+    index=True,
+    )
 
     priority = fields.Selection([
         ('0', '0 - Very Low'),
@@ -63,3 +72,5 @@ class HotelHousekeepingTask(models.Model):
         for rec in self:
             rec.state = 'done'
             rec.done_date = fields.Datetime.now()
+            if rec.room_id:
+                rec.room_id.write({'status': 'available'})
