@@ -104,7 +104,7 @@ and improve operational efficiency.
             'views/hotel_reservation_dashboard.xml',
     ],
 
-    'demo': [
-        'demo/demo.xml',
-    ],
+    # 'demo': [
+    #     'demo/demo.xml',
+    # ],
 }

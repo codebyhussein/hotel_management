@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+ 
         <record id="sequence_hotel_maintenance_request" model="ir.sequence">
             <field name="name">Maintenance Request Sequence</field>
             <field name="code">hotel.maintenance.sequence</field>
@@ -10,10 +10,10 @@
             <field name="number_increment">1</field>
             <field name="active" eval="True"/>
         </record>
-    </data>
+   
 
 <!-- Room Sequence -->
-<data>
+ 
     <record id="sequence_hotel_room" model="ir.sequence">
         <field name="name">Room Sequence</field>
         <field name="code">hotel.room.sequence</field>
@@ -23,5 +23,16 @@
         <field name="number_increment">1</field>
         <field name="active" eval="True"/>
     </record>
-</data>
+ 
+  <!-- =========================
+         Reservation Sequence
+         Example: RES/2026/0001
+    ========================== -->
+    <record id="seq_hotel_reservation" model="ir.sequence">
+        <field name="name">Hotel Reservation Sequence</field>
+        <field name="code">hotel.reservation.sequence</field>
+        <field name="prefix">RES/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- =========================
-         Reservation Sequence
-         Example: RES/2026/0001
-    ========================== -->
-    <record id="seq_hotel_reservation" model="ir.sequence">
-        <field name="name">Hotel Reservation Sequence</field>
-        <field name="code">hotel.reservation.sequence</field>
-        <field name="prefix">RES/%(year)s/</field>
-        <field name="padding">4</field>
-        <field name="company_id" eval="False"/>
-    </record>
+  
 
     <!-- =========================
          Group Booking Sequence

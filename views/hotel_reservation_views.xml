@@ -93,18 +93,7 @@
                             <field name="total_amount"/>
                         </group>
                     </group>
-                    <group string="Deposit">
-                        <group>
-                            <field name="deposit_amount" readonly="deposit_paid or state not in ('draft', 'confirmed')"/>
-                            <field name="deposit_paid"/>
-                            <field name="deposit_paid_date" invisible="not deposit_paid"/>
-                        </group>
-                        <group>
-                            <field name="balance_after_deposit"/>
-                            <field name="cancellation_fee" invisible="state not in ('cancelled', 'no_show')"/>
-                            <field name="deposit_refund" invisible="state not in ('cancelled', 'no_show')"/>
-                        </group>
-                    </group>
+
                     <group string="Deposit">
                         <group>
                             <field name="deposit_amount" readonly="deposit_paid or state not in ('draft', 'confirmed')"/>

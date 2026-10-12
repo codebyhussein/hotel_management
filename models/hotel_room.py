@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 class HotelRoom(models.Model):
     _name = 'hotel.room'
     _description = 'Hotel Room'
+    _rec_name = 'room_number'
     _order = 'room_number asc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
