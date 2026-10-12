@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="crm_lead_view_form_hotel" model="ir.ui.view">
         <field name="name">crm.lead.form.hotel</field>
         <field name="model">crm.lead</field>
@@ -16,8 +15,8 @@
                         invisible="reservation_id"/>
             </xpath>
 
-            <!-- Hotel inquiry details -->
-            <xpath expr="//sheet" position="inside">
+            <!-- Hotel inquiry details before Notebook -->
+            <xpath expr="//notebook" position="before">
                 <group string="Hotel Inquiry">
                     <group>
                         <field name="lead_source"/>
@@ -38,5 +37,4 @@
 
         </field>
     </record>
-
 </odoo>
