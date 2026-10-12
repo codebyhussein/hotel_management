@@ -191,3 +191,26 @@ class HotelRoom(models.Model):
                 'default_room_id': self.id,
             },
         }
+    _sql_constraints = [
+    (
+        'room_number_property_unique',
+        'UNIQUE(room_number, property_id)',
+        'Room number must be unique within the same property!'
+    ),
+]
+    def action_open_room_task_wizard(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Maintenance / Housekeeping',
+            'res_model': 'room.task.wizard',
+            'view_mode': 'form',
+            'view_id': self.env.ref(
+                'hotel_management.view_room_task_wizard_form'
+            ).id,
+            'target': 'new',
+            'context': {
+                'default_room_id': self.id,
+            },
+        }

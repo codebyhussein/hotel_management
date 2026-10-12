@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Room Status Pie Chart -->
+    <record id="view_hotel_room_status_graph" model="ir.ui.view">
+        <field name="name">hotel.room.status.graph</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <graph string="Room Status Analysis" type="pie">
+                <field name="status"/>
+            </graph>
+        </field>
+    </record>
+
+
+    <!-- Room Report Search -->
+    <record id="view_hotel_room_report_search" model="ir.ui.view">
+        <field name="name">hotel.room.report.search</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <search string="Room Reports">
+
+                <field name="property_id" string="Property"/>
+                <field name="status" string="Room Status"/>
+
+                <separator/>
+
+                <filter
+                    name="group_by_property"
+                    string="Property"
+                    context="{'group_by': 'property_id'}"
+                />
+
+                <filter
+                    name="group_by_status"
+                    string="Room Status"
+                    context="{'group_by': 'status'}"
+                />
+
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Room Report Action -->
+    <record id="action_hotel_room_report" model="ir.actions.act_window">
+        <field name="name">Room Status Analysis</field>
+        <field name="res_model">hotel.room</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_hotel_room_status_graph"/>
+        <field name="search_view_id" ref="view_hotel_room_report_search"/>
+        <field name="context">{'graph_mode': 'pie'}</field>
+    </record>
+
+</odoo>
