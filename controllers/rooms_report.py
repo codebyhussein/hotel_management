@@ -42,6 +42,7 @@ class RoomHistoryReportWizard(models.TransientModel):
             ('all', 'All Tasks'),
             ('maintenance', 'Maintenance'),
             ('housekeeping', 'Housekeeping'),
+            ('room_service', 'Room Service'),
         ],
         string='Task Type',
         default='all',
@@ -150,12 +151,12 @@ class RoomHistoryReportWizard(models.TransientModel):
 
         if self.date_from:
             task_domain.append(
-                ('scheduled_date', '>=', self.date_from)
+                ('request_date', '>=', self.date_from)
             )
 
         if self.date_to:
             task_domain.append(
-                ('scheduled_date', '<=', self.date_to)
+                ('request_date', '<=', self.date_to)
             )
 
         # Filter by task type
@@ -164,12 +165,12 @@ class RoomHistoryReportWizard(models.TransientModel):
                 ('task_type', '=', self.task_type)
             )
 
-        # Maintenance Type applies only to maintenance tasks.
-        # If Housekeeping is selected, ignore maintenance type.
+        # Maintenance Type check (if applicable in model)
         if (
             self.maintenance_type
             and self.maintenance_type != 'all'
             and self.task_type != 'housekeeping'
+            and 'maintenance_type' in self.env['hotel.housekeeping.task']._fields
         ):
             task_domain.append(
                 ('task_type', '=', 'maintenance')
@@ -180,7 +181,7 @@ class RoomHistoryReportWizard(models.TransientModel):
 
         tasks = self.env['hotel.housekeeping.task'].search(
             task_domain,
-            order='scheduled_date desc, id desc',
+            order='request_date desc, id desc',
         )
 
         # =================================================
@@ -491,7 +492,7 @@ class RoomHistoryReportWizard(models.TransientModel):
 
         worksheet.write(
             'H3',
-            'Not configured',
+            str(room.floor_number) if hasattr(room, 'floor_number') else 'Not configured',
             info_value_format,
         )
 
@@ -648,9 +649,8 @@ class RoomHistoryReportWizard(models.TransientModel):
             maintenance_headers = [
                 'Task Name',
                 'Task Type',
-                'Maintenance Type',
                 'Assigned Staff',
-                'Scheduled Date',
+                'Request Date',
                 'Start Date',
                 'Done Date',
                 'Status',
@@ -692,10 +692,6 @@ class RoomHistoryReportWizard(models.TransientModel):
                 task_model._fields['task_type'].selection
             )
 
-            maintenance_type_labels = dict(
-                task_model._fields['maintenance_type'].selection
-            )
-
             task_state_labels = dict(
                 task_model._fields['state'].selection
             )
@@ -709,12 +705,8 @@ class RoomHistoryReportWizard(models.TransientModel):
                         task.task_type,
                         task.task_type or '',
                     ),
-                    maintenance_type_labels.get(
-                        task.maintenance_type,
-                        task.maintenance_type or '',
-                    ),
                     task.assigned_user_id.display_name or '',
-                    task.scheduled_date,
+                    task.request_date,
                     task.start_date,
                     task.done_date,
                     task_state_labels.get(
@@ -726,7 +718,7 @@ class RoomHistoryReportWizard(models.TransientModel):
 
                 for col, value in enumerate(values):
 
-                    if col in (4, 5, 6):
+                    if col in (3, 4, 5):
                         write_date(
                             row,
                             col,
@@ -768,18 +760,15 @@ class RoomHistoryReportWizard(models.TransientModel):
         # =================================================
 
         column_widths = {
-            0: 25,   # Reservation Reference / Task Name
-            1: 25,   # Guest / Task Type
-            2: 23,   # Room Type / Maintenance Type
-            3: 23,   # Check-in / Assigned Staff
-            4: 19,   # Check-out / Scheduled Date
-            5: 19,   # Adults / Start Date
-            6: 19,   # Children / Done Date
-            7: 17,   # Nights / Status
-            8: 25,   # Nightly Rate / Description
-            9: 17,   # Room Total
-            10: 17,  # Total Amount
-            11: 17,  # Reservation Status
+            0: 25,
+            1: 25,
+            2: 23,
+            3: 23,
+            4: 19,
+            5: 19,
+            6: 19,
+            7: 17,
+            8: 25,
         }
 
         for col, width in column_widths.items():
