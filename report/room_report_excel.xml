@@ -2,14 +2,12 @@
 <odoo>
 
     <!-- ============================================== -->
-    <!-- Room History Excel Report Wizard Form          -->
+    <!-- Room History Excel Report Wizard Form         -->
     <!-- ============================================== -->
 
-    <record id="view_room_history_report_wizard_form"
-            model="ir.ui.view">
+    <record id="view_room_history_report_wizard_form" model="ir.ui.view">
 
         <field name="name">room.history.report.wizard.form</field>
-
         <field name="model">room.history.report.wizard</field>
 
         <field name="arch" type="xml">
@@ -25,7 +23,6 @@
                 <group string="Date Filters" col="2">
 
                     <field name="date_from"/>
-
                     <field name="date_to"/>
 
                 </group>
@@ -34,27 +31,21 @@
                 <group string="Report Sections" col="2">
 
                     <field name="include_reservations"/>
-
                     <field name="include_tasks"/>
 
                 </group>
 
-                <!-- Maintenance & Housekeeping Filters -->
-                <group string="Maintenance &amp; Housekeeping Filters"
-                       col="2">
+                <!-- Task Type Filter -->
+                <group string="Task Filters" col="2">
 
                     <field name="task_type"/>
-
-                    <field name="maintenance_type"/>
 
                 </group>
 
                 <!-- Hidden Excel Fields -->
                 <group invisible="1">
 
-                    <field name="excel_file"
-                           filename="excel_filename"/>
-
+                    <field name="excel_file" filename="excel_filename"/>
                     <field name="excel_filename"/>
 
                 </group>
@@ -67,15 +58,14 @@
                             type="object"
                             class="oe_highlight"/>
 
+                    <button name="action_print_pdf"
+                            string="Print PDF"
+                            type="object"
+                            class="btn-primary"/>
+
                     <button string="Cancel"
                             special="cancel"
                             class="btn-secondary"/>
-                    <button
-                        name="action_print_pdf"
-                        string="Print PDF"
-                        type="object"
-                        class="btn-primary"
-                    />
 
                 </footer>
 

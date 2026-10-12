@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
 
     <!-- =========================
@@ -9,10 +8,8 @@
     <record id="view_hotel_room_tree" model="ir.ui.view">
         <field name="name">hotel.room.tree</field>
         <field name="model">hotel.room</field>
-
         <field name="arch" type="xml">
             <tree string="Rooms">
-
                 <field name="display_name" string="Room Number"/>
                 <field name="room_type"/>
                 <field name="price"/>
@@ -20,11 +17,9 @@
                 <field name="property_id"/>
                 <field name="status"/>
                 <field name="capacity"/>
-
             </tree>
         </field>
     </record>
-
 
     <!-- =========================
          Room Form View
@@ -33,15 +28,11 @@
     <record id="view_hotel_room_form" model="ir.ui.view">
         <field name="name">hotel.room.form</field>
         <field name="model">hotel.room</field>
-
         <field name="arch" type="xml">
-
             <form string="Room">
 
                 <!-- Status Bar + Buttons -->
-
                 <header>
-
                     <button name="action_set_available"
                             string="Mark as Available"
                             type="object"
@@ -58,82 +49,71 @@
                             string="Start Maintenance"
                             type="object"
                             class="btn-primary"
+                           
                             invisible="status == 'maintenance'"/>
 
                     <button name="action_set_needs_cleaning"
                             string="Needs Cleaning"
                             type="object"
                             class="btn-primary"
+                            
                             invisible="status == 'needs_cleaning'"/>
+
                     <button name="action_open_room_history_report"
                             string="Report"
                             type="object"
                             class="oe_highlight"/>
-                    <button name="action_open_room_task_wizard" string="Create Service" type="object" class="oe_highlight"/>
+
+                    <button name="action_open_room_task_wizard"
+                            string="Create Service"
+                            type="object"
+                            class="oe_highlight"/>
 
                     <field name="status"
                            widget="statusbar"
                            statusbar_visible="available,occupied,maintenance,needs_cleaning"/>
-
                 </header>
 
-
                 <sheet>
+                     <field name="room_image" widget="image" class="oe_avatar"/>
+                    
 
-                    <!-- =========================
-                         Smart Buttons
-                    ========================== -->
-
+                    <!-- Smart Buttons -->
                     <div class="oe_button_box" name="button_box">
 
                         <!-- Reservations Smart Button -->
-
                         <button name="action_view_reservations"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-calendar">
-
                             <field name="reservation_count"
                                    widget="statinfo"
                                    string="Reservations"/>
-
                         </button>
 
-
                         <!-- Maintenance Smart Button -->
-
                         <button name="action_view_maintenance"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-wrench">
-
                             <field name="maintenance_count"
                                    widget="statinfo"
                                    string="Maintenance"/>
-
                         </button>
 
                     </div>
 
-
                     <!-- Room Information -->
-
                     <group>
-
                         <group string="Room Information">
-
                             <field name="room_number"/>
                             <field name="room_type"/>
                             <field name="price"/>
                             <field name="floor_number"/>
-
                         </group>
 
-
                         <group string="Room Details">
-
-                            <field name="capacity"/>
-
+                            <field name="capacity" readonly="1"/>
                             <field name="property_id"/>
 
                             <field name="employee_name"
@@ -141,30 +121,21 @@
                                    domain="[('property_id', '=', property_id)]"/>
 
                             <field name="status" readonly="1"/>
-
                         </group>
-
                     </group>
 
+                   
 
                     <!-- Description -->
-
                     <group string="Description">
-
                         <field name="description"
                                placeholder="Enter room description..."/>
-
                     </group>
 
                 </sheet>
 
-
-                <!-- =========================
-                     Chatter
-                ========================== -->
-
+                <!-- Chatter -->
                 <div class="oe_chatter">
-
                     <field name="message_follower_ids"
                            widget="mail_followers"/>
 
@@ -173,14 +144,11 @@
 
                     <field name="message_ids"
                            widget="mail_thread"/>
-
                 </div>
 
             </form>
-
         </field>
     </record>
-
 
     <!-- =========================
          Room Search View
@@ -189,20 +157,15 @@
     <record id="view_hotel_room_search" model="ir.ui.view">
         <field name="name">hotel.room.search</field>
         <field name="model">hotel.room</field>
-
         <field name="arch" type="xml">
-
             <search string="Search Rooms">
 
-                <!-- Search by typing -->
-
+                <!-- Search Fields -->
                 <field name="room_number" string="Room Number"/>
                 <field name="property_id"/>
                 <field name="employee_name" string="Responsible Employee"/>
 
-
                 <!-- Room Type Filters -->
-
                 <filter string="Single"
                         name="filter_single"
                         domain="[('room_type', '=', 'single')]"/>
@@ -219,12 +182,9 @@
                         name="filter_suite"
                         domain="[('room_type', '=', 'suite')]"/>
 
-
                 <separator/>
 
-
                 <!-- Status Filters -->
-
                 <filter string="Available"
                         name="filter_available"
                         domain="[('status', '=', 'available')]"/>
@@ -241,11 +201,8 @@
                         name="filter_needs_cleaning"
                         domain="[('status', '=', 'needs_cleaning')]"/>
 
-
                 <!-- Group By -->
-
                 <group expand="0" string="Group By">
-
                     <filter string="Room Type"
                             name="group_room_type"
                             context="{'group_by': 'room_type'}"/>
@@ -257,29 +214,21 @@
                     <filter string="Property"
                             name="group_property"
                             context="{'group_by': 'property_id'}"/>
-
                 </group>
 
             </search>
-
         </field>
     </record>
-
 
     <!-- =========================
          Room Action
     ========================== -->
 
     <record id="action_hotel_room" model="ir.actions.act_window">
-
         <field name="name">Rooms</field>
         <field name="res_model">hotel.room</field>
-
         <field name="view_mode">tree,form</field>
-
-        <field name="search_view_id"
-               ref="view_hotel_room_search"/>
-
+        <field name="search_view_id" ref="view_hotel_room_search"/>
     </record>
 
 </odoo>

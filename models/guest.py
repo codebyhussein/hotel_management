@@ -1,10 +1,12 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 class HotelGuest(models.Model):
     _name = 'hotel.guest'
     _description = 'Hotel Guest Registry'
     _inherits = {'res.partner': 'partner_id'}
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     partner_id = fields.Many2one('res.partner', string='Partner', required=True, ondelete='cascade')
     nationality_id = fields.Many2one('res.country', string='Nationality')
@@ -17,35 +19,27 @@ class HotelGuest(models.Model):
     gender = fields.Selection([('male', 'Male'), ('female', 'Female')], string='Gender')
     vip = fields.Boolean(string='VIP Guest', default=False)
     blacklisted = fields.Boolean(string='Blacklisted', default=False)
-    total_stays = fields.Integer(string='Total Stays', compute='_compute_total_stays')
-    notes = fields.Text(string='Notes')
+
+    # حقل الـ Balance الإضافي
+    balance = fields.Float(string='Balance', default=0.0)
+
+    # تغيير الـ notes إلى description
+    description = fields.Text(string='Description')
+
     active = fields.Boolean(string='Active', default=True)
+    total_stays = fields.Integer(
+        string='Total Stays', compute='_compute_total_stays'
+    )
 
     _sql_constraints = [
         ('unique_id_number', 'unique(id_number)', 'The ID/Passport number must be unique!')
     ]
-
-    @api.depends('partner_id')
-    def _compute_total_stays(self):
-        for record in self:
-            # record.total_stays = self.env['hotel.reservation'].search_count([
-            #     ('guest_id', '=', record.id),
-            #     ('state', '=', 'checked_out')
-            # ])
-            record.total_stays = 0
-
-    def action_view_reservations(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Reservations'),
-                'message': _('No reservations found for this guest.'),
-                'type': 'info',
-                'sticky': False,
-            }
-        }
+    balance = fields.Float(string='Balance', )
+    reservation_ids = fields.One2many(
+        'hotel.reservation',
+        'guest_id',
+        string='Reservations'
+    )
 
     @api.constrains('vip', 'blacklisted')
     def _check_vip_blacklisted(self):
@@ -71,3 +65,27 @@ class HotelGuest(models.Model):
             self.active = False
         else:
             self.active = True
+
+    @api.depends('partner_id')
+    def _compute_total_stays(self):
+        for record in self:
+            if 'hotel.reservation' in self.env:
+                try:
+                    record.total_stays = self.env['hotel.reservation'].search_count([
+                        ('guest_id', '=', record.id)
+                    ])
+                except Exception:
+                    record.total_stays = 0
+            else:
+                record.total_stays = 0
+
+    def action_view_reservations(self):
+        self.ensure_one()
+        return {
+            'name': _('Guest Reservations'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'hotel.reservation',
+            'view_mode': 'tree,form',
+            'domain': [('guest_id', '=', self.id)],
+            'context': {'default_guest_id': self.id},
+        }

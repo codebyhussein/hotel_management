@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
-
 {
     'name': 'Hotel Management',
 
     'summary': 'Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.',
+
+    'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
 
     'description': """
 Hotel Management
@@ -36,6 +36,8 @@ and improve operational efficiency.
     'depends': [
         'base',
         'mail',
+        'website',
+        'crm',
     ],
 
     'data': [
@@ -47,9 +49,25 @@ and improve operational efficiency.
         # Data
         'data/hotel_reservation_data.xml',
 
-        # Room and Property Views
+        # Views
+        'views/guest.xml',
+        'views/room_service.xml',
+        'views/hotel_reservation_views.xml',
+        'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
+
+        'views/crm_lead_view.xml',
+        # wizards
+        'views/maintenance_request.xml',
+        'views/mail_template.xml',
+        
+        # Website Templates
+        'views/homepage.xml',
+        'views/room_templates_website.xml',
+        'views/online_booking_templates.xml',
+
+        # Menus
         'views/hotel_room.xml',
 
         # Wizards
@@ -63,7 +81,7 @@ and improve operational efficiency.
         'report/room_report_piecharm.xml',
 
         # Other Views
-        'views/housekeeping.xml',
+         
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
 

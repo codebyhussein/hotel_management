@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- =========================================
+         ONLINE BOOKING PAGE
+    ========================================= -->
+
+    <template id="online_booking" name="Online Room Booking">
+        <t t-call="website.layout">
+            <div id="wrap" class="nile-vista-booking">
+
+                <style>
+                    /* Palette: Navy #1B2A41 | Navy dark #14202F | Navy light #2A3F5F
+                       Gold #C9A24B | Gold light #D9B96A | Gold dark #B38F3F
+                       Cream #F7F3EA | Cream dark #EFE6D0 | Border #E6DCC3 */
+
+                    .nile-vista-booking {
+                        font-family: Arial, sans-serif;
+                        color: #1B2A41;
+                        background-color: #F7F3EA;
+                    }
+
+                    /* ---------- Header ---------- */
+
+                    .nv-booking-hero {
+                        position: relative;
+                        overflow: hidden;
+                        background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
+                        color: #F7F3EA;
+                        text-align: center;
+                        padding: 60px 20px;
+                    }
+
+                    .nv-booking-hero::before {
+                        content: "";
+                        position: absolute;
+                        width: 280px;
+                        height: 280px;
+                        border: 1px solid rgba(201, 162, 75, 0.28);
+                        border-radius: 50%;
+                        top: -120px;
+                        right: -60px;
+                        pointer-events: none;
+                    }
+
+                    .nv-booking-hero h1 {
+                        color: #F7F3EA;
+                        font-weight: 700;
+                        margin-bottom: 10px;
+                        position: relative;
+                    }
+
+                    .nv-booking-hero p {
+                        color: rgba(247, 243, 234, 0.85);
+                        margin: 0;
+                        position: relative;
+                    }
+
+                    .nv-booking-hero .nv-gold-line {
+                        width: 60px;
+                        height: 3px;
+                        background-color: #C9A24B;
+                        margin: 16px auto 0;
+                        border-radius: 2px;
+                    }
+
+                    /* ---------- Room summary ---------- */
+
+                    .nv-room-summary {
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-left: 4px solid #C9A24B;
+                        border-radius: 12px;
+                        box-shadow: 0 5px 20px rgba(27, 42, 65, 0.06);
+                        padding: 22px 24px;
+                        margin-top: -30px;
+                        position: relative;
+                        z-index: 2;
+                    }
+
+                    .nv-room-summary h4 {
+                        color: #1B2A41;
+                        font-weight: 700;
+                        margin-bottom: 14px;
+                    }
+
+                    .nv-room-summary h4 i {
+                        color: #B38F3F;
+                        margin-right: 6px;
+                    }
+
+                    .nv-room-chips {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    }
+
+                    .nv-room-chip {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        background-color: #EFE6D0;
+                        color: #1B2A41;
+                        border-radius: 20px;
+                        padding: 6px 14px;
+                        font-size: 14px;
+                    }
+
+                    .nv-room-chip i {
+                        color: #B38F3F;
+                    }
+
+                    /* ---------- Form sections ---------- */
+
+                    .nv-form-card {
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 12px;
+                        box-shadow: 0 5px 20px rgba(27, 42, 65, 0.05);
+                        padding: 28px 26px;
+                        margin-top: 24px;
+                    }
+
+                    .nv-form-card h4 {
+                        color: #1B2A41;
+                        font-weight: 700;
+                        font-size: 19px;
+                        margin-bottom: 20px;
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid #EFE6D0;
+                    }
+
+                    .nv-form-card h4 i {
+                        color: #B38F3F;
+                        margin-right: 8px;
+                    }
+
+                    .nile-vista-booking .form-label {
+                        color: #1B2A41;
+                        font-weight: 600;
+                        font-size: 14px;
+                        margin-bottom: 6px;
+                    }
+
+                    .nile-vista-booking .form-control {
+                        border: 1px solid #E6DCC3;
+                        border-radius: 8px;
+                        padding: 10px 14px;
+                        color: #1B2A41;
+                        background-color: #FFFDF8;
+                        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+                    }
+
+                    .nile-vista-booking .form-control:focus {
+                        border-color: #C9A24B;
+                        box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.2);
+                        background-color: #ffffff;
+                        outline: none;
+                    }
+
+                    .nile-vista-booking .alert-danger {
+                        background-color: #F5DADD;
+                        border: 1px solid #B23A48;
+                        color: #7E2530;
+                        border-radius: 8px;
+                        margin-top: 24px;
+                        margin-bottom: 0;
+                    }
+
+                    /* ---------- Buttons ---------- */
+
+                    .nv-submit-btn {
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        border: 2px solid #C9A24B;
+                        border-radius: 8px;
+                        padding: 14px 28px;
+                        font-weight: 700;
+                        font-size: 17px;
+                        width: 100%;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nv-submit-btn:hover {
+                        background-color: #1B2A41;
+                        border-color: #1B2A41;
+                        color: #C9A24B;
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 20px rgba(27, 42, 65, 0.2);
+                    }
+
+                    .nv-secure-note {
+                        text-align: center;
+                        color: #5B6677;
+                        font-size: 13px;
+                        margin-top: 12px;
+                    }
+
+                    .nv-secure-note i {
+                        color: #B38F3F;
+                        margin-right: 4px;
+                    }
+
+                    @media (max-width: 767px) {
+                        .nv-booking-hero {
+                            padding: 45px 18px;
+                        }
+
+                        .nv-form-card {
+                            padding: 22px 18px;
+                        }
+                    }
+                </style>
+
+                <!-- Header -->
+
+                <section class="nv-booking-hero">
+                    <div class="container">
+                        <h1>Book Your Stay</h1>
+                        <p>Complete your information to reserve your room.</p>
+                        <div class="nv-gold-line"/>
+                    </div>
+                </section>
+
+                <div class="container pb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+
+                            <!-- Room summary -->
+
+                            <div class="nv-room-summary">
+                                <h4>
+                                    <i class="fa fa-key" aria-hidden="true"/>
+                                    Room <t t-esc="room.room_number"/>
+                                </h4>
+
+                                <div class="nv-room-chips">
+                                    <span class="nv-room-chip">
+                                        <i class="fa fa-bed" aria-hidden="true"/>
+                                        <span t-field="room.room_type"/>
+                                    </span>
+                                    <span class="nv-room-chip">
+                                        <i class="fa fa-users" aria-hidden="true"/>
+                                        <span><t t-esc="room.capacity"/> guests</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div t-if="error"
+                                 class="alert alert-danger"
+                                 role="alert">
+                                <i class="fa fa-exclamation-circle me-2" aria-hidden="true"/>
+                                <t t-esc="error"/>
+                            </div>
+
+                            <form t-att-action="'/booking/%s' % room.id"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+
+                                <!-- Stay details -->
+
+                                <div class="nv-form-card">
+                                    <h4>
+                                        <i class="fa fa-calendar" aria-hidden="true"/>
+                                        Stay Details
+                                    </h4>
+
+                                    <div class="row g-3">
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_check_in">
+                                                Check-in
+                                            </label>
+                                            <input type="date"
+                                                   id="nv_check_in"
+                                                   name="check_in"
+                                                   class="form-control"
+                                                   required="required"
+                                                   t-att-value="check_in"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_check_out">
+                                                Check-out
+                                            </label>
+                                            <input type="date"
+                                                   id="nv_check_out"
+                                                   name="check_out"
+                                                   class="form-control"
+                                                   required="required"
+                                                   t-att-value="check_out"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_adults">
+                                                Adults
+                                            </label>
+                                            <input type="number"
+                                                   id="nv_adults"
+                                                   name="adults"
+                                                   class="form-control"
+                                                   min="1"
+                                                   required="required"
+                                                   t-att-value="adults"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_children">
+                                                Children
+                                            </label>
+                                            <input type="number"
+                                                   id="nv_children"
+                                                   name="children"
+                                                   class="form-control"
+                                                   min="0"
+                                                   required="required"
+                                                   t-att-value="children"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Guest information -->
+
+                                <div class="nv-form-card">
+                                    <h4>
+                                        <i class="fa fa-user" aria-hidden="true"/>
+                                        Guest Information
+                                    </h4>
+
+                                    <div class="row g-3">
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="nv_guest_name">
+                                                Full Name
+                                            </label>
+                                            <input type="text"
+                                                   id="nv_guest_name"
+                                                   name="guest_name"
+                                                   class="form-control"
+                                                   required="required"
+                                                   t-att-value="guest_name"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_email">
+                                                Email
+                                            </label>
+                                            <input type="email"
+                                                   id="nv_email"
+                                                   name="email"
+                                                   class="form-control"
+                                                   required="required"
+                                                   t-att-value="email"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="nv_phone">
+                                                Phone
+                                            </label>
+                                            <input type="tel"
+                                                   id="nv_phone"
+                                                   name="phone"
+                                                   class="form-control"
+                                                   t-att-value="phone"/>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="nv_id_number">
+                                                ID / Passport Number
+                                            </label>
+                                            <input type="text"
+                                                   id="nv_id_number"
+                                                   name="id_number"
+                                                   class="form-control"
+                                                   required="required"
+                                                   minlength="5"
+                                                   t-att-value="id_number"/>
+                                            <div id="nv_id_hint"
+                                                 class="form-text"
+                                                 style="display:none;"/>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="nv_special_request">
+                                                Special Requests
+                                            </label>
+                                            <textarea id="nv_special_request"
+                                                      name="special_request"
+                                                      class="form-control"
+                                                      rows="3"><t t-esc="special_request"/></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Submit -->
+
+                                <div class="mt-4">
+                                    <button type="submit" class="nv-submit-btn">
+                                        Confirm Booking
+                                        <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                                    </button>
+                                    <p class="nv-secure-note">
+                                        <i class="fa fa-lock" aria-hidden="true"/>
+                                        Your information is kept private and secure.
+                                    </p>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date helper: blocks past dates and keeps check-out after check-in -->
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var checkIn = document.getElementById("nv_check_in");
+                        var checkOut = document.getElementById("nv_check_out");
+                        if (!checkIn || !checkOut) { return; }
+
+                        var today = new Date();
+                        var iso = today.getFullYear() + "-" +
+                            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+                            String(today.getDate()).padStart(2, "0");
+
+                        checkIn.min = iso;
+                        checkOut.min = checkIn.value || iso;
+
+                        checkIn.addEventListener("change", function () {
+                            checkOut.min = checkIn.value || iso;
+                            if (checkOut.value &amp;&amp; checkOut.value &lt;= checkIn.value) {
+                                checkOut.value = "";
+                            }
+                        });
+                    });
+                </script>
+
+
+                <!-- Auto-fill guest details when a known ID/passport is entered -->
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var idInput = document.getElementById("nv_id_number");
+                        var hint = document.getElementById("nv_id_hint");
+                        if (!idInput) { return; }
+
+                        var targets = {
+                            guest_name: document.getElementById("nv_guest_name"),
+                            email: document.getElementById("nv_email"),
+                            phone: document.getElementById("nv_phone")
+                        };
+                        var timer = null;
+                        var lastLookup = "";
+
+                        function showHint(text, color) {
+                            if (!hint) { return; }
+                            hint.textContent = text;
+                            hint.style.color = color;
+                            hint.style.display = text ? "block" : "none";
+                        }
+
+                        function lookup() {
+                            var value = idInput.value.trim();
+                            if (value.length &lt; 5 || value === lastLookup) { return; }
+                            lastLookup = value;
+
+                            fetch("/booking/guest_lookup", {
+                                method: "POST",
+                                headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({
+                                    jsonrpc: "2.0",
+                                    method: "call",
+                                    params: {id_number: value}
+                                })
+                            })
+                            .then(function (response) { return response.json(); })
+                            .then(function (payload) {
+                                var data = payload ? payload.result : null;
+                                if (!data || !data.found) {
+                                    showHint("", "");
+                                    return;
+                                }
+                                Object.keys(targets).forEach(function (key) {
+                                    if (targets[key] &amp;&amp; data[key]) {
+                                        targets[key].value = data[key];
+                                    }
+                                });
+                                showHint("Welcome back! Your details were filled in automatically.", "#2E7D5B");
+                            })
+                            .catch(function () { showHint("", ""); });
+                        }
+
+                        idInput.addEventListener("input", function () {
+                            clearTimeout(timer);
+                            timer = setTimeout(lookup, 500);
+                        });
+                        idInput.addEventListener("blur", lookup);
+                    });
+                </script>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- =========================================
+         BOOKING CONFIRMATION PAGE
+    ========================================= -->
+
+    <template id="booking_confirmation" name="Booking Confirmation">
+        <t t-call="website.layout">
+            <div id="wrap" class="nile-vista-booking">
+
+                <style>
+                    .nile-vista-booking {
+                        font-family: Arial, sans-serif;
+                        color: #1B2A41;
+                        background-color: #F7F3EA;
+                        padding: 60px 0;
+                    }
+
+                    .nv-confirm-card {
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 14px;
+                        box-shadow: 0 10px 30px rgba(27, 42, 65, 0.08);
+                        overflow: hidden;
+                    }
+
+                    .nv-confirm-head {
+                        background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
+                        color: #F7F3EA;
+                        text-align: center;
+                        padding: 40px 24px;
+                    }
+
+                    .nv-confirm-icon {
+                        width: 74px;
+                        height: 74px;
+                        margin: 0 auto 18px;
+                        border-radius: 50%;
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        font-size: 32px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .nv-confirm-head h1 {
+                        color: #F7F3EA;
+                        font-size: 28px;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                    }
+
+                    .nv-confirm-head p {
+                        color: rgba(247, 243, 234, 0.85);
+                        margin: 0;
+                    }
+
+                    .nv-confirm-body {
+                        padding: 30px 32px;
+                    }
+
+                    .nv-confirm-ref {
+                        text-align: center;
+                        background-color: #EFE6D0;
+                        border: 1px dashed #C9A24B;
+                        border-radius: 10px;
+                        padding: 14px;
+                        margin-bottom: 24px;
+                    }
+
+                    .nv-confirm-ref small {
+                        display: block;
+                        color: #5B6677;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        font-size: 12px;
+                    }
+
+                    .nv-confirm-ref strong {
+                        color: #1B2A41;
+                        font-size: 22px;
+                    }
+
+                    .nv-confirm-row {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 12px 0;
+                        border-bottom: 1px solid #EFE6D0;
+                    }
+
+                    .nv-confirm-row:last-of-type {
+                        border-bottom: none;
+                    }
+
+                    .nv-confirm-label {
+                        color: #5B6677;
+                    }
+
+                    .nv-confirm-label i {
+                        color: #B38F3F;
+                        width: 22px;
+                    }
+
+                    .nv-confirm-value {
+                        color: #1B2A41;
+                        font-weight: 600;
+                        text-align: right;
+                    }
+
+                    .nv-confirm-total .nv-confirm-value {
+                        color: #B38F3F;
+                        font-size: 20px;
+                    }
+
+                    .nv-status-badge {
+                        display: inline-block;
+                        background-color: #FBEBC8;
+                        color: #7A4E00;
+                        padding: 4px 12px;
+                        border-radius: 20px;
+                        font-size: 13px;
+                        font-weight: 600;
+                    }
+
+                    .nv-confirm-actions {
+                        text-align: center;
+                        margin-top: 28px;
+                    }
+
+                    .nv-confirm-btn {
+                        display: inline-block;
+                        background-color: #1B2A41;
+                        color: #F7F3EA;
+                        border: 2px solid #1B2A41;
+                        border-radius: 8px;
+                        padding: 12px 28px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nv-confirm-btn:hover {
+                        background-color: #C9A24B;
+                        border-color: #C9A24B;
+                        color: #1B2A41;
+                        transform: translateY(-3px);
+                    }
+
+                    @media (max-width: 767px) {
+                        .nile-vista-booking {
+                            padding: 30px 0;
+                        }
+
+                        .nv-confirm-body {
+                            padding: 24px 18px;
+                        }
+                    }
+                </style>
+
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+
+                            <div class="nv-confirm-card">
+
+                                <div class="nv-confirm-head">
+                                    <div class="nv-confirm-icon">
+                                        <i class="fa fa-check" aria-hidden="true"/>
+                                    </div>
+                                    <h1>Booking Submitted Successfully!</h1>
+                                    <p>Thank you for choosing our hotel.</p>
+                                </div>
+
+                                <div class="nv-confirm-body">
+
+                                    <div class="nv-confirm-ref">
+                                        <small>Reservation Number</small>
+                                        <strong><t t-esc="reservation.name"/></strong>
+                                    </div>
+
+                                    <div class="nv-confirm-row">
+                                        <span class="nv-confirm-label">
+                                            <i class="fa fa-key" aria-hidden="true"/> Room
+                                        </span>
+                                        <span class="nv-confirm-value">
+                                            <t t-esc="reservation.room_id.room_number"/>
+                                        </span>
+                                    </div>
+
+                                    <div class="nv-confirm-row">
+                                        <span class="nv-confirm-label">
+                                            <i class="fa fa-sign-in" aria-hidden="true"/> Check-in
+                                        </span>
+                                        <span class="nv-confirm-value">
+                                            <span t-field="reservation.check_in"/>
+                                        </span>
+                                    </div>
+
+                                    <div class="nv-confirm-row">
+                                        <span class="nv-confirm-label">
+                                            <i class="fa fa-sign-out" aria-hidden="true"/> Check-out
+                                        </span>
+                                        <span class="nv-confirm-value">
+                                            <span t-field="reservation.check_out"/>
+                                        </span>
+                                    </div>
+
+                                    <div class="nv-confirm-row nv-confirm-total">
+                                        <span class="nv-confirm-label">
+                                            <i class="fa fa-money" aria-hidden="true"/> Total Amount
+                                        </span>
+                                        <span class="nv-confirm-value">
+                                            <t t-esc="reservation.total_amount"/>
+                                        </span>
+                                    </div>
+
+                                    <div class="nv-confirm-row">
+                                        <span class="nv-confirm-label">
+                                            <i class="fa fa-info-circle" aria-hidden="true"/> Status
+                                        </span>
+                                        <span class="nv-confirm-value">
+                                            <span class="nv-status-badge">
+                                                <span t-field="reservation.state"/>
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="nv-confirm-actions">
+                                        <a href="/rooms" class="nv-confirm-btn">
+                                            Browse More Rooms
+                                            <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

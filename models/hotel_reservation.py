@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
+from psycopg2 import IntegrityError
 
 
 class HotelReservation(models.Model):
@@ -38,9 +39,16 @@ class HotelReservation(models.Model):
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
     property_id = fields.Many2one(
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type = fields.Selection(
-        'hotel.room', string='Room Type', related='room_id.room_type' , store=True )
+        'hotel.property', string='Property', related='room_id.property_id', store=True
+    )
+
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double'),
+        ('triple', 'Triple'),
+        ('suite', 'Suite'),
+    ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
+
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -62,23 +70,25 @@ class HotelReservation(models.Model):
         currency_field='currency_id')
     room_total = fields.Monetary(
         compute='_compute_room_total', store=True, currency_field='currency_id')
-    # Mahmoud (Feature 4) سيضيف folio_total / paid_amount / balance ويعدّل total_amount
     total_amount = fields.Monetary(
         compute='_compute_total_amount', store=True, currency_field='currency_id')
 
     special_request = fields.Text()
     cancel_reason = fields.Text(readonly=True, copy=False)
-
-    # ------------------------------------------------------------------
-    # Sequence عند الإنشاء
-    # ------------------------------------------------------------------
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         if vals.get('name', _('New')) == _('New'):
-    #             vals['name'] = self.env['ir.sequence'].next_by_code(
-    #                 'hotel.reservation.sequence') or _('New')
-    #     return super().create(vals_list)
+    
+    external_id = fields.Char(
+    string='External ID',
+    copy=False,
+    index=True,
+    help='Unique identifier provided by an external system.',
+    )
+    _sql_constraints = [
+    (
+        'external_id_unique',
+        'UNIQUE(external_id)',
+        'External ID must be unique.',
+    ),
+]
 
     # ------------------------------------------------------------------
     # Computes
@@ -95,7 +105,7 @@ class HotelReservation(models.Model):
     def _compute_nightly_rate(self):
         for rec in self:
             if rec.room_id:
-                rec.nightly_rate = rec.room_id.nightly_rate
+                rec.nightly_rate = rec.room_id.price
 
     @api.depends('nights', 'nightly_rate')
     def _compute_room_total(self):
@@ -172,20 +182,21 @@ class HotelReservation(models.Model):
                 raise ValidationError(_('Reservation must be confirmed before check-in.'))
             if today < rec.check_in:
                 raise ValidationError(_('Too early: check-in date is %s.') % rec.check_in)
-            if rec.room_id.state != 'available':
+            if rec.room_id.status != 'available':
                 raise ValidationError(_(
                     'Room %(room)s is not available (current status: %(state)s).',
-                    room=rec.room_id.display_name, state=rec.room_id.state))
+                    room=rec.room_id.display_name, state=rec.room_id.status))
             rec.write({'state': 'checked_in', 'actual_check_in': fields.Datetime.now()})
-            rec.room_id.write({'state': 'occupied'})
+            rec.room_id.write({'status': 'occupied'})
 
     def action_check_out(self):
         for rec in self:
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
-            # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-            rec.room_id.write({'state': 'dirty'})  # Dareen: ينشئ housekeeping task
+            rec.room_id.write({'status': 'needs_cleaning'})
+            # 🔴 التعديل هنا: استخدام status بدلاً من state
+            rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""
@@ -235,7 +246,7 @@ class HotelReservation(models.Model):
         if missing:
             raise UserError(_('Missing required fields: %s') % ', '.join(missing))
         clean['source'] = 'website'
-        rec = self.create(clean)   # الـ constrains بترفض التداخل/السعة/المحظور
+        rec = self.create(clean)
         rec.action_confirm()
         return {
             'id': rec.id,
@@ -244,14 +255,87 @@ class HotelReservation(models.Model):
             'nights': rec.nights,
             'total_amount': rec.total_amount,
         }
+            
+            
+    @api.model
+    def create_from_external_api(self, vals):
+        """Create an external reservation with idempotency support."""
 
-    def action_cancel(self):
-        self.ensure_one()
-        ...
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'hotel.reservation.cancel.wizard',
-            'view_mode': 'form',
-            'target': 'new',          # دي اللي بتخليه popup
-            'context': {'default_reservation_id': self.id},
+        vals = vals or {}
+
+        # 1. Validate external_id
+        external_id = str(vals.get('external_id') or '').strip()
+
+        if not external_id:
+            raise UserError(_('The external_id field is required.'))
+
+        # 2. Return existing reservation if already created
+        existing = self.search([
+            ('external_id', '=', external_id),
+        ], limit=1)
+
+        if existing:
+            return existing, False
+
+        # 3. Allow only the required reservation fields
+        allowed_fields = {
+            'guest_id',
+            'room_id',
+            'check_in',
+            'check_out',
+            'adults',
+            'children',
+            'special_request',
         }
+
+        clean = {
+            key: vals[key]
+            for key in allowed_fields
+            if key in vals
+        }
+
+        # 4. Validate required fields
+        required_fields = [
+            'guest_id',
+            'room_id',
+            'check_in',
+            'check_out',
+        ]
+
+        missing = [
+            field
+            for field in required_fields
+            if not clean.get(field)
+        ]
+
+        if missing:
+            raise UserError(
+                _('Missing required fields: %s')
+                % ', '.join(missing)
+            )
+
+        # 5. Set trusted values on the server
+        clean.update({
+            'external_id': external_id,
+            'source': 'other',
+            'state': 'draft',
+        })
+
+        # 6. Protect against simultaneous duplicate requests
+        try:
+            with self.env.cr.savepoint():
+                reservation = self.create(clean)
+                reservation.action_confirm()
+
+        except IntegrityError:
+            # Another request may have created the same external_id
+            existing = self.search([
+                ('external_id', '=', external_id),
+            ], limit=1)
+
+            if existing:
+                return existing, False
+
+            raise
+
+        return reservation, True

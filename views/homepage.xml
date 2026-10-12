@@ -1,0 +1,1116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="homepage" name="Nile Vista Hotel Homepage">
+        <t t-call="website.layout">
+
+            <div id="wrap" class="oe_structure nile-vista-homepage">
+
+                <style>
+                    /* =========================================
+                       PALETTE
+                       Navy       #1B2A41
+                       Navy dark  #14202F
+                       Navy light #2A3F5F
+                       Gold       #C9A24B
+                       Gold light #D9B96A
+                       Gold dark  #B38F3F
+                       Cream      #F7F3EA
+                       Cream dark #EFE6D0
+                       Border     #E6DCC3
+                    ========================================= */
+
+                    /* =========================================
+                       GENERAL STYLES
+                    ========================================= */
+
+                    .nile-vista-homepage {
+                        font-family: Arial, sans-serif;
+                        color: #1B2A41;
+                    }
+
+                    .nile-vista-homepage .section-padding {
+                        padding: 75px 0;
+                    }
+
+                    .nile-vista-homepage .section-title {
+                        color: #1B2A41;
+                        font-weight: 700;
+                        margin-bottom: 15px;
+                    }
+
+                    .nile-vista-homepage .section-subtitle {
+                        color: #5B6677;
+                        max-width: 650px;
+                        margin: 0 auto 40px;
+                        line-height: 1.8;
+                    }
+
+                    .nile-vista-homepage .hotel-primary-btn {
+                        background-color: #1B2A41;
+                        color: #F7F3EA;
+                        border: 2px solid #1B2A41;
+                        border-radius: 6px;
+                        padding: 12px 28px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        display: inline-block;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nile-vista-homepage .hotel-primary-btn:hover {
+                        background-color: #2A3F5F;
+                        border-color: #2A3F5F;
+                        transform: translateY(-3px);
+                        box-shadow: 0 8px 20px rgba(27, 42, 65, 0.2);
+                        color: #F7F3EA;
+                    }
+
+                    .nile-vista-homepage .hotel-secondary-btn {
+                        background-color: transparent;
+                        color: #F7F3EA;
+                        border: 2px solid #C9A24B;
+                        border-radius: 6px;
+                        padding: 12px 28px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        display: inline-block;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nile-vista-homepage .hotel-secondary-btn:hover {
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        transform: translateY(-3px);
+                    }
+
+                    /* =========================================
+                       HERO SECTION
+                    ========================================= */
+
+                    .nile-vista-hero {
+                        position: relative;
+                        overflow: hidden;
+                        background: linear-gradient(
+                            135deg,
+                            #14202F 0%,
+                            #1B2A41 55%,
+                            #2A3F5F 100%
+                        );
+                        color: #F7F3EA;
+                        padding: 110px 20px;
+                        text-align: center;
+                    }
+
+                    .nile-vista-hero::before {
+                        content: "";
+                        position: absolute;
+                        width: 350px;
+                        height: 350px;
+                        border: 1px solid rgba(201, 162, 75, 0.28);
+                        border-radius: 50%;
+                        top: -150px;
+                        right: -80px;
+                        pointer-events: none;
+                    }
+
+                    .nile-vista-hero::after {
+                        content: "";
+                        position: absolute;
+                        width: 250px;
+                        height: 250px;
+                        border: 1px solid rgba(201, 162, 75, 0.28);
+                        border-radius: 50%;
+                        bottom: -140px;
+                        left: -60px;
+                        pointer-events: none;
+                    }
+
+                    .nile-vista-hero-content {
+                        position: relative;
+                        z-index: 1;
+                        animation: heroFadeIn 1s ease both;
+                    }
+
+                    .nile-vista-hero h1 {
+                        color: #F7F3EA;
+                        font-size: 48px;
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                        line-height: 1.3;
+                    }
+
+                    .nile-vista-hero p {
+                        color: rgba(247, 243, 234, 0.9);
+                        font-size: 18px;
+                        line-height: 1.8;
+                        max-width: 700px;
+                        margin: 0 auto 30px;
+                    }
+
+                    .nile-vista-hero-actions {
+                        display: flex;
+                        justify-content: center;
+                        gap: 15px;
+                        flex-wrap: wrap;
+                    }
+
+                    .nile-vista-hero .hotel-primary-btn {
+                        background-color: #C9A24B;
+                        border-color: #C9A24B;
+                        color: #1B2A41;
+                    }
+
+                    .nile-vista-hero .hotel-primary-btn:hover {
+                        background-color: #D9B96A;
+                        border-color: #D9B96A;
+                        color: #14202F;
+                    }
+
+                    @keyframes heroFadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(25px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    /* =========================================
+                       FEATURED ROOMS SECTION
+                    ========================================= */
+
+                    .hotel-rooms-section {
+                        background-color: #F7F3EA;
+                    }
+
+                    .hotel-room-column {
+                        display: flex;
+                        margin-bottom: 30px;
+                    }
+
+                    .hotel-room-card {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        background-color: #ffffff;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        border: 1px solid #E6DCC3;
+                        box-shadow: 0 5px 20px rgba(27, 42, 65, 0.06);
+                        transition: transform 0.35s ease,
+                                    box-shadow 0.35s ease;
+                    }
+
+                    .hotel-room-card:hover {
+                        transform: translateY(-8px);
+                        box-shadow: 0 15px 35px rgba(27, 42, 65, 0.14);
+                    }
+
+                    .hotel-room-image-wrapper {
+                        height: 230px;
+                        overflow: hidden;
+                        background-color: #EFE6D0;
+                    }
+
+                    .hotel-room-image {
+                        width: 100%;
+                        height: 230px;
+                        object-fit: cover;
+                        transition: transform 0.5s ease;
+                    }
+
+                    .hotel-room-card:hover .hotel-room-image {
+                        transform: scale(1.06);
+                    }
+
+                    .hotel-room-image-placeholder {
+                        width: 100%;
+                        height: 230px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #B38F3F;
+                        font-size: 48px;
+                        background-color: #EFE6D0;
+                    }
+
+                    .hotel-room-body {
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        padding: 24px;
+                    }
+
+                    .hotel-room-number {
+                        color: #B38F3F;
+                        font-size: 13px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-bottom: 8px;
+                    }
+
+                    .hotel-room-name {
+                        color: #1B2A41;
+                        font-size: 21px;
+                        font-weight: 700;
+                        margin-bottom: 12px;
+                    }
+
+                    .hotel-room-description {
+                        color: #5B6677;
+                        line-height: 1.7;
+                        margin-bottom: 18px;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        min-height: 81px;
+                    }
+
+                    .hotel-room-details {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 12px;
+                        color: #5B6677;
+                        font-size: 14px;
+                        margin-bottom: 20px;
+                    }
+
+                    .hotel-room-details span {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+
+                    .hotel-room-details i {
+                        color: #B38F3F;
+                    }
+
+                    .hotel-room-price-wrapper {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 12px;
+                        margin-top: auto;
+                        padding-top: 18px;
+                        border-top: 1px solid #EFE6D0;
+                    }
+
+                    .hotel-room-price {
+                        color: #1B2A41;
+                        font-size: 21px;
+                        font-weight: 700;
+                    }
+
+                    .hotel-room-price small {
+                        display: block;
+                        color: #8490A0;
+                        font-size: 12px;
+                        font-weight: 400;
+                    }
+
+                    .hotel-room-details-btn {
+                        background-color: #1B2A41;
+                        color: #F7F3EA;
+                        padding: 10px 16px;
+                        border-radius: 5px;
+                        text-decoration: none;
+                        font-size: 13px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                        transition: all 0.3s ease;
+                    }
+
+                    .hotel-room-details-btn:hover {
+                        color: #1B2A41;
+                        background-color: #C9A24B;
+                        transform: translateY(-2px);
+                    }
+
+                    .hotel-no-rooms {
+                        padding: 40px 20px;
+                        background-color: #ffffff;
+                        border-radius: 10px;
+                        color: #5B6677;
+                    }
+
+                    .hotel-no-rooms i {
+                        color: #B38F3F;
+                    }
+
+                    /* =========================================
+                       WHY CHOOSE US SECTION
+                       Animated cards and icons
+                    ========================================= */
+
+                    .hotel-why-section {
+                        background-color: #ffffff;
+                    }
+
+                    .hotel-why-card {
+                        height: 100%;
+                        padding: 35px 25px;
+                        text-align: center;
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 12px;
+                        box-shadow: 0 5px 18px rgba(27, 42, 65, 0.05);
+                        transition: transform 0.35s ease,
+                                    box-shadow 0.35s ease,
+                                    border-color 0.35s ease;
+                        animation: whyCardFadeIn 0.7s ease both;
+                    }
+
+                    .hotel-why-card:nth-child(2) {
+                        animation-delay: 0.15s;
+                    }
+
+                    .hotel-why-card:nth-child(3) {
+                        animation-delay: 0.3s;
+                    }
+
+                    .hotel-why-card:hover {
+                        transform: translateY(-10px);
+                        border-color: #C9A24B;
+                        box-shadow: 0 16px 35px rgba(27, 42, 65, 0.12);
+                    }
+
+                    .hotel-why-icon {
+                        width: 78px;
+                        height: 78px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 22px;
+                        border-radius: 50%;
+                        background-color: #EFE6D0;
+                        color: #B38F3F;
+                        font-size: 30px;
+                        transition: background-color 0.35s ease,
+                                    color 0.35s ease,
+                                    transform 0.6s ease;
+                    }
+
+                    .hotel-why-card:hover .hotel-why-icon {
+                        background-color: #1B2A41;
+                        color: #C9A24B;
+                        transform: rotateY(360deg);
+                    }
+
+                    .hotel-why-card h4 {
+                        color: #1B2A41;
+                        font-size: 20px;
+                        font-weight: 700;
+                        margin-bottom: 14px;
+                        transition: color 0.3s ease;
+                    }
+
+                    .hotel-why-card:hover h4 {
+                        color: #B38F3F;
+                    }
+
+                    .hotel-why-card p {
+                        color: #5B6677;
+                        line-height: 1.8;
+                        margin-bottom: 0;
+                    }
+
+                    @keyframes whyCardFadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    /* =========================================
+                       OUR SERVICES SECTION
+                    ========================================= */
+
+                    .hotel-services-section {
+                        background-color: #F7F3EA;
+                    }
+
+                    .hotel-service-card {
+                        height: 100%;
+                        padding: 32px 24px;
+                        text-align: center;
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 12px;
+                        box-shadow: 0 5px 18px rgba(27, 42, 65, 0.05);
+                        transition: transform 0.35s ease,
+                                    box-shadow 0.35s ease,
+                                    border-color 0.35s ease;
+                    }
+
+                    .hotel-service-card:hover {
+                        transform: translateY(-10px);
+                        border-color: #C9A24B;
+                        box-shadow: 0 16px 35px rgba(27, 42, 65, 0.12);
+                    }
+
+                    .hotel-service-icon {
+                        width: 72px;
+                        height: 72px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 20px;
+                        border-radius: 50%;
+                        background-color: #EFE6D0;
+                        color: #B38F3F;
+                        font-size: 28px;
+                        transition: all 0.35s ease;
+                    }
+
+                    .hotel-service-card:hover .hotel-service-icon {
+                        background-color: #1B2A41;
+                        color: #C9A24B;
+                        transform: scale(1.1) rotate(5deg);
+                    }
+
+                    .hotel-service-card h4 {
+                        color: #1B2A41;
+                        font-size: 19px;
+                        font-weight: 700;
+                        margin-bottom: 12px;
+                        transition: color 0.3s ease;
+                    }
+
+                    .hotel-service-card:hover h4 {
+                        color: #B38F3F;
+                    }
+
+                    .hotel-service-card p {
+                        color: #5B6677;
+                        line-height: 1.8;
+                        margin-bottom: 0;
+                    }
+
+                    /* =========================================
+                       CALL TO ACTION SECTION
+                    ========================================= */
+
+                    .hotel-cta-section {
+                        background: linear-gradient(
+                            135deg,
+                            #14202F 0%,
+                            #1B2A41 55%,
+                            #2A3F5F 100%
+                        );
+                        padding: 70px 20px;
+                        text-align: center;
+                        color: #F7F3EA;
+                    }
+
+                    .hotel-cta-section h2 {
+                        color: #F7F3EA;
+                        font-weight: 700;
+                        margin-bottom: 18px;
+                    }
+
+                    .hotel-cta-section p {
+                        color: rgba(247, 243, 234, 0.85);
+                        max-width: 650px;
+                        margin: 0 auto 28px;
+                        line-height: 1.8;
+                    }
+
+                    .hotel-cta-section .hotel-cta-btn {
+                        display: inline-block;
+                        padding: 13px 30px;
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        border: 2px solid #C9A24B;
+                        border-radius: 6px;
+                        font-weight: 700;
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                    }
+
+                    .hotel-cta-section .hotel-cta-btn:hover {
+                        background-color: #D9B96A;
+                        border-color: #D9B96A;
+                        color: #14202F;
+                        transform: translateY(-3px);
+                    }
+
+                    /* =========================================
+                       HERO SEARCH BAR
+                    ========================================= */
+
+                    .nile-vista-search-form {
+                        display: flex;
+                        align-items: stretch;
+                        gap: 10px;
+                        max-width: 760px;
+                        margin: 0 auto 28px;
+                        padding: 10px;
+                        background-color: rgba(247, 243, 234, 0.96);
+                        border: 1px solid #C9A24B;
+                        border-radius: 10px;
+                        box-shadow: 0 10px 30px rgba(20, 32, 47, 0.3);
+                    }
+
+                    .nile-vista-search-field {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        flex: 1;
+                        padding: 0 14px;
+                        background-color: #ffffff;
+                        border: 1px solid #E6DCC3;
+                        border-radius: 6px;
+                        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                    }
+
+                    .nile-vista-search-field:focus-within {
+                        border-color: #C9A24B;
+                        box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.2);
+                    }
+
+                    .nile-vista-search-field i {
+                        color: #B38F3F;
+                    }
+
+                    .nile-vista-search-field input {
+                        width: 100%;
+                        padding: 13px 0;
+                        border: 0;
+                        outline: none;
+                        background: transparent;
+                        color: #1B2A41;
+                        font-size: 15px;
+                    }
+
+                    .nile-vista-search-field input::placeholder {
+                        color: #8490A0;
+                    }
+
+                    .nile-vista-search-btn {
+                        background-color: #C9A24B;
+                        color: #1B2A41;
+                        border: 2px solid #C9A24B;
+                        border-radius: 6px;
+                        padding: 0 26px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        white-space: nowrap;
+                        transition: all 0.3s ease;
+                    }
+
+                    .nile-vista-search-btn:hover {
+                        background-color: #D9B96A;
+                        border-color: #D9B96A;
+                        color: #14202F;
+                        transform: translateY(-2px);
+                    }
+
+                    @media (max-width: 767px) {
+                        .nile-vista-search-form {
+                            flex-direction: column;
+                        }
+
+                        .nile-vista-search-btn {
+                            padding: 13px 26px;
+                        }
+                    }
+
+                    /* =========================================
+                       RESPONSIVE DESIGN
+                    ========================================= */
+
+                    @media (max-width: 991px) {
+                        .nile-vista-hero {
+                            padding: 85px 20px;
+                        }
+
+                        .nile-vista-hero h1 {
+                            font-size: 38px;
+                        }
+
+                        .nile-vista-homepage .section-padding {
+                            padding: 60px 0;
+                        }
+
+                        .hotel-room-column {
+                            margin-bottom: 25px;
+                        }
+                    }
+
+                    @media (max-width: 767px) {
+                        .nile-vista-hero {
+                            padding: 70px 18px;
+                        }
+
+                        .nile-vista-hero h1 {
+                            font-size: 31px;
+                        }
+
+                        .nile-vista-hero p {
+                            font-size: 16px;
+                        }
+
+                        .nile-vista-homepage .section-padding {
+                            padding: 45px 0;
+                        }
+
+                        .hotel-why-card,
+                        .hotel-service-card {
+                            padding: 28px 20px;
+                        }
+
+                        .hotel-room-image-wrapper,
+                        .hotel-room-image,
+                        .hotel-room-image-placeholder {
+                            height: 210px;
+                        }
+
+                        .hotel-room-price-wrapper {
+                            align-items: flex-start;
+                        }
+
+                        .hotel-room-price {
+                            font-size: 18px;
+                        }
+                    }
+
+                    @media (prefers-reduced-motion: reduce) {
+                        .nile-vista-homepage *,
+                        .nile-vista-homepage *::before,
+                        .nile-vista-homepage *::after {
+                            animation-duration: 0.01ms !important;
+                            animation-iteration-count: 1 !important;
+                            transition-duration: 0.01ms !important;
+                            scroll-behavior: auto !important;
+                        }
+                    }
+                </style>
+
+                <!-- =========================================
+                     HERO SECTION
+                ========================================= -->
+
+                <section class="nile-vista-hero">
+                    <div class="container nile-vista-hero-content">
+
+                        <h1>Welcome to Nile Vista Hotel</h1>
+
+                        <p>
+                            Experience comfort, elegance, and exceptional
+                            hospitality. Discover the perfect room for your
+                            next stay with us.
+                        </p>
+
+                        <!-- Room Search -->
+
+                        <form action="/rooms" method="get" class="nile-vista-search-form">
+
+                            <div class="nile-vista-search-field">
+                                <i class="fa fa-search" aria-hidden="true"/>
+                                <input
+                                    type="text"
+                                    name="search"
+                                    placeholder="Search by room number, type or keyword"
+                                    aria-label="Search rooms"
+                                />
+                            </div>
+
+                            <button type="submit" class="nile-vista-search-btn">
+                                Search
+                            </button>
+
+                        </form>
+
+                        <div class="nile-vista-hero-actions">
+
+                            <a href="/rooms" class="hotel-primary-btn">
+                                Explore Our Rooms
+                                <i class="fa fa-arrow-right ms-2"
+                                   aria-hidden="true"/>
+                            </a>
+
+                            <a href="/contactus" class="hotel-secondary-btn">
+                                Contact Us
+                            </a>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- =========================================
+                     FEATURED ROOMS SECTION
+                ========================================= -->
+
+                <section class="hotel-rooms-section section-padding">
+                    <div class="container">
+
+                        <div class="text-center">
+                            <h2 class="section-title">
+                                Our Featured Rooms
+                            </h2>
+
+                            <p class="section-subtitle">
+                                Discover our comfortable and carefully
+                                designed rooms, created to make your stay
+                                relaxing and memorable.
+                            </p>
+                        </div>
+
+                        <div class="row">
+
+                            <t t-if="featured_rooms">
+                                <t t-foreach="featured_rooms" t-as="room">
+
+                                    <div class="col-lg-4 col-md-6 hotel-room-column">
+                                        <div class="hotel-room-card">
+
+                                            <!-- Room Image -->
+
+                                            <div class="hotel-room-image-wrapper">
+
+                                                <t t-if="room.room_image">
+                                                    <img
+                                                        t-att-src="'/web/image/hotel.room/%s/room_image' % room.id"
+                                                        t-att-alt="'Room %s' % room.room_number"
+                                                        class="hotel-room-image"
+                                                    />
+                                                </t>
+
+                                                <t t-else="">
+                                                    <div class="hotel-room-image-placeholder">
+                                                        <i class="fa fa-bed"
+                                                           aria-hidden="true"/>
+                                                    </div>
+                                                </t>
+
+                                            </div>
+
+                                            <!-- Room Information -->
+
+                                            <div class="hotel-room-body">
+
+                                                <div class="hotel-room-number">
+                                                    Room
+                                                    <span t-field="room.room_number"/>
+                                                </div>
+
+                                                <h3 class="hotel-room-name">
+                                                    <span t-field="room.property_id"/>
+                                                </h3>
+
+                                                <p class="hotel-room-description">
+                                                    <t t-if="room.description">
+                                                        <span t-field="room.description"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        Enjoy a comfortable
+                                                        stay with our hotel
+                                                        facilities and services.
+                                                    </t>
+                                                </p>
+
+                                                <!-- Room Details -->
+
+                                                <div class="hotel-room-details">
+
+                                                    <span>
+                                                        <i class="fa fa-bed"
+                                                           aria-hidden="true"/>
+                                                        <span t-field="room.room_type"/>
+                                                    </span>
+
+                                                    <span>
+                                                        <i class="fa fa-users"
+                                                           aria-hidden="true"/>
+                                                        <span t-field="room.capacity"/>
+                                                        Guests
+                                                    </span>
+
+                                                </div>
+
+                                                <!-- Price and Button -->
+
+                                                <div class="hotel-room-price-wrapper">
+
+                                                    <div class="hotel-room-price">
+
+                                                        <span
+                                                            t-field="room.price"
+                                                            t-options="{'widget': 'monetary', 'display_currency': room.currency_id if 'currency_id' in room._fields else request.env.company.currency_id}"
+                                                        />
+
+                                                        <small>Per Night</small>
+
+                                                    </div>
+
+                                                    <a
+                                                        t-att-href="'/room/%s' % room.id"
+                                                        class="hotel-room-details-btn"
+                                                    >
+                                                        View Details
+                                                        <i class="fa fa-arrow-right ms-1"
+                                                           aria-hidden="true"/>
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </t>
+                            </t>
+
+                            <t t-else="">
+                                <div class="col-12 text-center">
+
+                                    <div class="hotel-no-rooms">
+
+                                        <i class="fa fa-bed fa-3x mb-3"
+                                           aria-hidden="true"/>
+
+                                        <h4>No Rooms Available</h4>
+
+                                        <p>
+                                            Please check back later to discover
+                                            our available rooms.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+                            </t>
+
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a href="/rooms" class="hotel-primary-btn">
+                                View All Rooms
+                                <i class="fa fa-arrow-right ms-2"
+                                   aria-hidden="true"/>
+                            </a>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- =========================================
+                     WHY CHOOSE US SECTION
+                ========================================= -->
+
+                <section class="hotel-why-section section-padding">
+                    <div class="container">
+
+                        <div class="text-center">
+
+                            <h2 class="section-title">
+                                Why Choose Us?
+                            </h2>
+
+                            <p class="section-subtitle">
+                                At Nile Vista Hotel, we focus on comfort,
+                                quality, and making every guest feel welcome.
+                            </p>
+
+                        </div>
+
+                        <div class="row g-4">
+
+                            <!-- Comfortable Rooms -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-why-card">
+
+                                    <div class="hotel-why-icon">
+                                        <i class="fa fa-bed"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Comfortable Rooms</h4>
+
+                                    <p>
+                                        Relax in thoughtfully designed rooms
+                                        with comfortable spaces for a
+                                        pleasant and enjoyable stay.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <!-- Quality Service -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-why-card">
+
+                                    <div class="hotel-why-icon">
+                                        <i class="fa fa-star"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Quality Service</h4>
+
+                                    <p>
+                                        Our team is committed to providing
+                                        attentive service and helping make
+                                        your hotel experience memorable.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <!-- Guest Satisfaction -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-why-card">
+
+                                    <div class="hotel-why-icon">
+                                        <i class="fa fa-heart"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Guest Satisfaction</h4>
+
+                                    <p>
+                                        Your comfort matters to us. We aim
+                                        to create a welcoming atmosphere
+                                        throughout your stay.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =========================================
+                     OUR SERVICES SECTION
+                ========================================= -->
+
+                <section class="hotel-services-section section-padding">
+                    <div class="container">
+
+                        <div class="text-center">
+
+                            <h2 class="section-title">
+                                Our Services
+                            </h2>
+
+                            <p class="section-subtitle">
+                                Enjoy a convenient stay with services
+                                designed to support your comfort and needs.
+                            </p>
+
+                        </div>
+
+                        <div class="row g-4">
+
+                            <!-- Housekeeping -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-service-card">
+
+                                    <div class="hotel-service-icon">
+                                        <i class="fa fa-home"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Housekeeping</h4>
+
+                                    <p>
+                                        Enjoy a clean and welcoming room
+                                        throughout your stay with our
+                                        housekeeping support.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <!-- Maintenance Support -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-service-card">
+
+                                    <div class="hotel-service-icon">
+                                        <i class="fa fa-wrench"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Maintenance Support</h4>
+
+                                    <p>
+                                        Our team works to keep hotel rooms
+                                        and facilities comfortable and
+                                        ready for our guests.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                            <!-- Guest Assistance -->
+
+                            <div class="col-lg-4 col-md-6">
+                                <div class="hotel-service-card">
+
+                                    <div class="hotel-service-icon">
+                                        <i class="fa fa-user"
+                                           aria-hidden="true"/>
+                                    </div>
+
+                                    <h4>Guest Assistance</h4>
+
+                                    <p>
+                                        Need help during your stay?
+                                        Our team is ready to assist with
+                                        your questions and requests.
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =========================================
+                     CALL TO ACTION SECTION
+                ========================================= -->
+
+                <section class="hotel-cta-section">
+                    <div class="container">
+
+                        <h2>Ready to Plan Your Stay?</h2>
+
+                        <p>
+                            Discover our available rooms and find the
+                            perfect place to relax and enjoy your visit.
+                        </p>
+
+                        <a href="/rooms" class="hotel-cta-btn">
+                            Explore Available Rooms
+                            <i class="fa fa-arrow-right ms-2"
+                               aria-hidden="true"/>
+                        </a>
+
+                    </div>
+                </section>
+
+            </div>
+
+        </t>
+    </template>
+
+</odoo>
