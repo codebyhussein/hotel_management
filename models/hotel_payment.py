@@ -8,10 +8,16 @@ class HotelPayment(models.Model):
 
     reservation_id = fields.Many2one(
         'hotel.reservation', required=True, ondelete='cascade')
+    
     folio_line_id = fields.Many2one(
         'hotel.folio.line', domain="[('reservation_id', '=', reservation_id)]")
+    
+    # partner_id = fields.Many2one(
+    #     'res.partner', related='reservation_id.guest_id.partner_id', store=True)
+    
     partner_id = fields.Many2one(
         'res.partner', related='reservation_id.guest_id.partner_id', store=True)
+    
     currency_id = fields.Many2one(
         'res.currency', related='reservation_id.currency_id', store=True)
     payment_date = fields.Date(default=fields.Date.context_today, required=True)

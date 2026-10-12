@@ -32,20 +32,18 @@ and improve operational efficiency.
     'application': True,
     'installable': True,
 
-<<<<<<< HEAD
+
     # any module necessary for this one to work correctly
     'depends': ['base', 'mail', 'account', 'product'],
-=======
+
     'depends': [
         'base',
         'mail',
         'website',
         'crm',
     ],
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
 
     'data': [
-<<<<<<< HEAD
         'security/hotel_security.xml',
         'security/groups.xml',
         'security/security.xml',
@@ -57,7 +55,7 @@ and improve operational efficiency.
         'views/housekeeping.xml',
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
-=======
+        
         # Security
         'security/hotel_security.xml',
         'security/groups.xml',
@@ -83,7 +81,6 @@ and improve operational efficiency.
         'views/online_booking_templates.xml',
 
         # Menus
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
         'views/menus.xml',
         'views/folio_payment_views.xml',
         'views/hotel_reservation_inherit_views.xml',

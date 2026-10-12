@@ -21,19 +21,16 @@ class HotelGuest(models.Model):
     total_stays = fields.Integer(string='Total Stays', compute='_compute_total_stays')
     notes = fields.Text(string='Notes')
     active = fields.Boolean(string='Active', default=True)
-<<<<<<< HEAD
-    # Inherit balance field from hotel_reservation
-    
+
+    # Take balance field from hotel_reservation
     reservation_ids = fields.One2many('hotel.reservation', 'guest_id', string='Reservations')
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id.id)
     deposit = fields.Monetary(string='Deposit', currency_field='currency_id')
     charges = fields.Monetary(string='Charges', compute='_compute_balance', store=True, currency_field='currency_id')
     balance = fields.Monetary(string='Balance', compute='_compute_balance', store=True, currency_field='currency_id')
-=======
     total_stays = fields.Integer(
         string='Total Stays', compute='_compute_total_stays'
     )
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
 
     
     @api.depends('deposit', 'reservation_ids.state','reservation_ids.room_total','reservation_ids.folio_line_ids.amount')

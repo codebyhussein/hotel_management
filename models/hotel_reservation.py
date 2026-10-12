@@ -37,15 +37,15 @@ class HotelReservation(models.Model):
     ], string='Source', default='walk_in')
 
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
+    
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
-    property_id = fields.Many2one(
-<<<<<<< HEAD
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type = fields.Selection(
-        related='room_id.room_type', string='Room Type', store=True)
-=======
-        'hotel.property', string='Property', related='room_id.property_id', store=True
-    )
+    
+    property_id = fields.Many2one('hotel.property', string='Property', related='room_id.property_id', store=True)
+    
+    # room_type = fields.Selection(
+    #     related='room_id.room_type', string='Room Type', store=True)
+    # 'hotel.property', string='Property', related='room_id.property_id', store=True
+    # )
 
     room_type = fields.Selection([
         ('single', 'Single'),
@@ -54,7 +54,7 @@ class HotelReservation(models.Model):
         ('suite', 'Suite'),
     ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
 
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
+
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -200,13 +200,13 @@ class HotelReservation(models.Model):
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
             rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
-<<<<<<< HEAD
+
             rec.room_id.write({'status': 'needs_cleaning'})  # Dareen: ينشئ housekeeping task
-=======
+
             rec.room_id.write({'status': 'needs_cleaning'})
             # 🔴 التعديل هنا: استخدام status بدلاً من state
             rec.room_id.write({'status': 'needs_cleaning'})
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
+
 
     def action_cancel(self):
         """يفتح wizard لإدخال سبب الإلغاء (إجباري)."""
@@ -265,8 +265,8 @@ class HotelReservation(models.Model):
             'nights': rec.nights,
             'total_amount': rec.total_amount,
         }
-<<<<<<< HEAD
-=======
+
+
             
             
     @api.model
@@ -351,4 +351,4 @@ class HotelReservation(models.Model):
             raise
 
         return reservation, True
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
+

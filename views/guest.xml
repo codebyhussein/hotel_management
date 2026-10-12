@@ -41,17 +41,17 @@
                             <field name="active"/>
                         </group>
                     </group>
-<<<<<<< HEAD
+
                     <!-- Guest deposit / balance: deposit (manual) minus charges from reservations + folio lines. -->
                     <group string="Financials" name="financials">
                         <field name="deposit"/>
                         <field name="charges"/>
                         <field name="balance"/>
                     </group>
-=======
+
 
                     <!-- Notebook for Detailed Data -->
->>>>>>> e58f499f74761fc542cc78bd49a2d919ef5c3998
+
                     <notebook>
                         <page string="Reservations History" name="reservations">
                             <field name="reservation_ids" readonly="1">
