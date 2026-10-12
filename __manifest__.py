@@ -49,6 +49,7 @@ and improve operational efficiency.
         # Data
         'data/hotel_reservation_data.xml',
         'data/inquiry_confirmation.xml',
+        'data/maintenance_sequence.xml',
 
         # Views
         'views/guest.xml',
