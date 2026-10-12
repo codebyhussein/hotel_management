@@ -15,11 +15,11 @@ class HotelRoom(models.Model):
     room_number = fields.Char(
         string='Room Number',
         required=True,
-        index=True,
-        copy=False,
-        readonly=True,
-        default='New',
+
         tracking=True,
+           default=lambda self: self.env['ir.sequence'].next_by_code(
+                 'hotel.room.sequence'
+             ) or 'New',
     )
 
     room_type = fields.Selection([
@@ -115,71 +115,6 @@ class HotelRoom(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('needs_cleaning', 'Needs Cleaning'),
     ], string='Status', default='available', required=True, tracking=True)
-
-    # =========================
-    # Room Sequence
-    # =========================
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            property_id = vals.get('property_id')
-
-            if not property_id:
-                property_id = self.env.user.property_id.id
-
-                if property_id:
-                    vals['property_id'] = property_id
-
-            room_number = vals.get('room_number', 'New')
-
-            if room_number == 'New':
-                if not property_id:
-                    raise ValidationError(
-                        _('Please select a Property before creating a room.')
-                    )
-
-                sequence_code = f'hotel.room.{property_id}'
-
-                sequence = self.env['ir.sequence'].sudo().search([
-                    ('code', '=', sequence_code),
-                ], limit=1)
-
-                if not sequence:
-                    sequence = self.env['ir.sequence'].sudo().create({
-                        'name': f'Room Sequence - Property {property_id}',
-                        'code': sequence_code,
-                        'prefix': '',
-                        'padding': 3,
-                        'number_next': 1,
-                        'number_increment': 1,
-                        'implementation': 'standard',
-                        'company_id': False,
-                    })
-
-                next_number = sequence.next_by_id()
-
-                if not next_number:
-                    raise ValidationError(
-                        _('Could not generate a room number for this Property.')
-                    )
-
-                vals['room_number'] = next_number
-
-        return super().create(vals_list)
-
-    # =========================
-    # Display Name
-    # =========================
-
-    @api.depends('room_number')
-    def _compute_display_name(self):
-        for room in self:
-            room.display_name = (
-                f"Room {room.room_number}"
-                if room.room_number
-                else 'New Room'
-            )
 
     # =========================
     # Capacity
