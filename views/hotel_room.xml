@@ -49,12 +49,14 @@
                             string="Start Maintenance"
                             type="object"
                             class="btn-primary"
+                           
                             invisible="status == 'maintenance'"/>
 
                     <button name="action_set_needs_cleaning"
                             string="Needs Cleaning"
                             type="object"
                             class="btn-primary"
+                            
                             invisible="status == 'needs_cleaning'"/>
 
                     <button name="action_open_room_history_report"
