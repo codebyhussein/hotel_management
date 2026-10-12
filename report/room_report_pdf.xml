@@ -2,8 +2,7 @@
 <odoo>
 
     <!-- PDF Report Action -->
-    <record id="action_report_room_history_pdf" model="ir.actions.report">  
-            
+    <record id="action_report_room_history_pdf" model="ir.actions.report">
 
         <field name="name">Room History PDF</field>
         <field name="model">room.history.report.wizard</field>
@@ -185,10 +184,11 @@
                                     <tr>
                                         <th>Task</th>
                                         <th>Task Type</th>
-                                        <th>Maintenance Type</th>
+                                        <th>Guest</th>
                                         <th>Assigned Employee</th>
-                                        <th>Scheduled Date</th>
-                                        <th>Completed Date</th>
+                                        <th>Request Date</th>
+                                        <th>Start Date</th>
+                                        <th>Done Date</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -211,7 +211,7 @@
                                             </td>
 
                                             <td>
-                                                <span t-field="task.maintenance_type"/>
+                                                <span t-field="task.guest_id"/>
                                             </td>
 
                                             <td>
@@ -219,7 +219,11 @@
                                             </td>
 
                                             <td>
-                                                <span t-field="task.scheduled_date"/>
+                                                <span t-field="task.request_date"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-field="task.start_date"/>
                                             </td>
 
                                             <td>
@@ -236,7 +240,7 @@
 
                                     <t t-else="">
                                         <tr>
-                                            <td colspan="7" class="text-center">
+                                            <td colspan="8" class="text-center">
                                                 No tasks found for this period.
                                             </td>
                                         </tr>

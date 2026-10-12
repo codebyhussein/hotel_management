@@ -1,4 +1,5 @@
-from odoo import models
+from odoo import models, fields
+from datetime import datetime, time
 
 
 class RoomHistoryPDFReport(models.AbstractModel):
@@ -16,47 +17,89 @@ class RoomHistoryPDFReport(models.AbstractModel):
         for wizard in docs:
             room = wizard.room_id
 
+            # ==========================================
             # Reservation History
+            # ==========================================
             reservations = Reservation.browse()
 
             if wizard.include_reservations:
                 reservation_domain = [
                     ('room_id', '=', room.id),
                     ('state', '=', 'checked_out'),
-                    ('check_out', '>=', wizard.date_from),
-                    ('check_out', '<=', wizard.date_to),
                 ]
+
+                if wizard.date_from:
+                    reservation_domain.append(
+                        ('check_out', '>=', wizard.date_from)
+                    )
+
+                if wizard.date_to:
+                    reservation_domain.append(
+                        ('check_out', '<=', wizard.date_to)
+                    )
 
                 reservations = Reservation.search(
                     reservation_domain,
                     order='check_out asc',
                 )
 
-            # Maintenance & Housekeeping History
+            # ==========================================
+            # Maintenance, Housekeeping & Room Service
+            # ==========================================
             tasks = Task.browse()
 
             if wizard.include_tasks:
                 task_domain = [
                     ('room_id', '=', room.id),
-                    ('scheduled_date', '>=', wizard.date_from),
-                    ('scheduled_date', '<=', wizard.date_to),
                 ]
 
+                # Filter by request date
+                if wizard.date_from:
+                    date_from_datetime = datetime.combine(
+                        wizard.date_from,
+                        time.min,
+                    )
+
+                    task_domain.append(
+                        (
+                            'request_date',
+                            '>=',
+                            fields.Datetime.to_string(
+                                date_from_datetime
+                            ),
+                        )
+                    )
+
+                if wizard.date_to:
+                    date_to_datetime = datetime.combine(
+                        wizard.date_to,
+                        time.max,
+                    )
+
+                    task_domain.append(
+                        (
+                            'request_date',
+                            '<=',
+                            fields.Datetime.to_string(
+                                date_to_datetime
+                            ),
+                        )
+                    )
+
+                # Filter by task type
                 if wizard.task_type != 'all':
                     task_domain.append(
                         ('task_type', '=', wizard.task_type)
                     )
 
-                if wizard.maintenance_type != 'all':
-                    task_domain.append(
-                        ('maintenance_type', '=', wizard.maintenance_type)
-                    )
-
                 tasks = Task.search(
                     task_domain,
-                    order='scheduled_date asc',
+                    order='request_date asc',
                 )
 
+            # ==========================================
+            # Report Data
+            # ==========================================
             report_data[wizard.id] = {
                 'room': room,
                 'reservations': reservations,
