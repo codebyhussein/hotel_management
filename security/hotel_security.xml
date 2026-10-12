@@ -18,4 +18,19 @@
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- 1. تعريف جروب النزلاء / Guests -->
+        <record id="group_hotel_guest_user" model="res.groups">
+            <field name="name">Hotel Guest / Customer</field>
+            <field name="category_id" ref="module_category_hotel"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <!-- 2. ربط الـ Record Rule بالجروب الجديد -->
+        <record id="hotel_guest_rule_portal" model="ir.rule">
+            <field name="name">Guest Personal Data Rule</field>
+            <field name="model_id" ref="model_hotel_guest"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('hotel_management.group_hotel_guest_user'))]"/>
+        </record>
+
 </odoo>

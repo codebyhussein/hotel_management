@@ -48,9 +48,9 @@
               parent="menu_hotel_management_root"
               sequence="40"/>
 
-    <!-- Sub-Menu: Housekeeping -->
+    <!-- Sub-Menu: Room Services -->
     <menuitem id="menu_hotel_housekeeping_task"
-              name="Housekeeping"
+              name="Room Services"
               parent="menu_hotel_services_root"
               action="action_hotel_housekeeping_task"
               sequence="10"/>

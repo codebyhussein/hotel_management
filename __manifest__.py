@@ -49,7 +49,7 @@ and improve operational efficiency.
 
         # Views
         'views/guest.xml',
-        'views/housekeeping.xml',
+        'views/room_service.xml',
         'views/hotel_reservation_views.xml',
         'views/hotel_room.xml',
         'views/property.xml',

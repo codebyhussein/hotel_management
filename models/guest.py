@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 class HotelGuest(models.Model):
     _name = 'hotel.guest'
     _description = 'Hotel Guest Registry'
@@ -18,8 +19,13 @@ class HotelGuest(models.Model):
     gender = fields.Selection([('male', 'Male'), ('female', 'Female')], string='Gender')
     vip = fields.Boolean(string='VIP Guest', default=False)
     blacklisted = fields.Boolean(string='Blacklisted', default=False)
-    total_stays = fields.Integer(string='Total Stays', compute='_compute_total_stays')
-    notes = fields.Text(string='Notes')
+
+    # حقل الـ Balance الإضافي
+    balance = fields.Float(string='Balance', default=0.0)
+
+    # تغيير الـ notes إلى description
+    description = fields.Text(string='Description')
+
     active = fields.Boolean(string='Active', default=True)
     total_stays = fields.Integer(
         string='Total Stays', compute='_compute_total_stays'
@@ -33,20 +39,6 @@ class HotelGuest(models.Model):
         'guest_id',
         string='Reservations'
     )
-
-
-    def action_view_reservations(self):
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Reservations'),
-                'message': _('No reservations found for this guest.'),
-                'type': 'info',
-                'sticky': False,
-            }
-        }
 
     @api.constrains('vip', 'blacklisted')
     def _check_vip_blacklisted(self):
@@ -78,7 +70,6 @@ class HotelGuest(models.Model):
         for record in self:
             if 'hotel.reservation' in self.env:
                 try:
-                    # بيحسب عدد الحجوزات من موديل الحجوزات عادي جداً
                     record.total_stays = self.env['hotel.reservation'].search_count([
                         ('guest_id', '=', record.id)
                     ])
@@ -88,7 +79,6 @@ class HotelGuest(models.Model):
                 record.total_stays = 0
 
     def action_view_reservations(self):
-        """Action للـ Stat Button بيفتح قائمة حجوزات النزيل ده فقط"""
         self.ensure_one()
         return {
             'name': _('Guest Reservations'),
