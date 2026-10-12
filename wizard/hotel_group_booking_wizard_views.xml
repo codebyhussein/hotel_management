@@ -43,6 +43,6 @@
     </record>
 
     <menuitem id="menu_hotel_group_booking" name="Group Booking"
-              parent="menu_hotel_reservation_root"
-              action="action_hotel_group_wizard" sequence="20"/>
+              parent="menu_hotel_management_root"
+              action="action_hotel_group_wizard" sequence="55"/>
 </odoo>

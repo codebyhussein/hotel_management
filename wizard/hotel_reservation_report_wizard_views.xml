@@ -31,10 +31,6 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_hotel_reports_root" name="Reports"
-              parent="menu_hotel_root_temp" sequence="90"/>
-    <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
-              parent="menu_hotel_reports_root"
-              action="action_hotel_reservation_report_wizard" sequence="10"/>
+
 
 </odoo>

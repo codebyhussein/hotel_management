@@ -67,7 +67,7 @@ class HotelReservation(models.Model):
         currency_field='currency_id', tracking=True)
     room_total = fields.Monetary(
         compute='_compute_room_total', store=True, currency_field='currency_id')
-    # Mahmoud
+    
     total_amount = fields.Monetary(
         compute='_compute_total_amount', store=True, currency_field='currency_id')
 
@@ -91,6 +91,7 @@ class HotelReservation(models.Model):
     group_ref = fields.Char(string='Group Reference', copy=False, index=True, readonly=True)
     group_count = fields.Integer(compute='_compute_group_count')
     group_label = fields.Char(compute='_compute_group_label')
+    external_id= fields.Char(string='External ID', copy=False, index=True, readonly=True)
 
     # ---- Reminder ----
     reminder_sent = fields.Boolean(copy=False, readonly=True)
