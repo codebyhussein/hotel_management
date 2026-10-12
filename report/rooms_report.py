@@ -877,3 +877,4 @@ class RoomHistoryReportWizard(models.TransientModel):
         return self.env.ref(
             'hotel_management.action_report_room_history_pdf'
         ).report_action(self)
+    # add commit
