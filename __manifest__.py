@@ -36,6 +36,7 @@ and improve operational efficiency.
         'base',
         'mail',
         'website',
+        'crm',
     ],
 
     'data': [
@@ -54,8 +55,10 @@ and improve operational efficiency.
         'views/hotel_room.xml',
         'views/property.xml',
         'views/res_user.xml',
-        'wizard/room_report_excel.xml',
 
+        'views/crm_lead_view.xml',
+        # wizards
+        'wizard/room_report_excel.xml',
         # Website Templates
         'views/homepage.xml',
         'views/room_templates_website.xml',
