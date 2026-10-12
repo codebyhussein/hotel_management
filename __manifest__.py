@@ -1,5 +1,7 @@
 {
-    'name': "Hotel Management",
+    'name': 'Hotel Management',
+
+    'summary': 'Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.',
 
     'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
 
@@ -22,8 +24,8 @@ This module provides a centralized system to simplify hotel management
 and improve operational efficiency.
     """,
 
-    'author': "My Company",
-    'website': "https://www.yourcompany.com",
+    'author': 'My Company',
+    'website': 'https://www.yourcompany.com',
 
     'category': 'Uncategorized',
     'version': '0.1',
@@ -33,21 +35,20 @@ and improve operational efficiency.
 
     'depends': [
         'base',
-        'mail',
+        'mail', 'account', 'product',
         'website',
         'crm',
     ],
 
     'data': [
-        # Security
+        'security/security_group.xml',
         'security/hotel_security.xml',
-        'security/groups.xml',
         'security/ir.model.access.csv',
 
         # Data
         'data/hotel_reservation_data.xml',
         'data/inquiry_confirmation.xml',
-        'data/maintenance_sequence.xml',
+        'data/ir_sequence.xml',
 
         # Views
         'views/guest.xml',
@@ -61,27 +62,49 @@ and improve operational efficiency.
         # wizards
         'views/maintenance_request.xml',
         'views/mail_template.xml',
-        'wizard/room_report_excel.xml',
+
         # Website Templates
         'views/homepage.xml',
         'views/room_templates_website.xml',
         'views/online_booking_templates.xml',
 
         # Menus
-        'wizard/room_report_excel.xml',
-        'wizard/room_report_piecharm.xml',
+        'views/hotel_room.xml',
 
-    
-         
+        # Wizards
+
+
+        'wizard/room_service.xml',
+
+        # PDF Report
+        'report/room_report_pdf.xml',
+        'report/room_report_excel.xml',
+        'report/room_report_piecharm.xml',
+
+        # Other Views
+
         'views/guest.xml',
         'views/hotel_reservation_views.xml',
+
+        # Reports and Menus
         'views/room_report.xml',
+        'wizard/hotel_reservation_report_wizard_views.xml',
         'views/menus.xml',
-        'wizard/room_service.xml',
+        'views/folio_payment_views.xml',
+        'views/hotel_reservation_inherit_views.xml',
+        'report/folio_report.xml',
         
+            'views/hotel_reservation_views.xml',
+            'report/reservation_report.xml',
+            'data/mail_template_data.xml',
+            'data/hotel_reminder_data.xml',
+            'wizard/hotel_room_change_wizard_views.xml',
+            'wizard/hotel_group_booking_wizard_views.xml',
+            'wizard/hotel_extend_stay_wizard_views.xml',
+            'views/hotel_reservation_dashboard.xml',
     ],
 
-    'demo': [
-        'demo/demo.xml',
-    ],
+    # 'demo': [
+    #     'demo/demo.xml',
+    # ],
 }

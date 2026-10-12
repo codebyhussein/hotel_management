@@ -70,5 +70,20 @@
               parent="menu_hotel_management_root"
               action="action_hotel_reservation"
               sequence="50"/>
+
+
+
+
+        <!-- ================= Menus ================= -->
+    <menuitem id="menu_hotel_billing" name="Billing" parent="menu_hotel_management_root" sequence="60"/>
+    <menuitem id="menu_hotel_folio_line" name="Folio Lines" parent="menu_hotel_billing" action="action_hotel_folio_line" sequence="70"/>
+    <menuitem id="menu_hotel_payment" name="Payments" parent="menu_hotel_billing" action="action_hotel_payment" sequence="80"/>
+
+
+        <menuitem id="menu_hotel_reports_root" name="Reports"
+              parent="menu_hotel_management_root" sequence="90"/>
+    <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
+              parent="menu_hotel_reports_root"
+              action="action_hotel_reservation_report_wizard" sequence="10"/>
               
 </odoo>

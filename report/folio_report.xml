@@ -1,0 +1,95 @@
+<odoo>
+    <record id="action_report_hotel_folio" model="ir.actions.report">
+        <field name="name">Guest Folio</field>
+        <field name="model">hotel.reservation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management.report_hotel_folio</field>
+        <field name="report_file">hotel_management.report_hotel_folio</field>
+        <field name="print_report_name">'Folio - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_hotel_reservation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_hotel_folio">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Guest Folio: <span t-field="o.name"/></h2>
+
+                        <div class="row mt-3 mb-3">
+                            <div class="col-6">
+                                <strong>Guest:</strong> <span t-field="o.guest_id"/><br/>
+                                <strong>Room:</strong> <span t-field="o.room_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Check-in:</strong> <span t-field="o.check_in"/><br/>
+                                <strong>Check-out:</strong> <span t-field="o.check_out"/><br/>
+                                <strong>Nights:</strong> <span t-field="o.nights"/>
+                            </div>
+                        </div>
+
+                        <h4>Charges</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th><th>Description</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Unit Price</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="o.check_in"/></td>
+                                    <td>Room <span t-field="o.room_id"/> (<span t-field="o.nights"/> nights)</td>
+                                    <td class="text-end"><span t-field="o.nights"/></td>
+                                    <td class="text-end"><span t-field="o.nightly_rate"/></td>
+                                    <td class="text-end"><span t-field="o.room_total"/></td>
+                                </tr>
+                                <tr t-foreach="o.folio_line_ids" t-as="l">
+                                    <td><span t-field="l.charge_date"/></td>
+                                    <td><span t-field="l.name"/></td>
+                                    <td class="text-end"><span t-field="l.quantity"/></td>
+                                    <td class="text-end"><span t-field="l.unit_price"/></td>
+                                    <td class="text-end"><span t-field="l.amount"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4>Payments</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Date</th><th>Method</th><th>Reference</th>
+                                    <th class="text-end">Amount</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.payment_ids.filtered(lambda p: p.state == 'posted')" t-as="p">
+                                    <td><span t-field="p.payment_date"/></td>
+                                    <td><span t-field="p.method"/></td>
+                                    <td><span t-field="p.reference"/></td>
+                                    <td class="text-end"><span t-field="p.amount"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-6 offset-6">
+                                <table class="table table-sm">
+                                    <tr><td>Room</td>
+                                        <td class="text-end"><span t-field="o.room_total"/></td></tr>
+                                    <tr><td>Folio Charges</td>
+                                        <td class="text-end"><span t-field="o.folio_total"/></td></tr>
+                                    <tr><td>Paid</td>
+                                        <td class="text-end"><span t-field="o.paid_amount"/></td></tr>
+                                    <tr class="border-top fw-bold"><td>Balance</td>
+                                        <td class="text-end"><span t-field="o.balance"/></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

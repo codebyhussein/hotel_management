@@ -1,2 +1,16 @@
+Odoo_17.log
+.filestore/
+
+# .gitignore
 __pycache__/
 *.pyc
+controllers/__pycache__/
+models/__pycache__/
+tests/
+wizard/__pycache__/
+*.egg-info/
+venv/
+.venv/
+*.log
+.idea/
+.vscode/
