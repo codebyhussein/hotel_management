@@ -88,6 +88,7 @@ and improve operational efficiency.
 
         # Reports and Menus
         'views/room_report.xml',
+        'wizard/hotel_reservation_report_wizard_views.xml',
         'views/menus.xml',
         'views/folio_payment_views.xml',
         'views/hotel_reservation_inherit_views.xml',
@@ -97,7 +98,6 @@ and improve operational efficiency.
             'report/reservation_report.xml',
             'data/mail_template_data.xml',
             'data/hotel_reminder_data.xml',
-            'wizard/hotel_reservation_report_wizard_views.xml',
             'wizard/hotel_room_change_wizard_views.xml',
             'wizard/hotel_group_booking_wizard_views.xml',
             'wizard/hotel_extend_stay_wizard_views.xml',
