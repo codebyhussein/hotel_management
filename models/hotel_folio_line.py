@@ -28,7 +28,7 @@ class HotelFolioLine(models.Model):
     amount = fields.Monetary(compute="_compute_amount", store=True)
     is_paid = fields.Boolean()
     task_id = fields.Many2one('hotel.housekeeping.task', string='Room Service Task')
-    invoice_id = fields.Many2one("account.move", readonly=True)
+    # invoice_id = fields.Many2one("account.move", readonly=True)
 
     @api.depends("quantity", "unit_price")
     def _compute_amount(self):

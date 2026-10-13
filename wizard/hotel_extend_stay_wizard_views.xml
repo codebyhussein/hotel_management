@@ -25,9 +25,6 @@
                 <div class="alert alert-info" role="alert" invisible="not availability_note">
                     <field name="availability_note" nolabel="1"/>
                 </div>
-                <group>
-                    <field name="reason" placeholder="Guest wants to stay longer, early departure..."/>
-                </group>
                 <footer>
                     <button name="action_confirm_change" string="Apply"
                             type="object" class="btn-primary"/>

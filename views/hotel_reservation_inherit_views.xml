@@ -1,25 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_hotel_reservation_form_folio" model="ir.ui.view">
         <field name="name">hotel.reservation.form.folio</field>
         <field name="model">hotel.reservation</field>
         <field name="inherit_id" ref="hotel_management.view_hotel_reservation_form"/>
         <field name="arch" type="xml">
-
-            <xpath expr="//header" position="inside">
-                <field name="invoice_id" invisible="1"/>
-                <button name="action_create_invoice" string="Create Invoice" type="object"
-                    invisible="invoice_id or state not in ('checked_in', 'checked_out')"/>
-            </xpath>
-
-            <!-- Smart button -->
-            <xpath expr="//div[hasclass('oe_title')]" position="after">
-                <div class="oe_button_box" name="button_box">
-                    <button name="action_view_invoice" type="object" class="oe_stat_button"
-                            icon="fa-file-text-o" invisible="not invoice_id">
-                        <span class="o_stat_text">Invoice</span>
-                    </button>
-                </div>
-            </xpath>
             
             <xpath expr="//notebook" position="inside">
                 <page string="Folio" name="folio">
@@ -59,6 +44,7 @@
                     <field name="balance" class="oe_subtotal_footer_separator"/>
                 </group>
             </xpath>
+
         </field>
     </record>
 </odoo>

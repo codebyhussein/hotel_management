@@ -36,7 +36,7 @@ and improve operational efficiency.
     
     'depends': [
         'base',
-        'mail', 'account', 'product',
+        'mail', 'product',
         'website',
         'crm',
     ],
@@ -60,7 +60,6 @@ and improve operational efficiency.
         'views/res_user.xml',
 
         'views/crm_lead_view.xml',
-        # wizards
         'views/maintenance_request.xml',
         'views/mail_template.xml',
 
@@ -88,8 +87,8 @@ and improve operational efficiency.
         # Reports and Menus
         'views/room_report.xml',
         'wizard/hotel_reservation_report_wizard_views.xml',
-        'views/menus.xml',
         'views/folio_payment_views.xml',
+   
         'views/hotel_reservation_inherit_views.xml',
         'report/folio_report.xml',
         
@@ -98,13 +97,14 @@ and improve operational efficiency.
             'data/mail_template_data.xml',
             'data/hotel_reminder_data.xml',
             'wizard/hotel_room_change_wizard_views.xml',
-            'wizard/hotel_group_booking_wizard_views.xml',
             'wizard/hotel_extend_stay_wizard_views.xml',
             'views/hotel_reservation_dashboard.xml',
         # portal
        
         'views/portal/portal_views.xml',
         'views/portal/portal_home.xml',
+
+             'views/menus.xml',
 
     ],
 

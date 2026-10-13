@@ -17,9 +17,7 @@ class HotelExtendStayWizard(models.TransientModel):
                                     currency_field='currency_id')
 
     new_check_out = fields.Date(string='New Check-out', required=True)
-    reason = fields.Text(string='Reason', required=True)
 
-    # معاينة قبل التأكيد
     new_nights = fields.Integer(compute='_compute_preview', string='New Nights')
     new_total = fields.Monetary(compute='_compute_preview', string='New Total',
                                 currency_field='currency_id')
@@ -61,5 +59,5 @@ class HotelExtendStayWizard(models.TransientModel):
         self.ensure_one()
         if not self.new_check_out:
             raise ValidationError(_('Please choose the new check-out date.'))
-        self.reservation_id._change_checkout(self.new_check_out, self.reason)
+        self.reservation_id._change_checkout(self.new_check_out)
         return {'type': 'ir.actions.act_window_close'}
