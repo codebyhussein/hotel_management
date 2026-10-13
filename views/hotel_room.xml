@@ -118,7 +118,7 @@
 
                             <field name="employee_name"
                                    string="Responsible Employee"
-                                   domain="[('property_id', '=', property_id)]"/>
+                                   />
 
                             <field name="status" readonly="1"/>
                         </group>
