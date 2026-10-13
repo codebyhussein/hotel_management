@@ -296,6 +296,8 @@ class CrmLead(models.Model):
             'phone': self.phone,
             'notes': self.description,
         }
+        if self.lead_source == 'website':
+            vals['source'] = 'website'
         # Keep only the keys that really exist on hotel.reservation,
         # so a missing optional field never breaks the conversion.
         reservation_fields = self.env['hotel.reservation']._fields
