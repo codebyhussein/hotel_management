@@ -142,30 +142,13 @@ class RoomHistoryReportWizard(models.TransientModel):
             ('room_id', '=', room.id),
         ]
 
-        # The existing model uses request_date, not scheduled_date.
         if self.date_from:
-            date_from_datetime = datetime.combine(
-                self.date_from,
-                time.min,
-            )
-
             task_domain.append(
-                ('request_date', '>=', fields.Datetime.to_string(
-                    date_from_datetime
-                ))
                 ('request_date', '>=', self.date_from)
             )
 
         if self.date_to:
-            date_to_datetime = datetime.combine(
-                self.date_to,
-                time.max,
-            )
-
             task_domain.append(
-                ('request_date', '<=', fields.Datetime.to_string(
-                    date_to_datetime
-                ))
                 ('request_date', '<=', self.date_to)
             )
 
@@ -173,20 +156,6 @@ class RoomHistoryReportWizard(models.TransientModel):
         if self.task_type and self.task_type != 'all':
             task_domain.append(
                 ('task_type', '=', self.task_type)
-            )
-
-        # Maintenance Type check (if applicable in model)
-        if (
-            self.maintenance_type
-            and self.maintenance_type != 'all'
-            and self.task_type != 'housekeeping'
-            and 'maintenance_type' in self.env['hotel.housekeeping.task']._fields
-        ):
-            task_domain.append(
-                ('task_type', '=', 'maintenance')
-            )
-            task_domain.append(
-                ('maintenance_type', '=', self.maintenance_type)
             )
 
         tasks = self.env['hotel.housekeeping.task'].search(
@@ -531,7 +500,6 @@ class RoomHistoryReportWizard(models.TransientModel):
         worksheet.write(
             'H3',
             str(room.floor_number) if hasattr(room, 'floor_number') else 'Not configured',
-            room.floor_number if room.floor_number is not False else '',
             info_value_format,
         )
 
@@ -748,8 +716,6 @@ class RoomHistoryReportWizard(models.TransientModel):
             for index, task in enumerate(tasks):
                 alternate = index % 2 == 1
 
-                # Collect service details using fields that exist
-                # in the current hotel.housekeeping.task model.
                 service_details = []
 
                 if task.is_housekeeping:
@@ -825,10 +791,6 @@ class RoomHistoryReportWizard(models.TransientModel):
 
                 values = [
                     task.name or '',
-                    task_type_labels.get(
-                        task.task_type,
-                        task.task_type or '',
-                    ),
                     task_type_label,
                     '; '.join(service_details),
                     task.guest_id.display_name or '',
@@ -844,14 +806,12 @@ class RoomHistoryReportWizard(models.TransientModel):
                     col = value_index + 1
 
                     if col in (6, 7, 8):
-                    if col in (3, 4, 5):
                         write_date(
                             row,
                             col,
                             value,
                             alternate,
                         )
-
                     else:
                         write_value(
                             row,
@@ -865,7 +825,6 @@ class RoomHistoryReportWizard(models.TransientModel):
 
             room_tasks_end_row = row - 1
 
-            # Merge Room Number Across All Task Rows.
             if tasks:
                 if room_tasks_start_row == room_tasks_end_row:
                     worksheet.write(
@@ -905,15 +864,6 @@ class RoomHistoryReportWizard(models.TransientModel):
         # =================================================
 
         column_widths = {
-            0: 25,
-            1: 25,
-            2: 23,
-            3: 23,
-            4: 19,
-            5: 19,
-            6: 19,
-            7: 17,
-            8: 25,
             0: 16,
             1: 25,
             2: 20,
@@ -925,7 +875,6 @@ class RoomHistoryReportWizard(models.TransientModel):
             8: 20,
             9: 18,
             10: 35,
-            11: 17,
         }
 
         for col, width in column_widths.items():

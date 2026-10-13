@@ -3,8 +3,6 @@
 
     'summary': 'Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.',
 
-    'summary': "Complete hotel management solution for managing rooms, guests, bookings, and daily hotel operations.",
-
     'description': """
 Hotel Management
 ================
@@ -32,6 +30,9 @@ and improve operational efficiency.
 
     'application': True,
     'installable': True,
+
+    # Adding LICENSE
+    'license': 'LGPL-3',
 
     'depends': [
         'base',
@@ -73,8 +74,7 @@ and improve operational efficiency.
 
         # Wizards
 
-
-        'wizard/room_service.xml',
+        'wizard/room_service_wizard.xml',
 
         # PDF Report
         'report/room_report_pdf.xml',
@@ -82,8 +82,6 @@ and improve operational efficiency.
         'report/room_report_piecharm.xml',
 
         # Other Views
-
-        'views/guest.xml',
         'views/hotel_reservation_views.xml',
 
         # Reports and Menus
@@ -93,15 +91,17 @@ and improve operational efficiency.
         'views/folio_payment_views.xml',
         'views/hotel_reservation_inherit_views.xml',
         'report/folio_report.xml',
-        
-            'views/hotel_reservation_views.xml',
-            'report/reservation_report.xml',
-            'data/mail_template_data.xml',
-            'data/hotel_reminder_data.xml',
-            'wizard/hotel_room_change_wizard_views.xml',
-            'wizard/hotel_group_booking_wizard_views.xml',
-            'wizard/hotel_extend_stay_wizard_views.xml',
-            'views/hotel_reservation_dashboard.xml',
+
+        'report/reservation_report.xml',
+        'data/mail_template_data.xml',
+        'data/hotel_reminder_data.xml',
+        'wizard/hotel_room_change_wizard_views.xml',
+        'wizard/hotel_group_booking_wizard_views.xml',
+        'wizard/hotel_extend_stay_wizard_views.xml',
+        'views/hotel_reservation_dashboard.xml',
+        # portal
+
+
     ],
 
     # 'demo': [

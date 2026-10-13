@@ -5,102 +5,7 @@ from odoo.exceptions import UserError
 
 
 # =========================================
-# 1. Wizard Model
-# =========================================
-class RoomTaskWizard(models.TransientModel):
-    _name = 'room.task.wizard'
-    _description = 'Room Maintenance / Housekeeping Wizard'
-
-    room_id = fields.Many2one(
-        'hotel.room',
-        string='Room',
-        required=True,
-        readonly=True,
-    )
-
-    task_type = fields.Selection(
-        [
-            ('maintenance', 'Maintenance'),
-            ('housekeeping', 'Housekeeping'),
-        ],
-        string='Task Type',
-        required=True,
-        default='maintenance',
-    )
-
-    name = fields.Char(
-        string='Task Title',
-        required=True,
-    )
-
-    maintenance_type = fields.Selection(
-        [
-            ('plumbing', 'Plumbing'),
-            ('electrical', 'Electrical'),
-            ('ac', 'AC / HVAC'),
-            ('furniture', 'Furniture / Carpentry'),
-            ('other', 'Other'),
-        ],
-        string='Maintenance Type',
-    )
-
-    assigned_user_id = fields.Many2one(
-        'res.users',
-        string='Assigned Staff',
-    )
-
-    description = fields.Text(
-        string='Description',
-    )
-
-    def action_create_task(self):
-        self.ensure_one()
-
-        if self.task_type == 'maintenance' and not self.maintenance_type:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Missing Information'),
-                    'message': _('Please select a Maintenance Type.'),
-                    'type': 'warning',
-                    'sticky': False,
-                },
-            }
-
-        if self.task_type == 'maintenance':
-            target_model = 'hotel.maintenance.request'
-            task_values = {
-                'name': self.name,
-                'room_id': self.room_id.id,
-                'issue_type': self.maintenance_type,
-                'assigned_user_id': self.assigned_user_id.id or False,
-                'description': self.description or False,
-            }
-        else:
-            target_model = 'hotel.housekeeping.task'
-            task_values = {
-                'name': self.name,
-                'room_id': self.room_id.id,
-                'task_type': self.task_type,
-                'assigned_user_id': self.assigned_user_id.id or False,
-                'description': self.description or False,
-            }
-
-        task = self.env[target_model].create(task_values)
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Created Task'),
-            'res_model': target_model,
-            'res_id': task.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-
-
-# =========================================
-# 2. Housekeeping Task Model
+# 1. Housekeeping Task Model
 # =========================================
 class HotelHousekeepingTask(models.Model):
     _name = 'hotel.housekeeping.task'
@@ -187,7 +92,7 @@ class HotelHousekeepingTask(models.Model):
 
 
 # =========================================
-# 3. Maintenance Request Model
+# 2. Maintenance Request Model
 # =========================================
 class HotelMaintenanceRequest(models.Model):
     _name = 'hotel.maintenance.request'
@@ -241,7 +146,7 @@ class HotelMaintenanceRequest(models.Model):
 
 
 # =========================================
-# 4. Food Line Model
+# 3. Food Line Model
 # =========================================
 class HotelRoomServiceFoodLine(models.Model):
     _name = 'hotel.room.service.food.line'
