@@ -41,11 +41,24 @@ class HotelReservation(models.Model):
     ], string='Source', default='walk_in')
 
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
+    
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
-    property_id = fields.Many2one(
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type = fields.Selection(
-        related='room_id.room_type', string='Room Type', store=True)
+    
+    property_id = fields.Many2one('hotel.property', string='Property', related='room_id.property_id', store=True)
+    
+    # room_type = fields.Selection(
+    #     related='room_id.room_type', string='Room Type', store=True)
+    # 'hotel.property', string='Property', related='room_id.property_id', store=True
+    # )
+
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double'),
+        ('triple', 'Triple'),
+        ('suite', 'Suite'),
+    ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
+
+
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -507,6 +520,8 @@ class HotelReservation(models.Model):
             'nights': rec.nights,
             'total_amount': rec.total_amount,
         }
+
+
             
             
     @api.model
@@ -591,3 +606,4 @@ class HotelReservation(models.Model):
             raise
 
         return reservation, True
+

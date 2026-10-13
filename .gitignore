@@ -8,10 +8,5 @@ controllers/__pycache__/
 models/__pycache__/
 tests/
 wizard/__pycache__/
-report/__pycache__/
-*.egg-info/
-venv/
-.venv/
-*.log
-.idea/
-.vscode/
+__pycache__/
+*.pyc

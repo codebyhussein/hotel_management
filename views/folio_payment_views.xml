@@ -139,5 +139,8 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-
+    <!-- ================= Menus ================= -->
+    <menuitem id="menu_hotel_billing" name="Billing" parent="menu_hotel_management_root" sequence="50"/>
+    <menuitem id="menu_hotel_folio_line" name="Folio Lines" parent="menu_hotel_billing" action="action_hotel_folio_line" sequence="10"/>
+    <menuitem id="menu_hotel_payment" name="Payments" parent="menu_hotel_billing" action="action_hotel_payment" sequence="20"/>
 </odoo>

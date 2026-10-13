@@ -1,6 +1,5 @@
+
 # -*- coding: utf-8 -*-
-
-
 
 from . import guest
 from . import hotel_room
