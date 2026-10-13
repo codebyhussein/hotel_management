@@ -69,9 +69,18 @@
     <!-- Reports -->
     <menuitem id="menu_hotel_reports_root" name="Reports"
               parent="menu_hotel_management_root" sequence="90"/>
+
+
     <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
               parent="menu_hotel_reports_root"
-              action="action_room_history_wizard"
+              action="action_hotel_reservation_report_wizard"
               sequence="20"/>
 
+<menuitem id="menu_occupancy_revenue"
+              name="Rooms Report"
+              parent="menu_hotel_reports_root"
+              action="action_room_history_wizard"
+              sequence="30"/>
+
 </odoo>
+ 

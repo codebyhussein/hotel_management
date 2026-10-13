@@ -59,10 +59,7 @@
                             
                             invisible="status == 'needs_cleaning'"/>
 
-                    <button name="action_open_room_history_report"
-                            string="Report"
-                            type="object"
-                            class="oe_highlight"/>
+                    
 
                     <button name="action_open_room_task_wizard"
                             string="Create Service"
