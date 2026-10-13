@@ -246,7 +246,6 @@
         <field name="name">Reservations</field>
         <field name="res_model">hotel.reservation</field>
         <field name="view_mode">tree,kanban,form,calendar</field>
-    </record>
 
-
+    </record> 
 </odoo>

@@ -41,11 +41,24 @@ class HotelReservation(models.Model):
     ], string='Source', default='walk_in')
 
     guest_id = fields.Many2one('hotel.guest', string='Guest', required=True, tracking=True)
+    
     room_id = fields.Many2one('hotel.room', string='Room', required=True, tracking=True)
-    property_id = fields.Many2one(
-        'hotel.property', string='Property', related='room_id.property_id', store=True)
-    room_type = fields.Selection(
-        related='room_id.room_type', string='Room Type', store=True)
+    
+    property_id = fields.Many2one('hotel.property', string='Property', related='room_id.property_id', store=True)
+    
+    # room_type = fields.Selection(
+    #     related='room_id.room_type', string='Room Type', store=True)
+    # 'hotel.property', string='Property', related='room_id.property_id', store=True
+    # )
+
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double'),
+        ('triple', 'Triple'),
+        ('suite', 'Suite'),
+    ], string='Room Type', related='room_id.room_type', store=True, readonly=True)
+
+
     responsible_id = fields.Many2one(
         'res.users', string='Responsible', default=lambda self: self.env.user)
     company_id = fields.Many2one(
@@ -271,29 +284,8 @@ class HotelReservation(models.Model):
         for rec in self:
             if rec.state != 'checked_in':
                 raise ValidationError(_('Reservation must be checked in before check-out.'))
-            # TODO (Mahmoud T-16/T-17): منع الـ check-out لو فيه balance مستحق
-
-            vals = {'state': 'checked_out', 'actual_check_out': fields.Datetime.now()}
-
-            if today < rec.check_out and today > rec.check_in:
-                vals['check_out'] = today
-                rec.message_post(body=_(
-                    'Early check-out: stay shortened from %(old)s to %(new)s.',
-                    old=rec.check_out, new=today))
-            rec.write(vals)
-            rec.room_id.write({'state': 'dirty'}) 
-            
-                # ---- Cancel + fee ----
-    def _get_cancellation_fee(self):
-        self.ensure_one()
-        if self.state != 'confirmed' or not self.check_in:
-            return 0.0
-        days_left = (self.check_in - fields.Date.context_today(self)).days
-        return 0.0 if days_left >= CANCEL_FREE_DAYS else self.nightly_rate
-
-    def _refund_for_fee(self, fee):
-        self.ensure_one()
-        return max(self.deposit_amount - fee, 0.0) if self.deposit_paid else 0.0
+            rec.write({'state': 'checked_out', 'actual_check_out': fields.Datetime.now()})
+            rec.room_id.write({'status': 'needs_cleaning'})
 
     def action_cancel(self):
         self.ensure_one()

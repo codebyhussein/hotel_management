@@ -8,6 +8,8 @@ controllers/__pycache__/
 models/__pycache__/
 tests/
 wizard/__pycache__/
+__pycache__/
+*.pyc
 report/__pycache__/
 *.egg-info/
 venv/
