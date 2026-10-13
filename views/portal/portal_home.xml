@@ -532,23 +532,6 @@
 
                 <h5 class="nv-home-section">Documents &amp; Settings</h5>
 
-                <h5 class="nv-home-section">Recent Invoices</h5>
-                <t t-if="hotel_portal_invoices">
-                    <a t-foreach="hotel_portal_invoices" t-as="invoice"
-                       class="nv-invoice-row"
-                       t-att-href="invoice.get_portal_url()">
-                        <span t-out="invoice.name"/>
-                        <span class="nv-invoice-date">
-                            <t t-if="invoice.invoice_date" t-field="invoice.invoice_date"/>
-                            <t t-else="">-</t>
-                        </span>
-                        <span class="nv-invoice-total" t-field="invoice.amount_total"/>
-                    </a>
-                </t>
-                <p t-else="" class="text-muted">
-                    No posted invoices yet.
-                </p>
-
             </div>
 
         </xpath>
