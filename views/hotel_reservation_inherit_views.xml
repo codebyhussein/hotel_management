@@ -5,21 +5,21 @@
         <field name="inherit_id" ref="hotel_management.view_hotel_reservation_form"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//header" position="inside">
+            <!-- <xpath expr="//header" position="inside">
                 <field name="invoice_id" invisible="1"/>
                 <button name="action_create_invoice" string="Create Invoice" type="object"
                     invisible="invoice_id or state not in ('checked_in', 'checked_out')"/>
-            </xpath>
+            </xpath> -->
 
             <!-- Smart button -->
-            <xpath expr="//div[hasclass('oe_title')]" position="after">
+            <!-- <xpath expr="//div[hasclass('oe_title')]" position="after">
                 <div class="oe_button_box" name="button_box">
                     <button name="action_view_invoice" type="object" class="oe_stat_button"
                             icon="fa-file-text-o" invisible="not invoice_id">
                         <span class="o_stat_text">Invoice</span>
                     </button>
                 </div>
-            </xpath>
+            </xpath> -->
             
             <xpath expr="//notebook" position="inside">
                 <page string="Folio" name="folio">

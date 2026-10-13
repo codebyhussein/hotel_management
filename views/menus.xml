@@ -50,45 +50,31 @@
               parent="menu_hotel_management_root"
               sequence="40"/>
 
-    <!-- Sub-Menu: Room Services -->
     <menuitem id="menu_hotel_housekeeping_task"
               name="Room Services"
               parent="menu_hotel_services_root"
               action="action_hotel_housekeeping_task"
               sequence="10"/>
 
-    <!-- Sub-Menu: Maintenance Requests -->
     <menuitem id="menu_hotel_maintenance_request"
               name="Maintenance Requests"
               parent="menu_hotel_services_root"
               action="action_hotel_maintenance_request"
               sequence="20"/>
 
-    <!-- Parent menu (no action) -->
+    <!-- Reservations Menu -->
     <menuitem id="menu_hotel_reservations"
             name="Reservations"
             parent="menu_hotel_management_root"
+            action="action_hotel_reservation"
             sequence="50"/>
 
-    <!-- All Reservations -->
-    <menuitem id="menu_hotel_all_reservations"
-            name="All Reservations"
-            parent="menu_hotel_reservations"
-            action="action_hotel_reservation"
-            sequence="10"/>
-
-    <!-- Group Booking -->
-    <menuitem id="menu_hotel_group_booking"
-            name="Group Booking"
-            parent="menu_hotel_reservations"
-            action="action_hotel_group_wizard"
-            sequence="20"/>
-    <!-- ================= Billing ================= -->
+    <!-- Billing -->
     <menuitem id="menu_hotel_billing" name="Billing" parent="menu_hotel_management_root" sequence="60"/>
     <menuitem id="menu_hotel_folio_line" name="Folio Lines" parent="menu_hotel_billing" action="action_hotel_folio_line" sequence="70"/>
     <menuitem id="menu_hotel_payment" name="Payments" parent="menu_hotel_billing" action="action_hotel_payment" sequence="80"/>
 
-    <!-- ================= Reports ================= -->
+    <!-- Reports -->
     <menuitem id="menu_hotel_reports_root" name="Reports"
               parent="menu_hotel_management_root" sequence="90"/>
     <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
