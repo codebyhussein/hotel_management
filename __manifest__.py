@@ -52,6 +52,7 @@ and improve operational efficiency.
         'data/ir_sequence.xml',
         'data/hotel_reservation_data.xml',
         'data/inquiry_confirmation.xml',
+        'report/reservation_report.xml',
         'data/mail_template_data.xml',
         'data/hotel_reminder_data.xml',
 
@@ -81,6 +82,8 @@ and improve operational efficiency.
         'wizard/hotel_reservation_report_wizard_views.xml',
         'wizard/hotel_room_change_wizard_views.xml',
         'wizard/hotel_extend_stay_wizard_views.xml',
+        'wizard/all_rooms_report_pdf.xml',
+        'wizard/bulk_assign_wizard.xml',
 
         # ==========================================
         # Reports
