@@ -75,7 +75,8 @@ and improve operational efficiency.
 
         # ==========================================
         # Wizards
-        # ==========================================
+
+       
         'wizard/room_service.xml',
         'wizard/hotel_reservation_report_wizard_views.xml',
         'wizard/hotel_room_change_wizard_views.xml',
@@ -86,9 +87,7 @@ and improve operational efficiency.
         # ==========================================
         'report/room_report_pdf.xml',
         'report/room_report_excel.xml',
-        'report/room_report_piecharm.xml',
-        'report/folio_report.xml',
-        'report/reservation_report.xml',
+        'report/all_rooms_report_pdf.xml',
 
         # ==========================================
         # Other Views

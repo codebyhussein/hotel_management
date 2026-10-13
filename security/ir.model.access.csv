@@ -20,7 +20,7 @@ access_hotel_payment_manager,hotel.payment.manager,model_hotel_payment,hotel_man
 access_hotel_payment_receptionist,hotel.payment.receptionist,model_hotel_payment,hotel_management.group_hotel_receptionist,1,1,1,0
 access_room_history_report_wizard,room.history.report.wizard,model_room_history_report_wizard,base.group_user,1,1,1,1
 access_room_task_wizard,room.task.wizard,model_room_task_wizard,base.group_user,1,1,1,1
-access_room_status_report_wizard,room.status.report.wizard,model_room_status_report_wizard,base.group_user,1,1,1,1
+access_hotel_room_history_wizard,access.hotel.room.history.wizard,model_hotel_room_history_wizard,base.group_user,1,1,1,1
 access_hotel_reservation_report_wizard,hotel.reservation.report.wizard,model_hotel_reservation_report_wizard,base.group_user,1,1,1,1
 access_hotel_room_service_food_line_user,hotel.room.service.food.line.user,model_hotel_room_service_food_line,base.group_user,1,1,1,1
 access_hotel_guest_custom_group,hotel.guest.custom.group,model_hotel_guest,hotel_management.group_hotel_guest_user,1,1,1,0

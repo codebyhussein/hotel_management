@@ -2,47 +2,37 @@
 <odoo>
 
     <!-- Main Menu -->
-    <menuitem
-        id="menu_hotel_management_root"
-        name="Hotel Management"
-        sequence="10"
-    />
+    <menuitem id="menu_hotel_management_root"
+              name="Hotel Management"
+              sequence="10"/>
 
     <!-- Rooms Parent -->
-    <menuitem
-        id="menu_hotel_rooms"
-        name="Rooms"
-        parent="menu_hotel_management_root"
-        sequence="10"
-    />
+    <menuitem id="menu_hotel_rooms"
+              name="Rooms"
+              parent="menu_hotel_management_root"
+              sequence="10"/>
 
     <!-- Rooms List -->
-    <menuitem
-        id="menu_hotel_rooms_list"
-        name="Rooms"
-        parent="menu_hotel_rooms"
-        action="action_hotel_room"
-        sequence="10"
-    />
+    <menuitem id="menu_hotel_rooms_list"
+              name="Rooms"
+              parent="menu_hotel_rooms"
+              action="action_hotel_room"
+              sequence="10"/>
 
     <!-- Properties -->
-    <menuitem
-        id="menu_hotel_properties"
-        name="Properties"
-        parent="menu_hotel_rooms"
-        action="action_hotel_property"
-        groups="hotel_management.group_hotel_property_manager"
-        sequence="20"
-    />
+    <menuitem id="menu_hotel_properties"
+              name="Properties"
+              parent="menu_hotel_rooms"
+              action="action_hotel_property"
+              groups="hotel_management.group_hotel_property_manager"
+              sequence="20"/>
 
     <!-- Guests -->
-    <menuitem
-        id="menu_hotel_guest"
-        name="Guests"
-        parent="menu_hotel_management_root"
-        action="action_hotel_guest"
-        sequence="30"
-    />
+    <menuitem id="menu_hotel_guest"
+              name="Guests"
+              parent="menu_hotel_management_root"
+              action="action_hotel_guest"
+              sequence="30"/>
 
     <!-- Services Root Menu -->
     <menuitem id="menu_hotel_services_root"
@@ -50,12 +40,14 @@
               parent="menu_hotel_management_root"
               sequence="40"/>
 
+    <!-- Room Services -->
     <menuitem id="menu_hotel_housekeeping_task"
               name="Room Services"
               parent="menu_hotel_services_root"
               action="action_hotel_housekeeping_task"
               sequence="10"/>
 
+    <!-- Maintenance Requests -->
     <menuitem id="menu_hotel_maintenance_request"
               name="Maintenance Requests"
               parent="menu_hotel_services_root"
@@ -79,6 +71,7 @@
               parent="menu_hotel_management_root" sequence="90"/>
     <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
               parent="menu_hotel_reports_root"
-              action="action_hotel_reservation_report_wizard" sequence="10"/>
-              
+              action="action_room_history_wizard"
+              sequence="20"/>
+
 </odoo>
