@@ -103,7 +103,7 @@
                         <group>
                             <field name="balance_after_deposit"/>
                             <field name="cancellation_fee" invisible="state not in ('cancelled', 'no_show')"/>
-                            <field name="deposit_refund" invisible="state not in ('cancelled', 'no_show')"/>
+                            <field name="deposit_refund" invisible="state != 'cancelled'"/>
                         </group>
                     </group>
                     <group>

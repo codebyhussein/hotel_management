@@ -80,7 +80,7 @@ class HotelReservation(models.Model):
     # ----  Deposit ----
     deposit_amount = fields.Monetary(
         string='Deposit', currency_field='currency_id', tracking=True, copy=False)
-    deposit_paid = fields.Boolean(string='Deposit Paid', readonly=True, copy=False, tracking=True)
+    deposit_paid = fields.Boolean(string='Deposit Paid', copy=False, tracking=True)
     deposit_paid_date = fields.Date(readonly=True, copy=False)
     deposit_refund = fields.Monetary(
         string='Deposit Refund', readonly=True, copy=False, currency_field='currency_id')
@@ -297,8 +297,8 @@ class HotelReservation(models.Model):
 
     def action_cancel(self):
         self.ensure_one()
-        if self.state not in ('draft', 'confirmed'):
-            raise ValidationError(_('Only draft or confirmed reservations can be cancelled.'))
+        if self.state != 'draft':
+            raise ValidationError(_('Only draft reservations can be cancelled.'))
         return {
             'type': 'ir.actions.act_window',
             'name': _('Cancel Reservation'),
@@ -310,8 +310,8 @@ class HotelReservation(models.Model):
 
     def _do_cancel(self, reason):
         for rec in self:
-            if rec.state not in ('draft', 'confirmed'):
-                raise ValidationError(_('Only draft or confirmed reservations can be cancelled.'))
+            if rec.state != 'draft':
+                raise ValidationError(_('Only draft reservations can be cancelled.'))
             fee = rec._get_cancellation_fee()
             refund = rec._refund_for_fee(fee)
             rec.write({
@@ -346,8 +346,8 @@ class HotelReservation(models.Model):
     # ---- Deposit ----
     def action_register_deposit(self):
         for rec in self:
-            if rec.state not in ('draft', 'confirmed'):
-                raise ValidationError(_('Deposit can only be registered for draft or confirmed reservations.'))
+            if rec.state != 'draft':
+                raise ValidationError(_('Deposit can only be registered for draft reservations.'))
             if rec.deposit_amount <= 0:
                 raise ValidationError(_('Please set a deposit amount first.'))
             if rec.deposit_paid:
