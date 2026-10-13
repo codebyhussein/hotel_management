@@ -64,6 +64,9 @@ class HotelHousekeepingTask(models.Model):
 
     start_date = fields.Datetime(string='Start Date')
     done_date = fields.Datetime(string='Done Date')
+    reservation_id = fields.Many2one('hotel.reservation', string='Reservation',
+                                     domain="[('room_id','=',room_id), ('guest_id','=',guest_id), ('state','in',['confirmed','checked_in'])]")
+    folio_line_ids = fields.One2many('hotel.folio.line', 'task_id', string='Folio Lines')
     description = fields.Text(string='Special Instructions')
 
     def action_mark_in_progress(self):

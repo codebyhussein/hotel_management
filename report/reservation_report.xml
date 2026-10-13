@@ -72,7 +72,7 @@
                                         Property: <span t-field="doc.property_id"/>
                                     </div>
                                     <div style="color:#666;">
-                                        Type: <span t-field="doc.room_type_id"/>
+                                        Type: <span t-field="doc.room_type"/>
                                     </div>
                                     <div style="color:#666;">
                                         Bookings after this stay: <strong><t t-esc="other_bookings.get(doc.id, 0)"/></strong>

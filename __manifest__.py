@@ -33,6 +33,9 @@ and improve operational efficiency.
     'application': True,
     'installable': True,
 
+    # Adding LICENSE
+    'license': 'LGPL-3', 
+    
     'depends': [
         'base',
         'mail', 'account', 'product',
