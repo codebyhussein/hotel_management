@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- PDF Report Action -->
+    <record id="action_report_room_history_pdf" model="ir.actions.report">
+        <field name="name">Room History PDF</field>
+        <field name="model">hotel.room.history.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hotel_management.report_room_history_pdf</field>
+        <field name="report_file">hotel_management.report_room_history_pdf</field>
+        <field name="print_report_name">'Room History Report'</field>
+    </record>
+
+    <!-- PDF Report Template -->
+    <template id="report_room_history_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+
+                    <h2 class="text-center">
+                        HOTEL - ROOM HISTORY REPORT
+                    </h2>
+
+                    <p>
+                        <strong>Period From:</strong>
+                        <span t-esc="date_from"/>
+                        <strong> To: </strong>
+                        <span t-esc="date_to"/>
+                    </p>
+
+                    <hr/>
+
+                    <!-- 1. Room History -->
+                    <h3>1. Room History</h3>
+
+                    <t t-foreach="rooms" t-as="room">
+
+                        <h4>
+                            Room:
+                            <span t-field="room.room_number"/>
+                        </h4>
+
+                        <p>
+                            <strong>Property:</strong>
+                            <span t-field="room.property_id"/>
+                            <strong>Type:</strong>
+                            <span t-field="room.room_type"/>
+                            <strong>Status:</strong>
+                            <span t-field="room.status"/>
+                        </p>
+
+                        <t t-set="history" t-value="histories.get(room.id, {})"/>
+
+                        <!-- Reservation History -->
+                        <h5>Reservation History</h5>
+
+                        <t t-set="reservations" t-value="history.get('reservations', [])"/>
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Guest</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Nights</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr t-foreach="reservations" t-as="reservation">
+                                    <td>
+                                        <span t-field="reservation.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.guest_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.check_in"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.check_out"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.nights"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="reservation.total_amount"/>
+                                    </td>
+                                </tr>
+
+                                <tr t-if="not reservations">
+                                    <td colspan="7" class="text-center">
+                                        No reservations in this period.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Maintenance History -->
+                        <h5>Maintenance History</h5>
+
+                        <t t-set="maintenance" t-value="history.get('maintenance', [])"/>
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Issue Type</th>
+                                    <th>Description</th>
+                                    <th>Assigned To</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Cost</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr t-foreach="maintenance" t-as="request">
+                                    <td>
+                                        <span t-field="request.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="request.issue_type"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="request.description"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="request.assigned_to"/>
+                                    </td>
+                                    <td>
+                                        <t t-if="request.scheduled_date">
+                                            <span t-field="request.scheduled_date"/>
+                                        </t>
+                                        <t t-elif="request.preferred_date">
+                                            <span t-field="request.preferred_date"/>
+                                        </t>
+                                        <t t-elif="request.create_date">
+                                            <span t-esc="request.create_date.date()"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span>-</span>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-field="request.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="request.actual_cost"/>
+                                    </td>
+                                </tr>
+
+                                <tr t-if="not maintenance">
+                                    <td colspan="7" class="text-center">
+                                        No maintenance requests in this period.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <hr/>
+
+                    </t>
+
+                    <!-- 2. Maintenance Cost Summary -->
+                    <h3>2. Maintenance Cost Summary</h3>
+
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Maintenance Type</th>
+                                <th>Number of Requests</th>
+                                <th>Total Cost</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr t-foreach="maintenance_summary" t-as="summary">
+                                <td>
+                                    <span t-esc="summary['label']"/>
+                                </td>
+                                <td>
+                                    <span t-esc="summary['count']"/>
+                                </td>
+                                <td>
+                                    <span t-esc="'%.2f' % summary['total_cost']"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">
+                                    <strong>Grand Total</strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <span t-esc="'%.2f' % total_maintenance_cost"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>
