@@ -54,6 +54,7 @@ class HotelReservation(models.Model):
         'hotel.room', 'hotel_reservation_room_rel',
         'reservation_id', 'room_id', string='Rooms'
     )
+    room_display = fields.Char(string='Room(s)', compute='_compute_room_display')
 
     property_id = fields.Many2one(
         'hotel.property', string='Property', compute='_compute_property_id', store=True)
@@ -120,6 +121,19 @@ class HotelReservation(models.Model):
                     'hotel.reservation.sequence') or _('New')
         return super().create(vals_list)
 
+    def write(self, vals):
+        vals = dict(vals)
+        if 'deposit_paid' in vals:
+            if vals['deposit_paid']:
+                for rec in self:
+                    deposit_amount = vals.get('deposit_amount', rec.deposit_amount)
+                    if deposit_amount <= 0:
+                        raise ValidationError(_('Set a positive deposit amount before marking it as paid.'))
+                vals.setdefault('deposit_paid_date', fields.Date.context_today(self))
+            else:
+                vals.setdefault('deposit_paid_date', False)
+        return super().write(vals)
+
     @api.onchange('booking_type', 'room_id', 'room_ids')
     def _onchange_booking_type_and_rooms(self):
         for rec in self:
@@ -144,6 +158,12 @@ class HotelReservation(models.Model):
                 rec.property_id = rec.room_ids[0].property_id
             else:
                 rec.property_id = False
+
+    @api.depends('booking_type', 'room_id.room_number', 'room_ids.room_number')
+    def _compute_room_display(self):
+        for rec in self:
+            rooms = rec.room_id if rec.booking_type == 'individual' else rec.room_ids
+            rec.room_display = ', '.join(rooms.mapped('room_number'))
 
     @api.depends('check_in', 'check_out')
     def _compute_nights(self):
@@ -276,6 +296,12 @@ class HotelReservation(models.Model):
             if rec.deposit_amount > rec.room_total > 0:
                 raise ValidationError(_('Deposit cannot exceed the room total.'))
 
+    @api.constrains('deposit_paid', 'deposit_amount')
+    def _check_deposit_paid_amount(self):
+        for rec in self:
+            if rec.deposit_paid and rec.deposit_amount <= 0:
+                raise ValidationError(_('Set a positive deposit amount before marking it as paid.'))
+
     # ------------------------------------------------------------------
     # Emails & Workflow
     # ------------------------------------------------------------------
@@ -292,10 +318,10 @@ class HotelReservation(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise ValidationError(_('Only draft reservations can be confirmed.'))
-            if rec.deposit_amount > 0 and not rec.deposit_paid:
-                raise ValidationError(_(
-                    'A deposit of %(amount)s is required before confirming %(ref)s.',
-                    amount=rec.deposit_amount, ref=rec.name))
+            if rec.deposit_amount <= 0:
+                raise ValidationError(_('A deposit greater than zero is required before confirming.'))
+            if not rec.deposit_paid:
+                raise ValidationError(_('Register the deposit before confirming this reservation.'))
             rec.state = 'confirmed'
         self._send_confirmation_email()
 
@@ -381,8 +407,8 @@ class HotelReservation(models.Model):
 
     def action_register_deposit(self):
         for rec in self:
-            if rec.state != 'draft':
-                raise ValidationError(_('Deposit can only be registered for draft reservations.'))
+            if rec.state not in ('draft', 'confirmed'):
+                raise ValidationError(_('Deposit can only be registered for draft or confirmed reservations.'))
             if rec.deposit_amount <= 0:
                 raise ValidationError(_('Please set a deposit amount first.'))
             rec.write({
@@ -411,6 +437,16 @@ class HotelReservation(models.Model):
             'target': 'new',
             'context': {'default_reservation_id': self.id},
         }
+
+    def _change_checkout(self, new_check_out):
+        self.ensure_one()
+        if self.state not in ('confirmed', 'checked_in'):
+            raise ValidationError(_('Only confirmed or checked-in reservations can be changed.'))
+        if not new_check_out:
+            raise ValidationError(_('Please choose the new check-out date.'))
+        if new_check_out <= self.check_in:
+            raise ValidationError(_('Check-out date must be strictly after the Check-in date.'))
+        self.write({'check_out': new_check_out})
 
     def action_view_group(self):
         self.ensure_one()
