@@ -41,8 +41,4 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-
-    <menuitem id="menu_hotel_group_booking" name="Group Booking"
-              parent="menu_hotel_management_root"
-              action="action_hotel_group_wizard" sequence="55"/>
 </odoo>

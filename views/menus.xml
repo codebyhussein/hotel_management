@@ -26,14 +26,14 @@
     />
 
     <!-- Properties -->
-        <menuitem
-            id="menu_hotel_properties"
-            name="Properties"
-            parent="menu_hotel_rooms"
-            action="action_hotel_property"
-            groups="hotel_management.group_hotel_property_manager"
-            sequence="20"
-        />
+    <menuitem
+        id="menu_hotel_properties"
+        name="Properties"
+        parent="menu_hotel_rooms"
+        action="action_hotel_property"
+        groups="hotel_management.group_hotel_property_manager"
+        sequence="20"
+    />
 
     <!-- Guests -->
     <menuitem
@@ -64,23 +64,32 @@
               action="action_hotel_maintenance_request"
               sequence="20"/>
 
-    <!-- Direct Menu for Reservations -->
+    <!-- Parent menu (no action) -->
     <menuitem id="menu_hotel_reservations"
-              name="Reservations"
-              parent="menu_hotel_management_root"
-              action="action_hotel_reservation"
-              sequence="50"/>
+            name="Reservations"
+            parent="menu_hotel_management_root"
+            sequence="50"/>
 
+    <!-- All Reservations -->
+    <menuitem id="menu_hotel_all_reservations"
+            name="All Reservations"
+            parent="menu_hotel_reservations"
+            action="action_hotel_reservation"
+            sequence="10"/>
 
-
-
-        <!-- ================= Menus ================= -->
+    <!-- Group Booking -->
+    <menuitem id="menu_hotel_group_booking"
+            name="Group Booking"
+            parent="menu_hotel_reservations"
+            action="action_hotel_group_wizard"
+            sequence="20"/>
+    <!-- ================= Billing ================= -->
     <menuitem id="menu_hotel_billing" name="Billing" parent="menu_hotel_management_root" sequence="60"/>
     <menuitem id="menu_hotel_folio_line" name="Folio Lines" parent="menu_hotel_billing" action="action_hotel_folio_line" sequence="70"/>
     <menuitem id="menu_hotel_payment" name="Payments" parent="menu_hotel_billing" action="action_hotel_payment" sequence="80"/>
 
-
-        <menuitem id="menu_hotel_reports_root" name="Reports"
+    <!-- ================= Reports ================= -->
+    <menuitem id="menu_hotel_reports_root" name="Reports"
               parent="menu_hotel_management_root" sequence="90"/>
     <menuitem id="menu_hotel_reservation_report" name="Reservation Report"
               parent="menu_hotel_reports_root"

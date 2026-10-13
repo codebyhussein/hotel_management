@@ -403,23 +403,24 @@ class HotelReservation(models.Model):
     def action_extend_stay(self):
         self.ensure_one()
         if self.state not in ('confirmed', 'checked_in'):
-            raise ValidationError(_('Stay can only be changed for confirmed or checked-in reservations.'))
+            raise ValidationError(_('Stay can only be extended for confirmed or checked-in reservations.'))
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Extend / Shorten Stay'),
+            'name': _('Extend Stay'),
             'res_model': 'hotel.reservation.extend.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {'default_reservation_id': self.id},
         }
-
-    def _change_checkout(self, new_checkout, reason):
+    def _change_checkout(self, new_checkout):
         self.ensure_one()
         if self.state not in ('confirmed', 'checked_in'):
-            raise ValidationError(_('Stay can only be changed for confirmed or checked-in reservations.'))
+            raise ValidationError(_('Stay can only be extended for confirmed or checked-in reservations.'))
         old_checkout = self.check_out
         if new_checkout == old_checkout:
             raise ValidationError(_('The new check-out date is the same as the current one.'))
+        if new_checkout < old_checkout:
+            raise ValidationError(_('You can only extend the stay. Use Check Out for early departure.'))
         if new_checkout <= self.check_in:
             raise ValidationError(_('New check-out must be after the check-in date.'))
         if self.state == 'checked_in' and new_checkout <= fields.Date.context_today(self):
@@ -431,11 +432,11 @@ class HotelReservation(models.Model):
 
         diff = self.room_total - old_total
         self.message_post(body=_(
-            'Stay changed: check-out %(old)s → %(new)s (%(nights)s nights). '
-            'Total difference: %(diff)s. Reason: %(reason)s',
+            'Stay extended: check-out %(old)s → %(new)s (%(nights)s nights). '
+            'Total difference: %(diff)s.',
             old=old_checkout, new=new_checkout, nights=self.nights,
-            diff=diff, reason=reason))
-
+            diff=diff))
+                
     # ---- Group ----
     def action_view_group(self):
         self.ensure_one()

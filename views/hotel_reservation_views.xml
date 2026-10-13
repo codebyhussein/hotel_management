@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <!-- Tree -->
     <record id="view_hotel_reservation_tree" model="ir.ui.view">
         <field name="name">hotel.reservation.tree</field>
@@ -45,7 +44,7 @@
                             class="oe_highlight" invisible="state != 'checked_in'"/>
                     <button name="action_change_room" string="Change Room" type="object"
                             invisible="state not in ('confirmed', 'checked_in')"/>
-                    <button name="action_extend_stay" string="Extend / Shorten" type="object"
+                    <button name="action_extend_stay" string="Extend Stay" type="object"
                             invisible="state not in ('confirmed', 'checked_in')"/>
                     <button name="action_no_show" string="No Show" type="object"
                         invisible="state != 'confirmed'" />
@@ -82,28 +81,22 @@
                             <field name="children" />
                         </group>
                     </group>
-                      <group string="Pricing">
+                    <group string="Pricing">
                         <group>
                             <field name="currency_id" invisible="1"/>
                             <field name="nights"/>
                             <field name="nightly_rate" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                        <field name="room_total"/>
+                            <field name="room_total"/>
                             <field name="total_amount"/>
                         </group>
                     </group>
-
                     <group string="Deposit">
                         <group>
                             <field name="deposit_amount" readonly="deposit_paid or state not in ('draft', 'confirmed')"/>
                             <field name="deposit_paid"/>
                             <field name="deposit_paid_date" invisible="not deposit_paid"/>
-                        </group>
-                        <group>
-                            <field name="balance_after_deposit"/>
-                            <field name="cancellation_fee" invisible="state not in ('cancelled', 'no_show')"/>
-                            <field name="deposit_refund" invisible="state not in ('cancelled', 'no_show')"/>
                         </group>
                     </group>
                     <group>
@@ -148,10 +141,9 @@
                             <div>
                                 <field name="total_amount" widget="monetary" />
                             </div>
-                            <div><field name="total_amount" widget="monetary"/></div>
                             <div t-if="record.group_ref.raw_value" class="badge text-bg-primary">
-                            Group: <field name="group_ref"/>
-                        </div>
+                                Group: <field name="group_ref"/>
+                            </div>
                         </div>
                     </t>
                 </templates>
@@ -199,17 +191,6 @@
                         context="{'group_by': 'property_id'}" />
                     <filter name="group_room" string="Room" context="{'group_by': 'room_id'}" />
                     <filter name="group_source" string="Source" context="{'group_by': 'source'}" />
-
-                    <filter
-                        name="filter_external_reservations"
-                        string="External Reservations"
-                        domain="[('external_id', '!=', False)]"
-                    />
-                    <filter
-                        name="filter_internal_reservations"
-                        string="Internal Reservations"
-                        domain="[('external_id', '=', False)]"
-                    />
                     <filter name="group_group" string="Group" context="{'group_by': 'group_ref'}"/>
                 </group>
             </search>
@@ -226,12 +207,7 @@
                     <field name="reservation_id" invisible="1"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="reason" placeholder="Why is this reservation cancelled?"/>
-                    <field name="cancellation_fee"/>
-                    <field name="deposit_refund"/>
                 </group>
-                <div class="alert alert-warning" role="alert" invisible="cancellation_fee == 0">
-                    Cancelling less than 48 hours before arrival is charged one night.
-                </div>
                 <footer>
                     <button name="action_confirm_cancel" string="Confirm Cancellation"
                         type="object" class="btn-primary" />
@@ -247,6 +223,4 @@
         <field name="res_model">hotel.reservation</field>
         <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
-
-
 </odoo>
