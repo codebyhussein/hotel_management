@@ -173,7 +173,7 @@ class HotelManagementTokenAPI(http.Controller):
     # =====================================================
 
     @http.route(
-        '/api/token/rooms/<int:room_id>',
+        '/api/token/room/<int:room_id>',
         type='http',
         auth='public',
         methods=['GET'],
