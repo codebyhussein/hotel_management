@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 
 from odoo import fields, http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager # pyright: ignore[missing-import
+
 
 # Rooms in these statuses can never be booked.
 UNBOOKABLE_ROOM_STATUSES = ['maintenance', 'needs_cleaning']
@@ -22,14 +22,17 @@ class HotelCustomerPortal(CustomerPortal):
         Guest = request.env['hotel.guest'].sudo()
         partner = request.env.user.partner_id
 
-        # 1) Exact link: the guest uses the same partner as the user.
-        guest = Guest.search([('partner_id', '=', partner.id)], limit=1)
+        # 1. Exact link: the guest uses the same partner as the user.
+        guest = Guest.search(
+            [('partner_id', '=', partner.id)],
+            limit=1,
+        )
 
-        # 2) Fallback: same email (guest created from a website booking
-        #    or by reception gets its own partner record).
+        # 2. Fallback: match by email.
         if not guest and partner.email:
             guest = Guest.search(
-                [('email', '=ilike', partner.email)], limit=1
+                [('email', '=ilike', partner.email)],
+                limit=1,
             )
 
         return guest
@@ -39,46 +42,65 @@ class HotelCustomerPortal(CustomerPortal):
         return [('guest_id', '=', guest.id)]
 
     def _render_no_guest(self):
+        """Render a page when no hotel guest is linked to the user."""
         values = self._prepare_portal_layout_values()
         values['page_name'] = 'hotel_reservations'
-        return request.render('hotel_management.portal_no_guest', values)
+
+        return request.render(
+            'hotel_management.portal_no_guest',
+            values,
+        )
 
     # =====================================================
-    # Portal home dashboard (/my)
+    # Portal Home Dashboard (/my)
     # =====================================================
 
     def _get_hotel_dashboard(self):
-        """Numbers shown on the portal dashboard cards."""
+        """Return numbers shown on the portal dashboard."""
         env = request.env
-        today = fields.Date.context_today(env['hotel.reservation'])
+        today = fields.Date.context_today(
+            env['hotel.reservation']
+        )
+
         Room = env['hotel.room'].sudo()
         Reservation = env['hotel.reservation'].sudo()
 
-        # --- Hotel-wide availability for today -------------------------
+        # Hotel-wide availability for today.
         total_rooms = Room.search_count([])
-        bookable_rooms = Room.search(
-            [('status', 'not in', UNBOOKABLE_ROOM_STATUSES)]
-        )
+
+        bookable_rooms = Room.search([
+            ('status', 'not in', UNBOOKABLE_ROOM_STATUSES),
+        ])
+
         occupied_rooms = Reservation.search([
             ('check_in', '<=', today),
             ('check_out', '>', today),
             ('state', 'not in', FREE_RESERVATION_STATES),
         ]).mapped('room_id')
+
         available_rooms = bookable_rooms - occupied_rooms
 
-        # --- Current guest reservations --------------------------------
+        # Current guest reservations.
         reservation_count = 0
         booked_rooms_count = 0
+
         guest = self._get_current_guest()
+
         if guest:
             my_reservations = Reservation.search(
                 self._get_guest_reservation_domain(guest)
             )
+
             reservation_count = len(my_reservations)
+
             active = my_reservations.filtered(
-                lambda r: r.state not in FREE_RESERVATION_STATES
-                and r.check_out and r.check_out >= today
+                lambda r: (
+                    r.state not in FREE_RESERVATION_STATES
+                    and r.check_out
+                    and r.check_out >= today
+                )
             )
+
             booked_rooms_count = len(active.mapped('room_id'))
 
         return {
@@ -86,29 +108,48 @@ class HotelCustomerPortal(CustomerPortal):
             'booked_rooms_count': booked_rooms_count,
             'available_rooms_count': len(available_rooms),
             'total_rooms_count': total_rooms,
-            # True when no room is occupied today: the hotel is empty.
             'hotel_is_empty': bool(total_rooms) and not occupied_rooms,
         }
+
+    # =====================================================
+    # Portal Home (/my)
+    # =====================================================
 
     @http.route()
     def home(self, **kw):
         response = super().home(**kw)
+
         if hasattr(response, 'qcontext'):
-            response.qcontext['hotel_dashboard'] = self._get_hotel_dashboard()
-            response.qcontext['hotel_portal_invoices'] = request.env[
-                'account.move'
-            ].search(
-                [
-                    ('move_type', '=', 'out_invoice'),
-                    ('state', '=', 'posted'),
-                ],
-                order='invoice_date desc, id desc',
-                limit=5,
+            response.qcontext['hotel_dashboard'] = (
+                self._get_hotel_dashboard()
             )
+
+            # Load invoices only when Accounting is installed.
+            if 'account.move' in request.env.registry:
+                guest = self._get_current_guest()
+
+                if guest:
+                    invoices = request.env['account.move'].sudo().search(
+                        [
+                            ('move_type', '=', 'out_invoice'),
+                            ('state', '=', 'posted'),
+                            ('partner_id', '=', guest.partner_id.id),
+                        ],
+                        order='invoice_date desc, id desc',
+                        limit=5,
+                    )
+                else:
+                    invoices = request.env['account.move'].sudo().browse()
+
+                response.qcontext['hotel_portal_invoices'] = invoices
+
+            else:
+                response.qcontext['hotel_portal_invoices'] = []
+
         return response
 
     # =====================================================
-    # Portal home counter
+    # Portal Home Counter
     # =====================================================
 
     def _prepare_home_portal_values(self, counters):
@@ -116,16 +157,19 @@ class HotelCustomerPortal(CustomerPortal):
 
         if 'hotel_reservation_count' in counters:
             guest = self._get_current_guest()
+
             values['hotel_reservation_count'] = (
                 request.env['hotel.reservation'].sudo().search_count(
                     self._get_guest_reservation_domain(guest)
-                ) if guest else 0
+                )
+                if guest
+                else 0
             )
 
         return values
 
     # =====================================================
-    # Reservations list
+    # Reservations List
     # =====================================================
 
     @http.route(
@@ -135,9 +179,15 @@ class HotelCustomerPortal(CustomerPortal):
         website=True,
     )
     def portal_my_hotel_reservations(
-        self, page=1, date_begin=None, date_end=None, sortby=None, **kwargs
+        self,
+        page=1,
+        date_begin=None,
+        date_end=None,
+        sortby=None,
+        **kwargs,
     ):
         guest = self._get_current_guest()
+
         if not guest:
             return self._render_no_guest()
 
@@ -186,7 +236,7 @@ class HotelCustomerPortal(CustomerPortal):
         )
 
     # =====================================================
-    # Reservation details
+    # Reservation Details
     # =====================================================
 
     @http.route(
@@ -195,8 +245,13 @@ class HotelCustomerPortal(CustomerPortal):
         auth='user',
         website=True,
     )
-    def portal_hotel_reservation_detail(self, reservation_id, **kwargs):
+    def portal_hotel_reservation_detail(
+        self,
+        reservation_id,
+        **kwargs,
+    ):
         guest = self._get_current_guest()
+
         if not guest:
             return self._render_no_guest()
 

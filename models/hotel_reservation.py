@@ -54,6 +54,8 @@ class HotelReservation(models.Model):
         'hotel.room', 'hotel_reservation_room_rel',
         'reservation_id', 'room_id', string='Rooms'
     )
+    # Reservation Room
+ 
     room_display = fields.Char(string='Room(s)', compute='_compute_room_display')
 
     property_id = fields.Many2one(
@@ -200,7 +202,7 @@ class HotelReservation(models.Model):
     def _compute_balance_after_deposit(self):
         for rec in self:
             paid = rec.deposit_amount if rec.deposit_paid else 0.0
-            rec.balance_after_deposit = rec.total_amount - paid
+            rec.balance_after_deposit = paid - rec.total_amount
 
     def _compute_group_count(self):
         for rec in self:
@@ -427,6 +429,40 @@ class HotelReservation(models.Model):
             'context': {'default_reservation_id': self.id},
         }
 
+    def _change_room(self, new_room, reason, keep_rate=False):
+        self.ensure_one()
+        if self.booking_type != 'individual':
+            raise ValidationError(_('Room changes are only supported for individual reservations.'))
+        if self.state not in ('confirmed', 'checked_in'):
+            raise ValidationError(_('Only confirmed or checked-in reservations can change rooms.'))
+        if not new_room or new_room == self.room_id:
+            raise ValidationError(_('Select a different room.'))
+        if not reason or not reason.strip():
+            raise ValidationError(_('Please provide a reason for changing rooms.'))
+        if new_room.status != 'available':
+            raise ValidationError(_(
+                'Room %(room)s is not available (current status: %(status)s).',
+                room=new_room.display_name,
+                status=new_room.status,
+            ))
+
+        old_room = self.room_id
+        previous_rate = self.nightly_rate
+        self.write({'room_id': new_room.id})
+        if keep_rate:
+            self.write({'nightly_rate': previous_rate})
+
+        if self.state == 'checked_in':
+            old_room.write({'status': 'needs_cleaning'})
+            new_room.write({'status': 'occupied'})
+
+        self.message_post(body=_(
+            'Room changed from %(old_room)s to %(new_room)s. Reason: %(reason)s',
+            old_room=old_room.display_name,
+            new_room=new_room.display_name,
+            reason=reason.strip(),
+        ))
+
     def action_extend_stay(self):
         self.ensure_one()
         return {
@@ -457,3 +493,48 @@ class HotelReservation(models.Model):
             'view_mode': 'tree,form,calendar',
             'domain': [('group_ref', '=', self.group_ref)],
         }
+        
+    # ------------------------------------------------------------------
+    # Crons (Scheduled Actions)
+    # ------------------------------------------------------------------
+    
+    @api.model
+    def _cron_check_no_show(self):
+       
+        today = fields.Date.context_today(self)
+        late_reservations = self.search([
+            ('state', '=', 'confirmed'),
+            ('check_in', '<', today)
+        ])
+        for rec in late_reservations:
+            rec.action_no_show() #
+
+    @api.model
+    def _cron_auto_check_out(self):
+
+        today = fields.Date.context_today(self)
+        ended_reservations = self.search([
+            ('state', '=', 'checked_in'),
+            ('check_out', '<=', today)
+        ])
+        for rec in ended_reservations:
+            rec.action_check_out()
+
+    @api.model
+    def _cron_send_arrival_reminder(self):
+       
+        tomorrow = fields.Date.context_today(self) + timedelta(days=1)
+        upcoming_reservations = self.search([
+            ('state', '=', 'confirmed'),
+            ('check_in', '=', tomorrow),
+            ('reminder_sent', '=', False)
+        ])
+        template = self.env.ref('hotel_management.mail_template_reservation_reminder', raise_if_not_found=False)
+        for rec in upcoming_reservations:
+            if template and rec.guest_id.email:
+                template.send_mail(rec.id, force_send=False)
+                rec.reminder_sent = True
+                
+                
+                
+                
