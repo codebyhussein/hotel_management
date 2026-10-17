@@ -31,8 +31,4 @@
         <field name="view_mode">graph,pivot</field>
         <field name="domain">[('state', 'not in', ['cancelled', 'no_show', 'draft'])]</field>
     </record>
-
-    <menuitem id="menu_hotel_dashboard" name="Occupancy &amp; Revenue"
-              parent="menu_hotel_reports_root"
-              action="action_hotel_reservation_dashboard" sequence="20"/>
 </odoo>

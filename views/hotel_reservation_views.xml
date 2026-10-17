@@ -46,10 +46,10 @@
                             invisible="state not in ('confirmed', 'checked_in')"/>
                     <button name="action_no_show" string="No Show" type="object"
                         invisible="state != 'confirmed'" />
-                    <button name="action_cancel" string="Cancel" type="object"
-                        invisible="state not in ('draft', 'confirmed')" />
+                    <!-- <button name="action_cancel" string="Cancel Reservation" type="object"
+                        invisible="state != 'draft'" /> -->
                     <field name="state" widget="statusbar"
-                        statusbar_visible="draft,confirmed,checked_in,checked_out" />
+                        statusbar_visible="draft,confirmed,checked_in,checked_out,cancelled" />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

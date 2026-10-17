@@ -1,816 +1,430 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <odoo>
 
-<!-- ==================== Available Rooms ==================== -->
-
+    <!-- ==================== Available Rooms ==================== -->
     <template id="room_list" name="Available Hotel Rooms">
-
         <t t-call="website.layout">
 
             <style>
-
                 .room-hero {
-
                     background: linear-gradient(135deg, #1e293b, #334155);
-
                     color: white;
-
                     padding: 70px 20px;
-
                     border-radius: 0 0 30px 30px;
-
                 }
 
                 .room-card {
-
                     border: none;
-
                     border-radius: 18px;
-
                     overflow: hidden;
-
                     background: #ffffff;
-
                     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-
                     transition: all 0.3s ease;
-
                     height: 100%;
-
                 }
 
                 .room-card:hover {
-
                     transform: translateY(-8px);
-
                     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-
                 }
 
                 .room-image-wrapper {
-
                     position: relative;
-
                     height: 240px;
-
                     overflow: hidden;
-
                     background: #f3f4f6;
-
                 }
 
                 .room-image {
-
                     width: 100%;
-
                     height: 100%;
-
                     object-fit: cover;
-
                     transition: transform 0.4s ease;
-
                 }
 
                 .room-card:hover .room-image {
-
                     transform: scale(1.05);
-
                 }
 
                 .room-badge {
-
                     position: absolute;
-
                     top: 15px;
-
                     left: 15px;
-
                     padding: 7px 12px;
-
                     border-radius: 20px;
-
                     background: rgba(255, 255, 255, 0.95);
-
                     color: #166534;
-
                     font-size: 13px;
-
                     font-weight: 600;
-
                 }
 
                 .room-content {
-
                     padding: 22px;
-
                 }
 
                 .room-title {
-
                     font-size: 22px;
-
                     font-weight: 700;
-
                     color: #1f2937;
-
                     margin-bottom: 10px;
-
                 }
 
                 .room-description {
-
                     color: #6b7280;
-
                     font-size: 14px;
-
                     line-height: 1.7;
-
                     min-height: 48px;
-
                 }
 
                 .room-info {
-
                     display: flex;
-
                     flex-wrap: wrap;
-
                     gap: 18px;
-
                     padding: 15px 0;
-
                     border-top: 1px solid #eeeeee;
-
                     border-bottom: 1px solid #eeeeee;
-
                     margin: 15px 0;
-
                     color: #6b7280;
-
                     font-size: 14px;
-
                 }
 
                 .room-price {
-
                     font-size: 22px;
-
                     font-weight: 700;
-
                     color: #0f766e;
-
                 }
 
                 .room-price small {
-
                     font-size: 13px;
-
                     color: #6b7280;
-
                     font-weight: 400;
-
                 }
 
                 .room-button {
-
                     border-radius: 10px;
-
                     padding: 10px 18px;
-
                     font-weight: 600;
-
                     transition: all 0.2s ease;
-
                 }
 
                 .room-button:hover {
-
                     transform: translateY(-2px);
-
                 }
 
                 .room-no-image {
-
                     height: 100%;
-
                     display: flex;
-
                     align-items: center;
-
                     justify-content: center;
-
                     flex-direction: column;
-
                     color: #9ca3af;
-
                     font-size: 15px;
-
                 }
 
                 .room-no-image span {
-
                     font-size: 42px;
-
                     margin-bottom: 8px;
-
                 }
 
                 @media (max-width: 576px) {
-
                     .room-hero {
-
                         padding: 45px 15px;
-
                     }
 
                     .room-image-wrapper {
-
                         height: 220px;
-
                     }
 
                     .room-content {
-
                         padding: 18px;
-
                     }
-
                 }
-
             </style>
 
-<!-- Hero Section -->
-
+            <!-- Hero Section -->
             <section class="room-hero">
-
                 <div class="container text-center">
-
                     <h1 class="display-4 fw-bold mb-3">
-
                         Discover Your Perfect Room
-
                     </h1>
-
                     <p class="lead mb-0">
-
                         Explore our comfortable rooms and enjoy
-
                         a relaxing hotel experience.
-
                     </p>
-
                 </div>
-
             </section>
 
-<!-- Rooms Section -->
-
+            <!-- Rooms Section -->
             <section class="py-5">
-
                 <div class="container">
 
-<!-- Section Header -->
-
+                    <!-- Section Header -->
                     <div class="text-center mb-5">
-
-                        <h2 class="fw-bold">
-
-                            Available Rooms
-
-                        </h2>
-
+                        <h2 class="fw-bold">Available Rooms</h2>
                         <p class="text-muted">
-
                             Find the perfect room for your stay.
-
                         </p>
-
                     </div>
 
-<!-- Room Cards -->
-
+                    <!-- Room Cards -->
                     <div class="row g-4">
-
                         <t t-foreach="rooms" t-as="room">
 
-                            <div class="col-xl-4 col-lg-4 col-md-6">
+                            <!-- Room label: "ROOM/200" is shown as is.
+                                 Plain numbers like "101" are shown as "Room 101". -->
+                            <t t-set="room_label"
+                               t-value="room.room_number if (room.room_number or '').upper().startswith('ROOM') else 'Room %s' % room.room_number"/>
 
+                            <div class="col-xl-4 col-lg-4 col-md-6">
                                 <div class="room-card">
 
-<!-- Room Image -->
-
+                                    <!-- Room Image -->
                                     <div class="room-image-wrapper">
-
                                         <img
-
                                             t-if="room.room_image"
-
                                             t-att-src="'/web/image/hotel.room/%s/room_image' % room.id"
-
                                             class="room-image"
-
                                             alt="Hotel Room"
-
                                             loading="lazy"
-
                                         />
-
-                                        <div
-
-                                            t-else=""
-
-                                            class="room-no-image"
-
-                                        >
-
+                                        <div t-else="" class="room-no-image">
                                             <span>🛏</span>
-
                                             No Image Available
-
                                         </div>
 
-<!-- Availability Badge -->
-
-                                        <span class="room-badge">
-
-                                            Available
-
-                                        </span>
-
+                                        <!-- Availability Badge -->
+                                        <span class="room-badge">Available</span>
                                     </div>
 
-<!-- Room Content -->
-
+                                    <!-- Room Content -->
                                     <div class="room-content">
 
-<!-- Room Number -->
-
+                                        <!-- Room Number -->
                                         <h3 class="room-title">
-
-                                            Room
-
-                                            <t t-esc="room.room_number"/>
-
+                                            <t t-out="room_label"/>
                                         </h3>
 
-<!-- Room Description -->
-
+                                        <!-- Room Description -->
                                         <p class="room-description">
-
                                             <t t-if="room.description">
-
                                                 <t t-esc="room.description[:100]"/>
-
-                                                <t t-if="len(room.description) &gt; 100">
-
-                                                    ...
-
-                                                </t>
-
+                                                <t t-if="len(room.description) &gt; 100">...</t>
                                             </t>
-
                                             <t t-else="">
-
                                                 A comfortable room designed
-
                                                 for a relaxing stay.
-
                                             </t>
-
                                         </p>
 
-<!-- Room Information -->
-
+                                        <!-- Room Information -->
                                         <div class="room-info">
-
                                             <span>
-
                                                 🏨
-
                                                 <strong>
-
-                                                    <t t-esc="dict(
-
-                                                        room._fields['room_type'].selection
-
-                                                    ).get(room.room_type, '')"/>
-
+                                                    <t t-esc="dict(room._fields['room_type'].selection).get(room.room_type, '')"/>
                                                 </strong>
-
                                             </span>
-
                                             <span>
-
                                                 👥
-
                                                 <strong>
-
                                                     <t t-esc="room.capacity"/>
-
                                                 </strong>
-
                                                 Guests
-
                                             </span>
-
                                         </div>
 
-<!-- Price and Details -->
-
+                                        <!-- Price and Details -->
                                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
                                             <div class="room-price">
-
                                                 <t t-esc="room.price"/>
-
-                                                <small>
-
-                                                    EGP / Night
-
-                                                </small>
-
+                                                <small>EGP / Night</small>
                                             </div>
-
                                             <a
-
                                                 t-att-href="'/room/%s' % room.id"
-
                                                 class="btn btn-primary room-button"
-
                                             >
-
                                                 View Details
-
                                             </a>
-
                                         </div>
 
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </t>
-
                     </div>
 
-<!-- Empty State -->
-
+                    <!-- Empty State -->
                     <t t-if="not rooms">
-
                         <div class="text-center py-5">
-
-                            <div class="mb-3" style="font-size: 50px;">
-
-                                🏨
-
-                            </div>
-
-                            <h4 class="text-muted">
-
-                                No Rooms Available
-
-                            </h4>
-
-                            <p class="text-muted">
-
-                                Please check again later.
-
-                            </p>
-
+                            <div class="mb-3" style="font-size: 50px;">🏨</div>
+                            <h4 class="text-muted">No Rooms Available</h4>
+                            <p class="text-muted">Please check again later.</p>
                         </div>
-
                     </t>
 
                 </div>
-
             </section>
-
         </t>
-
     </template>
 
 
-
-<!-- ==================== Room Details ==================== -->
-
+    <!-- ==================== Room Details ==================== -->
     <template id="room_details" name="Hotel Room Details">
-
         <t t-call="website.layout">
 
             <style>
-
                 .room-details-image {
-
                     height: 500px;
-
                     background: #f3f4f6;
-
                     border-radius: 18px;
-
                     overflow: hidden;
-
                 }
 
                 .room-details-image img {
-
                     width: 100%;
-
                     height: 100%;
-
                     object-fit: cover;
-
                 }
 
                 .room-details-placeholder {
-
                     height: 100%;
-
                     display: flex;
-
                     align-items: center;
-
                     justify-content: center;
-
                     flex-direction: column;
-
                     color: #9ca3af;
-
                 }
 
                 .room-details-placeholder span {
-
                     font-size: 65px;
-
                 }
 
                 .room-details-price {
-
                     color: #0f766e;
-
                     font-size: 30px;
-
                     font-weight: 700;
-
                 }
 
                 .room-details-info {
-
                     padding: 20px 0;
-
                     border-top: 1px solid #eeeeee;
-
                     border-bottom: 1px solid #eeeeee;
-
                 }
 
                 .room-detail-label {
-
                     color: #6b7280;
-
                     font-size: 14px;
-
                     margin-bottom: 5px;
-
                 }
 
                 .room-detail-value {
-
                     color: #1f2937;
-
                     font-size: 16px;
-
                     font-weight: 600;
-
                 }
 
                 @media (max-width: 768px) {
-
                     .room-details-image {
-
                         height: 300px;
-
                     }
-
                 }
-
             </style>
 
-            <section class="py-5">
+            <!-- Room label: "ROOM/200" is shown as is.
+                 Plain numbers like "101" are shown as "Room 101". -->
+            <t t-set="room_label"
+               t-value="room.room_number if (room.room_number or '').upper().startswith('ROOM') else 'Room %s' % room.room_number"/>
 
+            <section class="py-5">
                 <div class="container">
 
-<!-- Back Button -->
-
+                    <!-- Back Button -->
                     <div class="mb-4">
-
-                        <a
-
-                            href="/rooms"
-
-                            class="btn btn-outline-secondary"
-
-                        >
-
+                        <a href="/rooms" class="btn btn-outline-secondary">
                             ← Back to Rooms
-
                         </a>
-
                     </div>
 
                     <div class="row g-5">
 
-<!-- Room Image -->
-
+                        <!-- Room Image -->
                         <div class="col-lg-7">
-
                             <div class="room-details-image shadow-sm">
-
                                 <img
-
                                     t-if="room.room_image"
-
                                     t-att-src="'/web/image/hotel.room/%s/room_image' % room.id"
-
                                     alt="Hotel Room"
-
                                 />
-
-                                <div
-
-                                    t-else=""
-
-                                    class="room-details-placeholder"
-
-                                >
-
+                                <div t-else="" class="room-details-placeholder">
                                     <span>🛏</span>
-
-                                    <p class="mt-2">
-
-                                        No Image Available
-
-                                    </p>
-
+                                    <p class="mt-2">No Image Available</p>
                                 </div>
-
                             </div>
-
                         </div>
 
-<!-- Room Information -->
-
+                        <!-- Room Information -->
                         <div class="col-lg-5">
-
-                            <span class="badge bg-success mb-3">
-
-                                Available
-
-                            </span>
+                            <span class="badge bg-success mb-3">Available</span>
 
                             <h1 class="fw-bold mb-3">
-
-                                Room
-
-                                <t t-esc="room.room_number"/>
-
+                                <t t-out="room_label"/>
                             </h1>
 
-<!-- Room Type -->
-
+                            <!-- Room Type -->
                             <p class="text-muted mb-3">
-
-                                <t t-esc="dict(
-
-                                    room._fields['room_type'].selection
-
-                                ).get(room.room_type, '')"/>
-
+                                <t t-esc="dict(room._fields['room_type'].selection).get(room.room_type, '')"/>
                             </p>
 
-<!-- Price -->
-
+                            <!-- Price -->
                             <div class="room-details-price mb-4">
-
                                 <t t-esc="room.price"/>
-
-                                <small class="text-muted fs-6">
-
-                                    EGP / Night
-
-                                </small>
-
+                                <small class="text-muted fs-6">EGP / Night</small>
                             </div>
 
-<!-- Room Details -->
-
+                            <!-- Room Details -->
                             <div class="room-details-info mb-4">
-
                                 <div class="row g-4">
-
                                     <div class="col-6">
-
-                                        <div class="room-detail-label">
-
-                                            Guest Capacity
-
-                                        </div>
-
+                                        <div class="room-detail-label">Guest Capacity</div>
                                         <div class="room-detail-value">
-
                                             👥
-
                                             <t t-esc="room.capacity"/>
-
                                             Guests
-
                                         </div>
-
                                     </div>
 
                                     <div class="col-6">
-
-                                        <div class="room-detail-label">
-
-                                            Room Number
-
-                                        </div>
-
+                                        <div class="room-detail-label">Room Number</div>
                                         <div class="room-detail-value">
-
                                             <t t-esc="room.room_number"/>
-
                                         </div>
-
                                     </div>
 
-                                    <div
-
-                                        class="col-12"
-
-                                        t-if="room.property_id"
-
-                                    >
-
-                                        <div class="room-detail-label">
-
-                                            Hotel
-
-                                        </div>
-
+                                    <div class="col-12" t-if="room.property_id">
+                                        <div class="room-detail-label">Hotel</div>
                                         <div class="room-detail-value">
-
                                             <t t-esc="room.property_id.display_name"/>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
-<!-- Description -->
-
-                            <h4 class="fw-bold mb-3">
-
-                                About This Room
-
-                            </h4>
-
+                            <!-- Description -->
+                            <h4 class="fw-bold mb-3">About This Room</h4>
                             <p
-
                                 t-if="room.description"
-
                                 class="text-muted"
-
                                 style="line-height: 1.8;"
-
                             >
-
                                 <t t-esc="room.description"/>
-
                             </p>
-
-                            <p
-
-                                t-else=""
-
-                                class="text-muted"
-
-                            >
-
+                            <p t-else="" class="text-muted">
                                 Enjoy a comfortable stay in one of our
-
                                 well-maintained hotel rooms.
-
                             </p>
 
-<!-- Online Booking and Contact Buttons -->
+                            <!-- Online Booking and Contact Buttons -->
                             <div class="mt-4 d-flex flex-column gap-3">
-                                <!-- Book Now Button -->
                                 <a
                                     t-att-href="'/booking/%s' % room.id"
                                     class="btn btn-primary btn-lg w-100"
@@ -819,7 +433,6 @@
                                     Book Now
                                 </a>
 
-                                <!-- Contact Button -->
                                 <a
                                     href="/contactus"
                                     class="btn btn-outline-secondary btn-lg w-100"
@@ -830,15 +443,10 @@
                             </div>
 
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
         </t>
-
     </template>
 
 </odoo>

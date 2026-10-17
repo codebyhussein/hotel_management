@@ -20,9 +20,7 @@
                        Border     #E6DCC3
                     ========================================= */
 
-                    /* =========================================
-                       GENERAL STYLES
-                    ========================================= */
+                    /* ---------- GENERAL ---------- */
 
                     .nile-vista-homepage {
                         font-family: Arial, sans-serif;
@@ -84,19 +82,12 @@
                         transform: translateY(-3px);
                     }
 
-                    /* =========================================
-                       HERO SECTION
-                    ========================================= */
+                    /* ---------- HERO ---------- */
 
                     .nile-vista-hero {
                         position: relative;
                         overflow: hidden;
-                        background: linear-gradient(
-                            135deg,
-                            #14202F 0%,
-                            #1B2A41 55%,
-                            #2A3F5F 100%
-                        );
+                        background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
                         color: #F7F3EA;
                         padding: 110px 20px;
                         text-align: center;
@@ -178,9 +169,7 @@
                         }
                     }
 
-                    /* =========================================
-                       FEATURED ROOMS SECTION
-                    ========================================= */
+                    /* ---------- FEATURED ROOMS ---------- */
 
                     .hotel-rooms-section {
                         background-color: #F7F3EA;
@@ -201,8 +190,7 @@
                         overflow: hidden;
                         border: 1px solid #E6DCC3;
                         box-shadow: 0 5px 20px rgba(27, 42, 65, 0.06);
-                        transition: transform 0.35s ease,
-                                    box-shadow 0.35s ease;
+                        transition: transform 0.35s ease, box-shadow 0.35s ease;
                     }
 
                     .hotel-room-card:hover {
@@ -344,10 +332,7 @@
                         color: #B38F3F;
                     }
 
-                    /* =========================================
-                       WHY CHOOSE US SECTION
-                       Animated cards and icons
-                    ========================================= */
+                    /* ---------- WHY CHOOSE US ---------- */
 
                     .hotel-why-section {
                         background-color: #ffffff;
@@ -361,9 +346,7 @@
                         border: 1px solid #E6DCC3;
                         border-radius: 12px;
                         box-shadow: 0 5px 18px rgba(27, 42, 65, 0.05);
-                        transition: transform 0.35s ease,
-                                    box-shadow 0.35s ease,
-                                    border-color 0.35s ease;
+                        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
                         animation: whyCardFadeIn 0.7s ease both;
                     }
 
@@ -392,9 +375,7 @@
                         background-color: #EFE6D0;
                         color: #B38F3F;
                         font-size: 30px;
-                        transition: background-color 0.35s ease,
-                                    color 0.35s ease,
-                                    transform 0.6s ease;
+                        transition: background-color 0.35s ease, color 0.35s ease, transform 0.6s ease;
                     }
 
                     .hotel-why-card:hover .hotel-why-icon {
@@ -432,9 +413,7 @@
                         }
                     }
 
-                    /* =========================================
-                       OUR SERVICES SECTION
-                    ========================================= */
+                    /* ---------- OUR SERVICES ---------- */
 
                     .hotel-services-section {
                         background-color: #F7F3EA;
@@ -448,9 +427,7 @@
                         border: 1px solid #E6DCC3;
                         border-radius: 12px;
                         box-shadow: 0 5px 18px rgba(27, 42, 65, 0.05);
-                        transition: transform 0.35s ease,
-                                    box-shadow 0.35s ease,
-                                    border-color 0.35s ease;
+                        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
                     }
 
                     .hotel-service-card:hover {
@@ -497,17 +474,10 @@
                         margin-bottom: 0;
                     }
 
-                    /* =========================================
-                       CALL TO ACTION SECTION
-                    ========================================= */
+                    /* ---------- CALL TO ACTION ---------- */
 
                     .hotel-cta-section {
-                        background: linear-gradient(
-                            135deg,
-                            #14202F 0%,
-                            #1B2A41 55%,
-                            #2A3F5F 100%
-                        );
+                        background: linear-gradient(135deg, #14202F 0%, #1B2A41 55%, #2A3F5F 100%);
                         padding: 70px 20px;
                         text-align: center;
                         color: #F7F3EA;
@@ -545,9 +515,7 @@
                         transform: translateY(-3px);
                     }
 
-                    /* =========================================
-                       HERO SEARCH BAR
-                    ========================================= */
+                    /* ---------- HERO SEARCH BAR ---------- */
 
                     .nile-vista-search-form {
                         display: flex;
@@ -626,9 +594,7 @@
                         }
                     }
 
-                    /* =========================================
-                       RESPONSIVE DESIGN
-                    ========================================= */
+                    /* ---------- RESPONSIVE ---------- */
 
                     @media (max-width: 991px) {
                         .nile-vista-hero {
@@ -700,7 +666,6 @@
                 <!-- =========================================
                      HERO SECTION
                 ========================================= -->
-
                 <section class="nile-vista-hero">
                     <div class="container nile-vista-hero-content">
 
@@ -713,9 +678,7 @@
                         </p>
 
                         <!-- Room Search -->
-
                         <form action="/rooms" method="get" class="nile-vista-search-form">
-
                             <div class="nile-vista-search-field">
                                 <i class="fa fa-search" aria-hidden="true"/>
                                 <input
@@ -725,25 +688,19 @@
                                     aria-label="Search rooms"
                                 />
                             </div>
-
                             <button type="submit" class="nile-vista-search-btn">
                                 Search
                             </button>
-
                         </form>
 
                         <div class="nile-vista-hero-actions">
-
                             <a href="/rooms" class="hotel-primary-btn">
                                 Explore Our Rooms
-                                <i class="fa fa-arrow-right ms-2"
-                                   aria-hidden="true"/>
+                                <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
                             </a>
-
                             <a href="/contactus" class="hotel-secondary-btn">
                                 Contact Us
                             </a>
-
                         </div>
 
                     </div>
@@ -752,15 +709,11 @@
                 <!-- =========================================
                      FEATURED ROOMS SECTION
                 ========================================= -->
-
                 <section class="hotel-rooms-section section-padding">
                     <div class="container">
 
                         <div class="text-center">
-                            <h2 class="section-title">
-                                Our Featured Rooms
-                            </h2>
-
+                            <h2 class="section-title">Our Featured Rooms</h2>
                             <p class="section-subtitle">
                                 Discover our comfortable and carefully
                                 designed rooms, created to make your stay
@@ -773,37 +726,35 @@
                             <t t-if="featured_rooms">
                                 <t t-foreach="featured_rooms" t-as="room">
 
+                                    <!-- Room label: "ROOM/200" is shown as is.
+                                         Plain numbers like "101" are shown as "Room 101". -->
+                                    <t t-set="room_label"
+                                       t-value="room.room_number if (room.room_number or '').upper().startswith('ROOM') else 'Room %s' % room.room_number"/>
+
                                     <div class="col-lg-4 col-md-6 hotel-room-column">
                                         <div class="hotel-room-card">
 
                                             <!-- Room Image -->
-
                                             <div class="hotel-room-image-wrapper">
-
                                                 <t t-if="room.room_image">
                                                     <img
                                                         t-att-src="'/web/image/hotel.room/%s/room_image' % room.id"
-                                                        t-att-alt="'Room %s' % room.room_number"
+                                                        t-att-alt="room_label"
                                                         class="hotel-room-image"
                                                     />
                                                 </t>
-
                                                 <t t-else="">
                                                     <div class="hotel-room-image-placeholder">
-                                                        <i class="fa fa-bed"
-                                                           aria-hidden="true"/>
+                                                        <i class="fa fa-bed" aria-hidden="true"/>
                                                     </div>
                                                 </t>
-
                                             </div>
 
                                             <!-- Room Information -->
-
                                             <div class="hotel-room-body">
 
                                                 <div class="hotel-room-number">
-                                                    Room
-                                                    <span t-field="room.room_number"/>
+                                                    <t t-out="room_label"/>
                                                 </div>
 
                                                 <h3 class="hotel-room-name">
@@ -822,37 +773,26 @@
                                                 </p>
 
                                                 <!-- Room Details -->
-
                                                 <div class="hotel-room-details">
-
                                                     <span>
-                                                        <i class="fa fa-bed"
-                                                           aria-hidden="true"/>
+                                                        <i class="fa fa-bed" aria-hidden="true"/>
                                                         <span t-field="room.room_type"/>
                                                     </span>
-
                                                     <span>
-                                                        <i class="fa fa-users"
-                                                           aria-hidden="true"/>
+                                                        <i class="fa fa-users" aria-hidden="true"/>
                                                         <span t-field="room.capacity"/>
                                                         Guests
                                                     </span>
-
                                                 </div>
 
                                                 <!-- Price and Button -->
-
                                                 <div class="hotel-room-price-wrapper">
-
                                                     <div class="hotel-room-price">
-
                                                         <span
                                                             t-field="room.price"
                                                             t-options="{'widget': 'monetary', 'display_currency': room.currency_id if 'currency_id' in room._fields else request.env.company.currency_id}"
                                                         />
-
                                                         <small>Per Night</small>
-
                                                     </div>
 
                                                     <a
@@ -860,14 +800,11 @@
                                                         class="hotel-room-details-btn"
                                                     >
                                                         View Details
-                                                        <i class="fa fa-arrow-right ms-1"
-                                                           aria-hidden="true"/>
+                                                        <i class="fa fa-arrow-right ms-1" aria-hidden="true"/>
                                                     </a>
-
                                                 </div>
 
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -876,21 +813,14 @@
 
                             <t t-else="">
                                 <div class="col-12 text-center">
-
                                     <div class="hotel-no-rooms">
-
-                                        <i class="fa fa-bed fa-3x mb-3"
-                                           aria-hidden="true"/>
-
+                                        <i class="fa fa-bed fa-3x mb-3" aria-hidden="true"/>
                                         <h4>No Rooms Available</h4>
-
                                         <p>
                                             Please check back later to discover
                                             our available rooms.
                                         </p>
-
                                     </div>
-
                                 </div>
                             </t>
 
@@ -899,8 +829,7 @@
                         <div class="text-center mt-4">
                             <a href="/rooms" class="hotel-primary-btn">
                                 View All Rooms
-                                <i class="fa fa-arrow-right ms-2"
-                                   aria-hidden="true"/>
+                                <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
                             </a>
                         </div>
 
@@ -910,85 +839,58 @@
                 <!-- =========================================
                      WHY CHOOSE US SECTION
                 ========================================= -->
-
                 <section class="hotel-why-section section-padding">
                     <div class="container">
 
                         <div class="text-center">
-
-                            <h2 class="section-title">
-                                Why Choose Us?
-                            </h2>
-
+                            <h2 class="section-title">Why Choose Us?</h2>
                             <p class="section-subtitle">
                                 At Nile Vista Hotel, we focus on comfort,
                                 quality, and making every guest feel welcome.
                             </p>
-
                         </div>
 
                         <div class="row g-4">
 
-                            <!-- Comfortable Rooms -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-why-card">
-
                                     <div class="hotel-why-icon">
-                                        <i class="fa fa-bed"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-bed" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Comfortable Rooms</h4>
-
                                     <p>
                                         Relax in thoughtfully designed rooms
                                         with comfortable spaces for a
                                         pleasant and enjoyable stay.
                                     </p>
-
                                 </div>
                             </div>
 
-                            <!-- Quality Service -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-why-card">
-
                                     <div class="hotel-why-icon">
-                                        <i class="fa fa-star"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-star" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Quality Service</h4>
-
                                     <p>
                                         Our team is committed to providing
                                         attentive service and helping make
                                         your hotel experience memorable.
                                     </p>
-
                                 </div>
                             </div>
 
-                            <!-- Guest Satisfaction -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-why-card">
-
                                     <div class="hotel-why-icon">
-                                        <i class="fa fa-heart"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-heart" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Guest Satisfaction</h4>
-
                                     <p>
                                         Your comfort matters to us. We aim
                                         to create a welcoming atmosphere
                                         throughout your stay.
                                     </p>
-
                                 </div>
                             </div>
 
@@ -999,85 +901,58 @@
                 <!-- =========================================
                      OUR SERVICES SECTION
                 ========================================= -->
-
                 <section class="hotel-services-section section-padding">
                     <div class="container">
 
                         <div class="text-center">
-
-                            <h2 class="section-title">
-                                Our Services
-                            </h2>
-
+                            <h2 class="section-title">Our Services</h2>
                             <p class="section-subtitle">
                                 Enjoy a convenient stay with services
                                 designed to support your comfort and needs.
                             </p>
-
                         </div>
 
                         <div class="row g-4">
 
-                            <!-- Housekeeping -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-service-card">
-
                                     <div class="hotel-service-icon">
-                                        <i class="fa fa-home"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-home" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Housekeeping</h4>
-
                                     <p>
                                         Enjoy a clean and welcoming room
                                         throughout your stay with our
                                         housekeeping support.
                                     </p>
-
                                 </div>
                             </div>
 
-                            <!-- Maintenance Support -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-service-card">
-
                                     <div class="hotel-service-icon">
-                                        <i class="fa fa-wrench"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-wrench" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Maintenance Support</h4>
-
                                     <p>
                                         Our team works to keep hotel rooms
                                         and facilities comfortable and
                                         ready for our guests.
                                     </p>
-
                                 </div>
                             </div>
 
-                            <!-- Guest Assistance -->
-
                             <div class="col-lg-4 col-md-6">
                                 <div class="hotel-service-card">
-
                                     <div class="hotel-service-icon">
-                                        <i class="fa fa-user"
-                                           aria-hidden="true"/>
+                                        <i class="fa fa-user" aria-hidden="true"/>
                                     </div>
-
                                     <h4>Guest Assistance</h4>
-
                                     <p>
                                         Need help during your stay?
                                         Our team is ready to assist with
                                         your questions and requests.
                                     </p>
-
                                 </div>
                             </div>
 
@@ -1088,23 +963,17 @@
                 <!-- =========================================
                      CALL TO ACTION SECTION
                 ========================================= -->
-
                 <section class="hotel-cta-section">
                     <div class="container">
-
                         <h2>Ready to Plan Your Stay?</h2>
-
                         <p>
                             Discover our available rooms and find the
                             perfect place to relax and enjoy your visit.
                         </p>
-
                         <a href="/rooms" class="hotel-cta-btn">
                             Explore Available Rooms
-                            <i class="fa fa-arrow-right ms-2"
-                               aria-hidden="true"/>
+                            <i class="fa fa-arrow-right ms-2" aria-hidden="true"/>
                         </a>
-
                     </div>
                 </section>
 

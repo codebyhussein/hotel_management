@@ -76,6 +76,11 @@
               action="action_hotel_reservation_report_wizard"
               sequence="20"/>
 
+        <menuitem id="menu_hotel_dashboard" name="Occupancy and Revenue"
+                          parent="menu_hotel_reports_root"
+                          action="action_hotel_reservation_dashboard"
+                          sequence="25"/>
+
 <menuitem id="menu_occupancy_revenue"
               name="Rooms Report"
               parent="menu_hotel_reports_root"
