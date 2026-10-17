@@ -1,30 +1,822 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-<!--
-          <record id="object0" model="hotel_management.hotel_management">
-            <field name="name">Object 0</field>
-            <field name="value">0</field>
-          </record>
+    <data noupdate="1">
 
-          <record id="object1" model="hotel_management.hotel_management">
-            <field name="name">Object 1</field>
-            <field name="value">10</field>
-          </record>
+        <!-- ==================================================
+             PROPERTIES
+        ================================================== -->
+        <record id="demo_property_cairo" model="hotel.property">
+            <field name="name">Nile Vista Hotel - Cairo</field>
+            <field name="code">CAI</field>
+            <field name="description">Our flagship hotel on the Nile Corniche, with river views from every floor.</field>
+            <field name="address">12 Corniche El Nil</field>
+            <field name="city">Cairo</field>
+            <field name="country">Egypt</field>
+            <field name="phone">+20 2 2555 0100</field>
+            <field name="email">cairo@nilevista.com</field>
+        </record>
+        <record id="demo_property_luxor" model="hotel.property">
+            <field name="name">Nile Vista Hotel - Luxor</field>
+            <field name="code">LXR</field>
+            <field name="description">A quiet riverside retreat close to the Karnak and Luxor temples.</field>
+            <field name="address">7 Khaled Ibn El Walid Street</field>
+            <field name="city">Luxor</field>
+            <field name="country">Egypt</field>
+            <field name="phone">+20 95 238 0200</field>
+            <field name="email">luxor@nilevista.com</field>
+        </record>
+        <record id="demo_property_aswan" model="hotel.property">
+            <field name="name">Nile Vista Hotel - Aswan</field>
+            <field name="code">ASW</field>
+            <field name="description">A peaceful hotel facing Elephantine Island, perfect for Nile cruises and Nubian culture.</field>
+            <field name="address">25 Corniche El Nil</field>
+            <field name="city">Aswan</field>
+            <field name="country">Egypt</field>
+            <field name="phone">+20 97 231 0300</field>
+            <field name="email">aswan@nilevista.com</field>
+        </record>
 
-          <record id="object2" model="hotel_management.hotel_management">
-            <field name="name">Object 2</field>
-            <field name="value">20</field>
-          </record>
+        <!-- ==================================================
+             USERS (password = role name + 123, change before sharing)
+        ================================================== -->
+        <record id="base.user_admin" model="res.users">
+            <field name="property_id" ref="demo_property_cairo"/>
+        </record>
+        <record id="demo_user_manager" model="res.users">
+            <field name="name">Hany Fouad (Manager)</field>
+            <field name="login">manager@nilevista.com</field>
+            <field name="password">manager123</field>
+            <field name="email">manager@nilevista.com</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('hotel_management.group_hotel_manager')])]"/>
+        </record>
+        <record id="demo_user_employee" model="res.users">
+            <field name="name">Mona Salah (Employee)</field>
+            <field name="login">employee@nilevista.com</field>
+            <field name="password">employee123</field>
+            <field name="email">employee@nilevista.com</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('hotel_management.group_hotel_property_employee')])]"/>
+        </record>
+        <record id="demo_user_reception" model="res.users">
+            <field name="name">Rana Adel (Receptionist)</field>
+            <field name="login">reception@nilevista.com</field>
+            <field name="password">reception123</field>
+            <field name="email">reception@nilevista.com</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('hotel_management.group_hotel_receptionist')])]"/>
+        </record>
+        <record id="demo_user_housekeeper" model="res.users">
+            <field name="name">Samir Ali (Housekeeper)</field>
+            <field name="login">housekeeper@nilevista.com</field>
+            <field name="password">housekeeper123</field>
+            <field name="email">housekeeper@nilevista.com</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('hotel_management.group_hotel_housekeeper')])]"/>
+        </record>
+        <record id="demo_partner_portal" model="res.partner">
+            <field name="name">Nour Adel</field>
+            <field name="email">guest@nilevista.com</field>
+            <field name="phone">+20 100 555 0123</field>
+        </record>
+        <record id="demo_user_portal" model="res.users">
+            <field name="login">guest@nilevista.com</field>
+            <field name="password">guest123</field>
+            <field name="email">guest@nilevista.com</field>
+            <field name="partner_id" ref="demo_partner_portal"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_portal'), ref('hotel_management.group_hotel_guest_user')])]"/>
+        </record>
 
-          <record id="object3" model="hotel_management.hotel_management">
-            <field name="name">Object 3</field>
-            <field name="value">30</field>
-          </record>
+        <!-- ==================================================
+             ROOMS (capacity: single=1, double=2, triple=3, suite=2)
+             room_number is generated by the sequence, in file order:
+             ROOM/200 .. ROOM/213 (Cairo 200-207, Luxor 208-210, Aswan 211-213)
+        ================================================== -->
+        <record id="demo_room_cai_single_1" model="hotel.room">
+            <field name="room_type">single</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_single.png"/>
+            <field name="price">1200</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Cozy single room with a work desk and city view.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_cai_double_1" model="hotel.room">
+            <field name="room_type">double</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_double.png"/>
+            <field name="price">1800</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Bright double room with a king bed and a small balcony.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_cai_double_2" model="hotel.room">
+            <field name="room_type">double</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_double.png"/>
+            <field name="price">1850</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Double room with twin or king bed options and a Nile glimpse.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_cai_single_2" model="hotel.room">
+            <field name="room_type">single</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_single.png"/>
+            <field name="price">1250</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Quiet single room on the garden side.</field>
+            <field name="status">needs_cleaning</field>
+        </record>
+        <record id="demo_room_cai_triple_1" model="hotel.room">
+            <field name="room_type">triple</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_triple.png"/>
+            <field name="price">2400</field>
+            <field name="floor_number">2</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Spacious triple room, ideal for families and small groups.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_cai_triple_2" model="hotel.room">
+            <field name="room_type">triple</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_triple.png"/>
+            <field name="price">2500</field>
+            <field name="floor_number">2</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Triple room with a seating area and river view.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_cai_suite_1" model="hotel.room">
+            <field name="room_type">suite</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_suite.png"/>
+            <field name="price">4500</field>
+            <field name="floor_number">3</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Elegant suite with a lounge, king bed and panoramic Nile view.</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="demo_room_cai_suite_2" model="hotel.room">
+            <field name="room_type">suite</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_suite.png"/>
+            <field name="price">4800</field>
+            <field name="floor_number">3</field>
+            <field name="property_id" ref="demo_property_cairo"/>
+            <field name="employee_name" ref="demo_user_employee"/>
+            <field name="description">Premium corner suite with a private terrace.</field>
+            <field name="status">maintenance</field>
+        </record>
+        <record id="demo_room_lxr_double_1" model="hotel.room">
+            <field name="room_type">double</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_double.png"/>
+            <field name="price">1500</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_luxor"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Double room opening onto the riverside garden.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_lxr_triple_1" model="hotel.room">
+            <field name="room_type">triple</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_triple.png"/>
+            <field name="price">2100</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_luxor"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Family triple room with a view of the pool.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_lxr_suite_1" model="hotel.room">
+            <field name="room_type">suite</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_suite.png"/>
+            <field name="price">3900</field>
+            <field name="floor_number">2</field>
+            <field name="property_id" ref="demo_property_luxor"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Top-floor suite overlooking the Nile and the west bank.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_asw_single_1" model="hotel.room">
+            <field name="room_type">single</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_single.png"/>
+            <field name="price">1100</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_aswan"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Single room with a view of Elephantine Island.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_asw_double_1" model="hotel.room">
+            <field name="room_type">double</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_double.png"/>
+            <field name="price">1600</field>
+            <field name="floor_number">1</field>
+            <field name="property_id" ref="demo_property_aswan"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Double room with a balcony facing the Nile.</field>
+            <field name="status">available</field>
+        </record>
+        <record id="demo_room_asw_suite_1" model="hotel.room">
+            <field name="room_type">suite</field>
+            <field name="room_image" type="base64" file="hotel_management/static/img/rooms/room_suite.png"/>
+            <field name="price">3600</field>
+            <field name="floor_number">2</field>
+            <field name="property_id" ref="demo_property_aswan"/>
+            <field name="employee_name" ref="base.user_admin"/>
+            <field name="description">Suite with a lounge and a sunset terrace over the river.</field>
+            <field name="status">available</field>
+        </record>
 
-          <record id="object4" model="hotel_management.hotel_management">
-            <field name="name">Object 4</field>
-            <field name="value">40</field>
-          </record>
--->
+        <!-- ==================================================
+             GUESTS
+        ================================================== -->
+        <record id="demo_guest_ahmed" model="hotel.guest">
+            <field name="name">Ahmed Hassan</field>
+            <field name="email">ahmed.hassan@example.com</field>
+            <field name="phone">+20 100 111 2233</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29801011234567</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1998-01-01</field>
+        </record>
+        <record id="demo_guest_sara" model="hotel.guest">
+            <field name="name">Sara Mahmoud</field>
+            <field name="email">sara.mahmoud@example.com</field>
+            <field name="phone">+20 111 222 3344</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29205051234568</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1992-05-05</field>
+        </record>
+        <record id="demo_guest_john" model="hotel.guest">
+            <field name="name">John Miller</field>
+            <field name="email">john.miller@example.com</field>
+            <field name="phone">+1 202 555 0147</field>
+            <field name="id_type">passport</field>
+            <field name="id_number">US7788991</field>
+            <field name="nationality_id" ref="base.us"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1985-09-14</field>
+            <field name="vip" eval="True"/>
+            <field name="description">Prefers a high floor and a quiet room. Allergic to feather pillows.</field>
+        </record>
+        <record id="demo_guest_layla" model="hotel.guest">
+            <field name="name">Layla Ibrahim</field>
+            <field name="email">layla.ibrahim@example.com</field>
+            <field name="phone">+20 122 333 4455</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29512121234569</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1995-12-12</field>
+        </record>
+        <record id="demo_guest_hans" model="hotel.guest">
+            <field name="name">Hans Becker</field>
+            <field name="email">hans.becker@example.com</field>
+            <field name="phone">+49 30 1234 5678</field>
+            <field name="id_type">passport</field>
+            <field name="id_number">DE5566778</field>
+            <field name="nationality_id" ref="base.de"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1979-03-22</field>
+        </record>
+        <record id="demo_guest_omar" model="hotel.guest">
+            <field name="name">Omar Farouk</field>
+            <field name="email">omar.farouk@example.com</field>
+            <field name="phone">+20 106 777 8899</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29003031234570</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1990-03-03</field>
+        </record>
+        <record id="demo_guest_emma" model="hotel.guest">
+            <field name="name">Emma Wilson</field>
+            <field name="email">emma.wilson@example.com</field>
+            <field name="phone">+44 20 7946 0321</field>
+            <field name="id_type">passport</field>
+            <field name="id_number">GB3344556</field>
+            <field name="nationality_id" ref="base.uk"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1988-07-30</field>
+        </record>
+        <record id="demo_guest_karim" model="hotel.guest">
+            <field name="name">Karim Nabil</field>
+            <field name="email">karim.nabil@example.com</field>
+            <field name="phone">+20 109 444 5566</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29709091234571</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1997-09-09</field>
+        </record>
+        <record id="demo_guest_fatima" model="hotel.guest">
+            <field name="name">Fatima Ali</field>
+            <field name="email">fatima.ali@example.com</field>
+            <field name="phone">+966 50 123 4567</field>
+            <field name="id_type">passport</field>
+            <field name="id_number">SA9900112</field>
+            <field name="nationality_id" ref="base.sa"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1991-11-18</field>
+        </record>
+        <record id="demo_guest_sophie" model="hotel.guest">
+            <field name="name">Sophie Laurent</field>
+            <field name="email">sophie.laurent@example.com</field>
+            <field name="phone">+33 1 4296 1234</field>
+            <field name="id_type">passport</field>
+            <field name="id_number">FR1122334</field>
+            <field name="nationality_id" ref="base.fr"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1983-02-27</field>
+            <field name="vip" eval="True"/>
+            <field name="description">Returning guest. Arrives late and requests a late check-out.</field>
+        </record>
+        <record id="demo_guest_tarek" model="hotel.guest">
+            <field name="name">Tarek Zaki</field>
+            <field name="email">tarek.zaki@example.com</field>
+            <field name="phone">+20 101 999 0000</field>
+            <field name="id_type">national_id</field>
+            <field name="id_number">28808081234572</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">male</field>
+            <field name="date_of_birth">1988-08-08</field>
+            <field name="blacklisted" eval="True"/>
+            <field name="description">Blacklisted after unpaid damages during a previous stay.</field>
+        </record>
+        <record id="demo_guest_nour" model="hotel.guest">
+            <field name="partner_id" ref="demo_partner_portal"/>
+            <field name="id_type">national_id</field>
+            <field name="id_number">29606061234573</field>
+            <field name="nationality_id" ref="base.eg"/>
+            <field name="gender">female</field>
+            <field name="date_of_birth">1996-06-06</field>
+            <field name="description">Portal demo guest: sign in with guest@nilevista.com to see the customer portal.</field>
+        </record>
+
+        <!-- ==================================================
+             RESERVATIONS (dates relative to today, no overlaps per room)
+        ================================================== -->
+        <record id="demo_res_1" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_ahmed"/>
+            <field name="room_id" ref="demo_room_cai_single_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=-10)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=-7)).strftime('%Y-%m-%d')"/>
+            <field name="adults">1</field>
+            <field name="children">0</field>
+            <field name="source">walk_in</field>
+            <field name="state">checked_out</field>
+            <field name="actual_check_in" eval="(DateTime.now() + relativedelta(days=-10)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="actual_check_out" eval="(DateTime.now() + relativedelta(days=-7)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="demo_res_2" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_sara"/>
+            <field name="room_id" ref="demo_room_cai_double_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=-6)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">phone</field>
+            <field name="state">checked_out</field>
+            <field name="actual_check_in" eval="(DateTime.now() + relativedelta(days=-6)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="actual_check_out" eval="(DateTime.now() + relativedelta(days=-3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="deposit_amount">500</field>
+            <field name="deposit_paid" eval="True"/>
+            <field name="deposit_paid_date" eval="(DateTime.today() + relativedelta(days=-8)).strftime('%Y-%m-%d')"/>
+            <field name="special_request">Extra towels and a late check-out if possible.</field>
+        </record>
+        <record id="demo_res_3" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_john"/>
+            <field name="room_id" ref="demo_room_cai_suite_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=-2)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">checked_in</field>
+            <field name="actual_check_in" eval="(DateTime.now() + relativedelta(days=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="deposit_amount">1000</field>
+            <field name="deposit_paid" eval="True"/>
+            <field name="deposit_paid_date" eval="(DateTime.today() + relativedelta(days=-5)).strftime('%Y-%m-%d')"/>
+            <field name="special_request">High floor, quiet room, no feather pillows.</field>
+        </record>
+        <record id="demo_res_4" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_layla"/>
+            <field name="room_id" ref="demo_room_cai_double_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">confirmed</field>
+            <field name="deposit_amount">600</field>
+            <field name="deposit_paid" eval="True"/>
+            <field name="deposit_paid_date" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+        </record>
+        <record id="demo_res_5" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_hans"/>
+            <field name="room_id" ref="demo_room_cai_triple_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">1</field>
+            <field name="source">other</field>
+            <field name="state">confirmed</field>
+            <field name="external_id">PARTNER-DEMO-001</field>
+            <field name="special_request">Baby cot in the room.</field>
+        </record>
+        <record id="demo_res_6" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_omar"/>
+            <field name="room_id" ref="demo_room_cai_double_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">phone</field>
+            <field name="state">draft</field>
+            <field name="deposit_amount">800</field>
+        </record>
+        <record id="demo_res_7" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_emma"/>
+            <field name="room_id" ref="demo_room_cai_triple_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="adults">3</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">cancelled</field>
+            <field name="deposit_amount">3000</field>
+            <field name="deposit_paid" eval="True"/>
+            <field name="deposit_paid_date" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d')"/>
+            <field name="cancellation_fee">2500</field>
+            <field name="deposit_refund">500</field>
+            <field name="cancel_reason">Guest changed travel plans.</field>
+        </record>
+        <record id="demo_res_8" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_karim"/>
+            <field name="room_id" ref="demo_room_cai_double_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=-5)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">phone</field>
+            <field name="state">no_show</field>
+            <field name="cancellation_fee">1850</field>
+        </record>
+        <record id="demo_res_9" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_fatima"/>
+            <field name="room_id" ref="demo_room_lxr_double_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">confirmed</field>
+        </record>
+        <record id="demo_res_10" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_sophie"/>
+            <field name="room_id" ref="demo_room_lxr_suite_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=9)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">other</field>
+            <field name="state">confirmed</field>
+            <field name="external_id">PARTNER-DEMO-002</field>
+            <field name="special_request">Late check-out on the last day.</field>
+        </record>
+        <record id="demo_res_11" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_layla"/>
+            <field name="room_id" ref="demo_room_cai_triple_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=18)).strftime('%Y-%m-%d')"/>
+            <field name="adults">3</field>
+            <field name="children">0</field>
+            <field name="source">phone</field>
+            <field name="state">confirmed</field>
+            <field name="group_ref">GRP-0001</field>
+        </record>
+        <record id="demo_res_12" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_layla"/>
+            <field name="room_id" ref="demo_room_cai_triple_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=18)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">1</field>
+            <field name="source">phone</field>
+            <field name="state">confirmed</field>
+            <field name="group_ref">GRP-0001</field>
+        </record>
+        <record id="demo_res_13" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_nour"/>
+            <field name="room_id" ref="demo_room_cai_single_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=-20)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=-17)).strftime('%Y-%m-%d')"/>
+            <field name="adults">1</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">checked_out</field>
+            <field name="actual_check_in" eval="(DateTime.now() + relativedelta(days=-20)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="actual_check_out" eval="(DateTime.now() + relativedelta(days=-17)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="demo_res_14" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_nour"/>
+            <field name="room_id" ref="demo_room_cai_single_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="adults">1</field>
+            <field name="children">0</field>
+            <field name="source">website</field>
+            <field name="state">confirmed</field>
+        </record>
+        <record id="demo_res_15" model="hotel.reservation">
+            <field name="guest_id" ref="demo_guest_karim"/>
+            <field name="room_id" ref="demo_room_asw_double_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="source">phone</field>
+            <field name="state">confirmed</field>
+        </record>
+
+        <!-- ==================================================
+             ROOM SERVICES (hotel.housekeeping.task) - created before the
+             folio line that links to the food task
+        ================================================== -->
+        <record id="demo_task_food" model="hotel.housekeeping.task">
+            <field name="name">Dinner service - ROOM/206</field>
+            <field name="room_id" ref="demo_room_cai_suite_1"/>
+            <field name="guest_id" ref="demo_guest_john"/>
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="assigned_user_id" ref="demo_user_housekeeper"/>
+            <field name="task_type">room_service</field>
+            <field name="is_food_ordering" eval="True"/>
+            <field name="state">done</field>
+            <field name="request_date" eval="(DateTime.now() + relativedelta(days=-1, hours=-3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="start_date" eval="(DateTime.now() + relativedelta(days=-1, hours=-3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="done_date" eval="(DateTime.now() + relativedelta(days=-1, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="description">Serve at 8 PM. No nuts.</field>
+        </record>
+        <record id="demo_food_1" model="hotel.room.service.food.line">
+            <field name="task_id" ref="demo_task_food"/>
+            <field name="name">Grilled sea bass</field>
+            <field name="qty">2</field>
+            <field name="notes">No butter</field>
+        </record>
+        <record id="demo_food_2" model="hotel.room.service.food.line">
+            <field name="task_id" ref="demo_task_food"/>
+            <field name="name">Fresh orange juice</field>
+            <field name="qty">2</field>
+        </record>
+        <record id="demo_task_towels" model="hotel.housekeeping.task">
+            <field name="name">Extra towels and supplies - ROOM/206</field>
+            <field name="room_id" ref="demo_room_cai_suite_1"/>
+            <field name="guest_id" ref="demo_guest_john"/>
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="assigned_user_id" ref="demo_user_housekeeper"/>
+            <field name="task_type">room_service</field>
+            <field name="is_extra_towels" eval="True"/>
+            <field name="extra_towels_type">bath_sheet</field>
+            <field name="is_guest_supplies" eval="True"/>
+            <field name="guest_supplies_type">coffee_tea</field>
+            <field name="state">in_progress</field>
+            <field name="start_date" eval="(DateTime.now() + relativedelta(hours=-1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="demo_task_laundry" model="hotel.housekeeping.task">
+            <field name="name">Laundry - ROOM/206</field>
+            <field name="room_id" ref="demo_room_cai_suite_1"/>
+            <field name="guest_id" ref="demo_guest_john"/>
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="assigned_user_id" ref="demo_user_housekeeper"/>
+            <field name="task_type">room_service</field>
+            <field name="is_laundry" eval="True"/>
+            <field name="laundry_type">wash_iron</field>
+            <field name="state">new</field>
+            <field name="description">Pick up before 10 AM.</field>
+        </record>
+        <record id="demo_task_clean104" model="hotel.housekeeping.task">
+            <field name="name">Clean ROOM/203 after check-out</field>
+            <field name="room_id" ref="demo_room_cai_single_2"/>
+            <field name="assigned_user_id" ref="demo_user_housekeeper"/>
+            <field name="task_type">housekeeping</field>
+            <field name="is_housekeeping" eval="True"/>
+            <field name="housekeeping_type">regular_clean</field>
+            <field name="state">new</field>
+            <field name="description">Change linen, clean the bathroom and restock amenities.</field>
+        </record>
+        <record id="demo_task_deep101" model="hotel.housekeeping.task">
+            <field name="name">Deep cleaning ROOM/200</field>
+            <field name="room_id" ref="demo_room_cai_single_1"/>
+            <field name="assigned_user_id" ref="demo_user_housekeeper"/>
+            <field name="task_type">housekeeping</field>
+            <field name="is_housekeeping" eval="True"/>
+            <field name="housekeeping_type">deep_clean</field>
+            <field name="state">done</field>
+            <field name="request_date" eval="(DateTime.now() + relativedelta(days=-7, hours=-5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="start_date" eval="(DateTime.now() + relativedelta(days=-7, hours=-4)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="done_date" eval="(DateTime.now() + relativedelta(days=-7, hours=-2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+
+        <!-- ==================================================
+             FOLIO LINES AND PAYMENTS
+        ================================================== -->
+        <record id="demo_folio_1" model="hotel.folio.line">
+            <field name="reservation_id" ref="demo_res_1"/>
+            <field name="name">Minibar - soft drinks</field>
+            <field name="charge_type">minibar</field>
+            <field name="charge_date" eval="(DateTime.today() + relativedelta(days=-9)).strftime('%Y-%m-%d')"/>
+            <field name="quantity">3</field>
+            <field name="unit_price">50</field>
+            <field name="is_paid" eval="True"/>
+        </record>
+        <record id="demo_folio_2" model="hotel.folio.line">
+            <field name="reservation_id" ref="demo_res_2"/>
+            <field name="name">Laundry - wash and iron</field>
+            <field name="charge_type">laundry</field>
+            <field name="charge_date" eval="(DateTime.today() + relativedelta(days=-5)).strftime('%Y-%m-%d')"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">120</field>
+            <field name="is_paid" eval="True"/>
+        </record>
+        <record id="demo_folio_3" model="hotel.folio.line">
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="name">Dinner - room service</field>
+            <field name="charge_type">food</field>
+            <field name="charge_date" eval="(DateTime.today() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">190</field>
+            <field name="task_id" ref="demo_task_food"/>
+        </record>
+        <record id="demo_folio_4" model="hotel.folio.line">
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="name">Minibar - snacks</field>
+            <field name="charge_type">minibar</field>
+            <field name="charge_date" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">95</field>
+        </record>
+        <record id="demo_folio_5" model="hotel.folio.line">
+            <field name="reservation_id" ref="demo_res_13"/>
+            <field name="name">Minibar - water and juice</field>
+            <field name="charge_type">minibar</field>
+            <field name="charge_date" eval="(DateTime.today() + relativedelta(days=-19)).strftime('%Y-%m-%d')"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">50</field>
+            <field name="is_paid" eval="True"/>
+        </record>
+        <record id="demo_pay_1" model="hotel.payment">
+            <field name="reservation_id" ref="demo_res_1"/>
+            <field name="payment_date" eval="(DateTime.today() + relativedelta(days=-7)).strftime('%Y-%m-%d')"/>
+            <field name="amount">3750</field>
+            <field name="method">cash</field>
+            <field name="reference">CASH-0001</field>
+            <field name="state">posted</field>
+        </record>
+        <record id="demo_pay_2" model="hotel.payment">
+            <field name="reservation_id" ref="demo_res_2"/>
+            <field name="payment_date" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d')"/>
+            <field name="amount">5520</field>
+            <field name="method">card</field>
+            <field name="reference">CARD-0002</field>
+            <field name="state">posted</field>
+        </record>
+        <record id="demo_pay_3" model="hotel.payment">
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="payment_date" eval="(DateTime.today() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="amount">2000</field>
+            <field name="method">card</field>
+            <field name="reference">CARD-0003</field>
+            <field name="state">posted</field>
+        </record>
+        <record id="demo_pay_4" model="hotel.payment">
+            <field name="reservation_id" ref="demo_res_4"/>
+            <field name="payment_date" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+            <field name="amount">600</field>
+            <field name="method">transfer</field>
+            <field name="reference">TRF-0004</field>
+            <field name="state">draft</field>
+        </record>
+        <record id="demo_pay_5" model="hotel.payment">
+            <field name="reservation_id" ref="demo_res_13"/>
+            <field name="payment_date" eval="(DateTime.today() + relativedelta(days=-17)).strftime('%Y-%m-%d')"/>
+            <field name="amount">3850</field>
+            <field name="method">transfer</field>
+            <field name="reference">TRF-0005</field>
+            <field name="state">posted</field>
+        </record>
+
+        <!-- ==================================================
+             MAINTENANCE REQUESTS (hotel.maintenance.request)
+             issue_type: plumbing | electrical | air_condition | furniture | appliance | other
+             urgency: 0 Very Low | 1 Low | 2 Normal | 3 High | 4 Emergency
+             name comes from the sequence automatically.
+        ================================================== -->
+        <record id="demo_maint_1" model="hotel.maintenance.request">
+            <field name="room_id" ref="demo_room_cai_suite_2"/>
+            <field name="issue_type">air_condition</field>
+            <field name="urgency">3</field>
+            <field name="state">in_progress</field>
+            <field name="description">AC is not cooling. Check the compressor and replace the filter.</field>
+            <field name="assigned_to" ref="demo_user_employee"/>
+            <field name="scheduled_date" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+            <field name="preferred_date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+        </record>
+        <record id="demo_maint_2" model="hotel.maintenance.request">
+            <field name="room_id" ref="demo_room_cai_triple_2"/>
+            <field name="issue_type">plumbing</field>
+            <field name="urgency">4</field>
+            <field name="state">draft</field>
+            <field name="description">Bathroom basin tap leaks heavily.</field>
+            <field name="assigned_to" ref="demo_user_employee"/>
+        </record>
+        <record id="demo_maint_3" model="hotel.maintenance.request">
+            <field name="room_id" ref="demo_room_cai_suite_1"/>
+            <field name="issue_type">electrical</field>
+            <field name="urgency">2</field>
+            <field name="state">draft</field>
+            <field name="description">Bedside lamp flickers.</field>
+            <field name="reservation_id" ref="demo_res_3"/>
+            <field name="assigned_to" ref="demo_user_employee"/>
+            <field name="preferred_date" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+        </record>
+        <record id="demo_maint_4" model="hotel.maintenance.request">
+            <field name="room_id" ref="demo_room_cai_single_1"/>
+            <field name="issue_type">furniture</field>
+            <field name="urgency">1</field>
+            <field name="state">done</field>
+            <field name="description">Repair the desk drawer runner.</field>
+            <field name="assigned_to" ref="demo_user_employee"/>
+            <field name="scheduled_date" eval="(DateTime.today() + relativedelta(days=-9)).strftime('%Y-%m-%d')"/>
+            <field name="completion_date" eval="(DateTime.today() + relativedelta(days=-8)).strftime('%Y-%m-%d')"/>
+            <field name="actual_cost">350</field>
+        </record>
+        <record id="demo_maint_5" model="hotel.maintenance.request">
+            <field name="room_id" ref="demo_room_cai_double_2"/>
+            <field name="issue_type">appliance</field>
+            <field name="urgency">0</field>
+            <field name="state">draft</field>
+            <field name="description">TV remote control is not working.</field>
+            <field name="assigned_to" ref="demo_user_employee"/>
+        </record>
+
+        <!-- ==================================================
+             CRM LEADS (website booking requests waiting for reception)
+             Needs the 'crm' module in depends (custom fields live in crm_lead.py).
+        ================================================== -->
+        <record id="demo_lead_1" model="crm.lead">
+            <field name="name">Website booking - ROOM/202 - Mariam Saad</field>
+            <field name="type">opportunity</field>
+            <field name="lead_source">website</field>
+            <field name="contact_name">Mariam Saad</field>
+            <field name="email_from">mariam.saad@example.com</field>
+            <field name="phone">+20 120 600 7001</field>
+            <field name="id_number">29404041234580</field>
+            <field name="room_id" ref="demo_room_cai_double_2"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=23)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="description">Would like a quiet room.</field>
+        </record>
+        <record id="demo_lead_2" model="crm.lead">
+            <field name="name">Website booking - ROOM/210 - David Clark</field>
+            <field name="type">opportunity</field>
+            <field name="lead_source">website</field>
+            <field name="contact_name">David Clark</field>
+            <field name="email_from">david.clark@example.com</field>
+            <field name="phone">+44 7700 900123</field>
+            <field name="id_number">GB7788445</field>
+            <field name="room_id" ref="demo_room_lxr_suite_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=34)).strftime('%Y-%m-%d')"/>
+            <field name="adults">2</field>
+            <field name="children">0</field>
+            <field name="description">Anniversary trip, please add flowers if possible.</field>
+        </record>
+        <record id="demo_lead_3" model="crm.lead">
+            <field name="name">Phone enquiry - ROOM/204 - Youssef Hamdy</field>
+            <field name="type">opportunity</field>
+            <field name="lead_source">manual</field>
+            <field name="contact_name">Youssef Hamdy</field>
+            <field name="email_from">youssef.hamdy@example.com</field>
+            <field name="phone">+20 100 700 8002</field>
+            <field name="id_number">29001011234581</field>
+            <field name="room_id" ref="demo_room_cai_triple_1"/>
+            <field name="check_in" eval="(DateTime.today() + relativedelta(days=40)).strftime('%Y-%m-%d')"/>
+            <field name="check_out" eval="(DateTime.today() + relativedelta(days=43)).strftime('%Y-%m-%d')"/>
+            <field name="adults">3</field>
+            <field name="children">0</field>
+            <field name="description">Family of three, needs a baby cot.</field>
+        </record>
+
     </data>
 </odoo>
