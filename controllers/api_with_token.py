@@ -114,7 +114,7 @@ class HotelManagementTokenAPI(http.Controller):
     @http.route(
         '/api/token/rooms/available',
         type='http',
-        auth='public',
+        auth='none',
         methods=['GET'],
         csrf=False,
     )
@@ -175,7 +175,7 @@ class HotelManagementTokenAPI(http.Controller):
     @http.route(
         '/api/token/room/<int:room_id>',
         type='http',
-        auth='public',
+        auth='none',
         methods=['GET'],
         csrf=False,
     )
@@ -235,7 +235,7 @@ class HotelManagementTokenAPI(http.Controller):
     @http.route(
         '/api/token/rooms',
         type='http',
-        auth='public',
+        auth='none',
         methods=['GET'],
         csrf=False,
     )

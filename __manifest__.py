@@ -124,7 +124,7 @@ and improve operational efficiency.
     'application': True,
     'installable': True,
 
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
+    'demo': [
+        'demo/demo.xml',
+    ],
 }
