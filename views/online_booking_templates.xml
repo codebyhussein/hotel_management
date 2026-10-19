@@ -231,7 +231,7 @@
                             <div class="nv-room-summary">
                                 <h4>
                                     <i class="fa fa-key" aria-hidden="true"/>
-                                    Room <t t-esc="room.room_number"/>
+                                     <t t-esc="room.room_number"/>
                                 </h4>
 
                                 <div class="nv-room-chips">
