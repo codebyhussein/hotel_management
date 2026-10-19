@@ -2,48 +2,86 @@
 <odoo>
 
     <!-- =========================
-         Hotel Security Category
+         Hotel Security Categories
     ========================== -->
+
     <record id="module_category_hotel" model="ir.module.category">
         <field name="name">Hotel</field>
         <field name="sequence">50</field>
     </record>
 
+    <record id="module_category_hotel_management" model="ir.module.category">
+        <field name="name">Hotel Management</field>
+        <field name="sequence">20</field>
+    </record>
+
     <!-- =========================
-         Hotel Employee Group
+         Employee Group
     ========================== -->
+
     <record id="group_hotel_property_employee" model="res.groups">
         <field name="name">Employee</field>
-        <field name="category_id" ref="module_category_hotel"/>
+        <field name="category_id" ref="module_category_hotel_management"/>
     </record>
 
     <!-- =========================
-         Hotel Manager Group
+         Manager Group
     ========================== -->
-    <record id="group_hotel_property_manager" model="res.groups">
+
+    <record id="group_hotel_manager" model="res.groups">
         <field name="name">Manager</field>
-        <field name="category_id" ref="module_category_hotel"/>
-        <field name="implied_ids" eval="[(4, ref('group_hotel_property_employee'))]"/>
-        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="category_id" ref="module_category_hotel_management"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_hotel_property_employee'))]"/>
+        <field name="users"
+               eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
     <!-- =========================
-         Hotel Guest Group
+         Receptionist Group
     ========================== -->
+
+    <record id="group_hotel_receptionist" model="res.groups">
+        <field name="name">Receptionist</field>
+        <field name="category_id" ref="module_category_hotel_management"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_hotel_property_employee'))]"/>
+    </record>
+
+    <!-- =========================
+         Housekeeper Group
+    ========================== -->
+
+    <record id="group_hotel_housekeeper" model="res.groups">
+        <field name="name">Housekeeper</field>
+        <field name="category_id" ref="module_category_hotel_management"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_hotel_property_employee'))]"/>
+    </record>
+
+    <!-- =========================
+         Hotel Guest / Customer Group
+    ========================== -->
+
     <record id="group_hotel_guest_user" model="res.groups">
         <field name="name">Hotel Guest / Customer</field>
-        <field name="category_id" ref="module_category_hotel"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="category_id" ref="module_category_hotel_management"/>
+        <field name="implied_ids"
+               eval="[(4, ref('base.group_portal'))]"/>
     </record>
 
     <!-- =========================
          Guest Personal Data Rule
     ========================== -->
+
     <record id="hotel_guest_rule_portal" model="ir.rule">
         <field name="name">Guest Personal Data Rule</field>
         <field name="model_id" ref="model_hotel_guest"/>
-        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
-        <field name="groups" eval="[(4, ref('hotel_management.group_hotel_guest_user'))]"/>
+        <field name="domain_force">
+            [('partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="groups"
+               eval="[(4, ref('group_hotel_guest_user'))]"/>
     </record>
 
 </odoo>

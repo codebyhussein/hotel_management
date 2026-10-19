@@ -42,7 +42,7 @@ and improve operational efficiency.
         # ==========================================
         # Security
         # ==========================================
-        'security/security_group.xml',
+        
         'security/hotel_security.xml',
         'security/ir.model.access.csv',
 
